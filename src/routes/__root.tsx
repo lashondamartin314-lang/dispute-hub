@@ -10,6 +10,7 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar";
 import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 import { DisputeHub } from "@/components/dispute-hub";
+import { DisputeHubFab } from "@/components/dispute-hub-fab";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
@@ -114,6 +115,7 @@ function RootComponent() {
               </footer>
             </SidebarInset>
           </div>
+          <DisputeHubFab />
           <Toaster />
         </SidebarProvider>
       </ThemeProvider>

@@ -78,6 +78,19 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
             <h3 className={cn("font-display text-2xl leading-tight text-balance md:text-[28px]", titleColor)}>
               {letter.title}
             </h3>
+            <p
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em]",
+                isFrame
+                  ? "border-[color:var(--brand-gold)]/40 text-[color:var(--brand-gold)]"
+                  : "border-current/30 text-foreground/70",
+              )}
+              aria-label={`${letter.id} is a Google Doc template — opens in a new tab`}
+              title="Google Doc · opens in new tab"
+            >
+              <span aria-hidden className="inline-block size-1.5 rounded-full bg-current" />
+              Google Doc · {letter.id}.docx
+            </p>
           </div>
         </div>
         <div

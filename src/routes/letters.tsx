@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Folder } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
 import { PHASES } from "@/data/phases";
-import { lettersForPhase } from "@/data/letters";
+import { lettersForPhase, PARENT_DRIVE_FOLDER } from "@/data/letters";
 
 export const Route = createFileRoute("/letters")({
   head: () => ({
@@ -129,6 +129,20 @@ function LettersPage() {
                     >
                       {letters.length} letter{letters.length > 1 ? "s" : ""}
                     </span>
+                    <a
+                      href={PARENT_DRIVE_FOLDER}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open the Google Drive folder containing all ${p.eyebrow} letter templates (opens in a new tab)`}
+                      className="group inline-flex items-center gap-1.5 rounded-full border bg-card/80 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.16em] backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                      style={{
+                        borderColor: `color-mix(in oklab, var(${p.colorVar}) 50%, transparent)`,
+                        color: `var(${p.colorVar}-deep)`,
+                      }}
+                    >
+                      <Folder className="size-3.5" aria-hidden />
+                      Drive folder
+                    </a>
                     <Link
                       to="/playbook/phase/$id"
                       params={{ id: p.id }}
