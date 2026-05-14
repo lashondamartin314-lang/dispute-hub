@@ -846,13 +846,22 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
   const phase = letter ? PHASES_BY_ID[letter.phaseId] : null;
   const accent = phase ? `var(${phase.colorVar})` : "var(--brand-navy)";
   const days = daysSince(entry.sentDate);
-  const overdue = entry.outcome === "pending" && days !== null && days > 30;
+  const sentOverdue = entry.outcome === "pending" && days !== null && days > 30;
+  const dueOverdue = isOverdueDue(entry);
+  const dueDays = entry.nextActionDue ? daysSince(entry.nextActionDue) : null;
   const tone = outcomeMeta[entry.outcome].tone;
 
   return (
     <article
       className="relative overflow-hidden rounded-2xl border-2 bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
-      style={{ borderColor: `color-mix(in oklab, ${accent} 35%, transparent)` }}
+      style={{
+        borderColor: dueOverdue
+          ? "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 60%, transparent)"
+          : `color-mix(in oklab, ${accent} 35%, transparent)`,
+        boxShadow: dueOverdue
+          ? "0 0 0 3px color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 12%, transparent)"
+          : undefined,
+      }}
     >
       <div
         aria-hidden
@@ -884,7 +893,7 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="outline"
             className="border-2"
@@ -892,9 +901,15 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
           >
             {outcomeMeta[entry.outcome].label}
           </Badge>
-          {overdue && (
+          {dueOverdue && (
             <Badge className="bg-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-cream)]">
-              {days}d overdue
+              <BellRing className="mr-1 size-3" />
+              {dueDays !== null ? `${dueDays}d past due` : "Past due"}
+            </Badge>
+          )}
+          {!dueOverdue && sentOverdue && (
+            <Badge variant="outline" className="border-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-magenta-deep,#9b1c5b)]">
+              {days}d since sent
             </Badge>
           )}
         </div>
