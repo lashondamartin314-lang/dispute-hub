@@ -1,4 +1,11 @@
-import { ArrowUpRight, Check, Crown, ShieldCheck, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Check, ChevronDown, Crown, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
 interface CreditAcademyUpsellProps {
