@@ -183,22 +183,22 @@ export function AppSidebar() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
-                      <Link to="/playbook" onClick={closeMobile}><BookOpen className="size-4" /> Cover</Link>
+                      <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/foundation" onClick={closeMobile}><Compass className="size-4" /> Foundation</Link>
+                      <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/strategy" onClick={closeMobile}><ScrollText className="size-4" /> Strategy</Link>
+                      <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
-                      <Link to="/letters" onClick={closeMobile}><Library className="size-4" /> Letter library</Link>
+                      <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
