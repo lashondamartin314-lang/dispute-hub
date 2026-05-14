@@ -85,14 +85,49 @@ export function AppSidebar() {
     pathname.startsWith("/decoder") ||
     pathname.startsWith("/resources");
 
+  // Persist expanded/collapsed state across sessions so the user's preferred
+  // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
+  const STORAGE_KEY = "sidebar:groups:v1";
   const [playbookOpen, setPlaybookOpen] = useState(true);
   const [companionOpen, setCompanionOpen] = useState(true);
   const [phasesOpen, setPhasesOpen] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<{ playbook: boolean; companion: boolean; phases: boolean }>;
+        if (typeof saved.playbook === "boolean") setPlaybookOpen(saved.playbook);
+        if (typeof saved.companion === "boolean") setCompanionOpen(saved.companion);
+        if (typeof saved.phases === "boolean") setPhasesOpen(saved.phases);
+      }
+    } catch {
+      /* ignore */
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ playbook: playbookOpen, companion: companionOpen, phases: phasesOpen }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [hydrated, playbookOpen, companionOpen, phasesOpen]);
+
+  // Auto-expand the group containing the active route (overrides saved state
+  // only when navigating into a collapsed group, so users always see context).
   useEffect(() => {
     if (playbookHasActive) setPlaybookOpen(true);
     if (companionHasActive) setCompanionOpen(true);
   }, [playbookHasActive, companionHasActive]);
+
 
   const groupHeader = (label: string, open: boolean) => (
     <CollapsibleTrigger asChild>
