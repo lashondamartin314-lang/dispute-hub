@@ -127,21 +127,22 @@ describe("AppSidebar auto-scroll on open", () => {
     expect(scrollSpy.mock.instances).toContain(phaseLink);
   });
 
-  it("prefers the active letter sublink over the phase when both are present", async () => {
-    setPathname("/playbook/letter/L01");
+  it("scrolls a top-level link into view when it is the active route", async () => {
+    setPathname("/tracker");
     await openMobileSheet();
 
-    const letterLink = document.querySelector<HTMLElement>(
-      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="letter"]',
+    const trackerLink = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="link"]',
     );
-    expect(letterLink).not.toBeNull();
+    expect(trackerLink).not.toBeNull();
+    expect(trackerLink?.getAttribute("href")).toBe("/tracker");
 
     scrollSpy.mockClear();
     await act(async () => {
       vi.advanceTimersByTime(150);
     });
 
-    expect(scrollSpy.mock.instances).toContain(letterLink);
+    expect(scrollSpy.mock.instances).toContain(trackerLink);
   });
 
   it("does not scroll when there is no active sublink", async () => {
