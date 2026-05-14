@@ -6,6 +6,8 @@ interface EditorialHeaderProps {
   lede?: React.ReactNode;
   numeral?: React.ReactNode;
   numeralColor?: string;
+  /** Optional accent color for the eyebrow pill (e.g. `var(--phase-2-deep)`). */
+  accentColor?: string;
   align?: "left" | "center";
   className?: string;
 }
@@ -16,9 +18,18 @@ export function EditorialHeader({
   lede,
   numeral,
   numeralColor,
+  accentColor,
   align = "left",
   className,
 }: EditorialHeaderProps) {
+  const pillStyle = accentColor
+    ? {
+        color: accentColor,
+        background: `color-mix(in oklab, ${accentColor} 14%, transparent)`,
+        borderColor: `color-mix(in oklab, ${accentColor} 38%, transparent)`,
+      }
+    : undefined;
+
   return (
     <header
       className={cn(
@@ -40,7 +51,18 @@ export function EditorialHeader({
         </div>
       )}
       <div className="relative space-y-4">
-        {eyebrow && <p className="eyebrow-pill">{eyebrow}</p>}
+        {eyebrow && (
+          <p className="eyebrow-pill" style={pillStyle}>
+            {accentColor && (
+              <span
+                aria-hidden
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ background: accentColor }}
+              />
+            )}
+            {eyebrow}
+          </p>
+        )}
         <h1 className="font-display text-4xl font-bold leading-[1.02] text-balance text-[color:var(--brand-ink)] md:text-6xl lg:text-7xl">
           {title}
         </h1>
