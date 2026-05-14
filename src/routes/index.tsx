@@ -44,15 +44,50 @@ function HubPage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-20 md:px-10">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div className="relative">
-            <p className="eyebrow text-[color:var(--brand-ink)]">The six phases</p>
-            <h2 className="font-display mt-2 flex items-center gap-3 text-3xl text-[color:var(--brand-ink)] md:text-4xl">
-              <MapPin className="size-7 shrink-0" strokeWidth={1.75} />
-              <span>Where you are in the journey.</span>
+        <style>{`
+          @keyframes journey-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
+          @keyframes journey-ripple { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2.6);opacity:0} }
+          .journey-dot { animation: journey-pulse 1.6s ease-in-out infinite; }
+          .journey-ripple { animation: journey-ripple 2.2s cubic-bezier(0,0,.2,1) infinite; }
+          .journey-arrow-path { stroke-dasharray: 320; stroke-dashoffset: 0; transition: stroke-dashoffset .8s cubic-bezier(.65,0,.35,1); }
+          .group:hover .journey-arrow-path { stroke-dashoffset: 12; }
+        `}</style>
+        <div className="mb-12 flex flex-col gap-10 border-b border-[color:var(--brand-ink)]/10 pb-10 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-5">
+            <div className="flex items-center gap-3">
+              <span className="relative flex items-center justify-center">
+                <span className="journey-ripple absolute h-3.5 w-3.5 rounded-full bg-[color:var(--brand-ink)]/30" />
+                <span className="journey-dot relative h-2 w-2 rounded-full bg-[color:var(--brand-ink)]" />
+              </span>
+              <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
+            </div>
+            <h2
+              className="font-display text-[color:var(--brand-ink)] text-5xl leading-[0.9] tracking-tight md:text-7xl"
+            >
+              <span className="italic font-medium">Where</span> you are in the journey.
             </h2>
           </div>
-          <Link to="/playbook/foundation" className="hidden text-sm font-semibold text-[color:var(--brand-ink)] underline-offset-4 hover:underline md:inline">Read the foundation →</Link>
+
+          <Link to="/playbook/foundation" className="group hidden shrink-0 flex-col items-start gap-3 no-underline md:flex">
+            <div className="relative h-16 w-48 transition-transform duration-700 group-hover:translate-x-2 md:h-20 md:w-60">
+              <svg viewBox="0 0 200 80" fill="none" className="h-full w-full text-[color:var(--brand-ink)]/40 transition-colors duration-500 group-hover:text-[color:var(--brand-ink)]">
+                <path
+                  d="M10 40C30 38 60 35 110 38C140 40 175 45 188 42M188 42C175 35 160 25 155 15M188 42C172 48 158 58 150 70"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="journey-arrow-path"
+                />
+              </svg>
+            </div>
+            <div className="flex flex-col">
+              <span className="mb-1 text-[10px] font-bold uppercase tracking-[0.35em] text-[color:var(--brand-ink)]/60">The foundation</span>
+              <span className="font-display border-b border-[color:var(--brand-ink)]/30 pb-1 text-2xl italic text-[color:var(--brand-ink)] transition-all duration-500 group-hover:border-[color:var(--brand-ink)] md:text-3xl">
+                Read the foundation
+              </span>
+            </div>
+          </Link>
         </div>
 
         <div className="relative">
