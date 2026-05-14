@@ -260,20 +260,21 @@ export function CreditAcademyUpsell({
               </ul>
 
               <a
-                href={t.href}
+                href={withUtm(t.href, t.id, placement)}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${t.cta} (opens in new tab)`}
                 className={cn(
                   "mt-7 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-elegant",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 )}
-                style={{
-                  background: t.highlight
-                    ? "var(--brand-gold)"
-                    : t.accent,
-                  color: t.highlight
-                    ? "var(--brand-ink)"
-                    : "var(--brand-cream)",
-                }}
+                style={
+                  {
+                    background: t.highlight ? "var(--brand-gold)" : t.accent,
+                    color: t.highlight ? "var(--brand-ink)" : "var(--brand-cream)",
+                    ["--tw-ring-color" as string]: t.highlight ? "var(--brand-gold-deep)" : t.accent,
+                  } as React.CSSProperties
+                }
               >
                 {t.cta}
                 <ArrowUpRight className="size-4" aria-hidden />
