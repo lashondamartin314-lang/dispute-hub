@@ -447,6 +447,31 @@ export function SectionToc({
     </ul>
   );
 
+  const ProgressBar = (
+    <div
+      className="mb-3"
+      role="progressbar"
+      aria-label="Reading progress"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(progress * 100)}
+    >
+      <div className="mb-1 flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+        <span>Progress</span>
+        <span style={{ color: accentColor }}>{Math.round(progress * 100)}%</span>
+      </div>
+      <div
+        className="h-1 overflow-hidden rounded-full"
+        style={{ background: `color-mix(in oklab, ${accentColor} 12%, transparent)` }}
+      >
+        <div
+          className={cn("h-full rounded-full", !reducedMotion && "transition-[width] duration-200 ease-out")}
+          style={{ width: `${progress * 100}%`, background: accentColor }}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <>
       {/* Desktop sticky sidebar */}
@@ -467,6 +492,7 @@ export function SectionToc({
             <Keyboard className="size-3" aria-hidden /> keys
           </button>
         </div>
+        {ProgressBar}
         {SkipBar}
         {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
         {renderList(desktopListRef, "desktop")}
