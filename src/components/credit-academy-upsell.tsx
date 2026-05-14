@@ -107,8 +107,7 @@ export function CreditAcademyUpsell({
         )}
         style={{
           borderColor: "color-mix(in oklab, var(--brand-gold) 55%, transparent)",
-          background:
-            "linear-gradient(135deg, color-mix(in oklab, var(--brand-ink) 92%, transparent) 0%, color-mix(in oklab, var(--brand-magenta-deep) 80%, var(--brand-ink)) 100%)",
+          background: "var(--gradient-brand)",
         }}
       >
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
