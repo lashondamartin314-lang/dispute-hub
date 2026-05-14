@@ -42,6 +42,10 @@ const phaseIcon = {
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { setOpenMobile, isMobile } = useSidebar();
+  const closeMobile = () => {
+    if (isMobile) setOpenMobile(false);
+  };
   const isActive = (path: string) => pathname === path;
   const isPhaseActive = (id: string) => pathname.startsWith(`/playbook/phase/${id}`);
 
