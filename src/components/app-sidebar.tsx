@@ -264,6 +264,7 @@ export function AppSidebar() {
       collapsible="icon"
       className="border-r border-sidebar-border"
       style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+      data-lenis-prevent
     >
       <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <Link
@@ -286,18 +287,15 @@ export function AppSidebar() {
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/")} tooltip="Cover" className={ACTIVE_CLS}>
-                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
-                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
-                              <span className="font-semibold">Cover</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
                         {PHASES.map((p) => {
                           const Icon = phaseIcon[p.id];
                           const letters = lettersForPhase(p.id);
                           const active = isPhaseActive(p.id);
+                          const isPhaseOne = p.number === 1;
+                          const coverActive = isActive("/");
+                          // Phase 1 always exposes its sub-items (Cover + letters when active);
+                          // other phases reveal letters only while active.
+                          const showSub = isPhaseOne || (active && letters.length > 0);
                           return (
                             <SidebarMenuItem key={p.id}>
                               <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={PHASE_ACTIVE_CLS}>
@@ -312,9 +310,24 @@ export function AppSidebar() {
                                   <span className="truncate">{p.name}</span>
                                 </Link>
                               </SidebarMenuButton>
-                              {active && letters.length > 0 && (
+                              {showSub && (
                                 <SidebarMenuSub>
-                                  {letters.map((l) => {
+                                  {isPhaseOne && (
+                                    <SidebarMenuSubItem>
+                                      <SidebarMenuSubButton
+                                        asChild
+                                        isActive={coverActive}
+                                        className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
+                                        aria-current={coverActive ? "page" : undefined}
+                                      >
+                                        <Link to="/" onClick={closeMobile} data-active-scroll={coverActive ? "link" : undefined}>
+                                          <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)]" aria-hidden />
+                                          <span className="font-semibold">Cover</span>
+                                        </Link>
+                                      </SidebarMenuSubButton>
+                                    </SidebarMenuSubItem>
+                                  )}
+                                  {active && letters.map((l) => {
                                     const lActive = isLetterActive(l.id);
                                     return (
                                       <SidebarMenuSubItem key={l.id}>
@@ -414,7 +427,6 @@ export function AppSidebar() {
             {[
               { to: "/tracker", label: "Dispute tracker", Icon: ClipboardList },
               { to: "/decoder", label: "Response decoder", Icon: ScanSearch },
-              { to: "/letters", label: "Letter library", Icon: Library },
               { to: "/ask", label: "Ask Shonda", Icon: MessageCircleQuestion },
               { to: "/progress", label: "Your progress", Icon: Award },
             ].map(({ to, label, Icon }) => (
