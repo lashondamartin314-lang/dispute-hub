@@ -527,7 +527,7 @@ function LetterDetail() {
               Phase
             </span>
             <p className="eyebrow ml-12" style={{ color: `var(${phase.colorVar}-deep)` }}>
-              03 · {phase.eyebrow}
+              07 · {phase.eyebrow}
             </p>
             <h2 className="font-display mt-3 text-3xl font-bold leading-tight md:text-4xl" style={{ color: `var(${phase.colorVar}-deep)` }}>
               This letter belongs to {phase.name}.
@@ -561,7 +561,7 @@ function LetterDetail() {
                   "linear-gradient(180deg, color-mix(in oklab, var(--brand-stone) 30%, var(--card)), var(--card))",
               }}
             >
-              <p className="eyebrow mb-4 text-[color:var(--brand-ink)]/55">04 · Continue reading</p>
+              <p className="eyebrow mb-4 text-[color:var(--brand-ink)]/55">08 · Continue reading</p>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {prevLetter ? (
                   <Link
