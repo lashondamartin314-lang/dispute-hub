@@ -95,7 +95,7 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
       })();
     }
     prevPctRef.current = pct;
-  }, [pct, hydrated, phase.colorVar]);
+  }, [pct, hydrated, phase.colorVar, phase.id, phase.number, phase.name]);
 
   const toggle = (id: string) =>
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
