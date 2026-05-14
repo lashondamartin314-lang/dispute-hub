@@ -407,9 +407,11 @@ export function AppSidebar() {
           target="_blank"
           rel="noopener noreferrer"
           onClick={closeMobile}
-          className="mt-3 block px-2 text-xs text-muted-foreground hover:text-foreground"
+          className="mt-3 inline-flex items-center gap-1 px-2 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
         >
-          shondamartin.com ↗
+          shondamartin.com
+          <ArrowUpRight className="size-3" aria-hidden="true" />
+          <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
         </a>
       </SidebarFooter>
     </Sidebar>
