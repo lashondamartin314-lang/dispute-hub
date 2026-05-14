@@ -252,6 +252,102 @@ function toCSV(entries: Entry[]): string {
   return [headers.join(","), ...rows].join("\n");
 }
 
+/** Parse a CSV string with quoted fields and embedded newlines. Returns rows of cells. */
+function parseCSVRows(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(field); field = "";
+        if (row.length > 1 || row[0] !== "") rows.push(row);
+        row = [];
+      } else field += c;
+    }
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+const OUTCOME_BY_LABEL: Record<string, Outcome> = (Object.keys(outcomeMeta) as Outcome[]).reduce(
+  (acc, k) => { acc[outcomeMeta[k].label.toLowerCase()] = k; return acc; },
+  {} as Record<string, Outcome>,
+);
+
+const RECIPIENT_VALUES: Recipient[] = [
+  "Equifax", "Experian", "TransUnion", "Furnisher", "Collector", "Creditor", "Other",
+];
+
+function fromCSV(text: string): { entries: Entry[]; skipped: number } {
+  const rows = parseCSVRows(text);
+  if (rows.length === 0) return { entries: [], skipped: 0 };
+  const header = rows[0].map((h) => h.trim().toLowerCase());
+  const idx = (name: string) => header.indexOf(name.toLowerCase());
+  const cLetter = idx("Letter");
+  const cRecipient = idx("Recipient");
+  const cRecipientName = idx("Recipient Name");
+  const cAccount = idx("Account/Item");
+  const cSent = idx("Sent");
+  const cCert = idx("Certified #");
+  const cDelivered = idx("Delivered");
+  const cResponse = idx("Response Date");
+  const cOutcome = idx("Outcome");
+  const cNext = idx("Next Action");
+  const cNextDue = idx("Next Action Due");
+  const cNotes = idx("Notes");
+
+  const out: Entry[] = [];
+  let skipped = 0;
+  for (let r = 1; r < rows.length; r++) {
+    const cells = rows[r];
+    if (cells.every((v) => !v?.trim())) continue;
+    const get = (i: number) => (i >= 0 ? (cells[i] ?? "").trim() : "");
+
+    const letterRaw = get(cLetter);
+    const letterMatch = letterRaw.match(/^(L\d{1,2}[A-C]?)\b/i);
+    const letterId = (letterMatch?.[1].toUpperCase() as LetterId | undefined) ?? "";
+    const customLabel = letterId ? "" : letterRaw;
+
+    if (!letterId && !customLabel) { skipped++; continue; }
+
+    const recipientRaw = get(cRecipient);
+    const recipient = (RECIPIENT_VALUES.find((v) => v.toLowerCase() === recipientRaw.toLowerCase()) ?? "Other") as Recipient;
+
+    const outcomeRaw = get(cOutcome).toLowerCase();
+    const outcome: Outcome = OUTCOME_BY_LABEL[outcomeRaw] ?? "pending";
+
+    out.push({
+      id: crypto.randomUUID(),
+      letterId: letterId || "",
+      customLabel,
+      recipient,
+      recipientName: get(cRecipientName),
+      accountRef: get(cAccount),
+      sentDate: get(cSent),
+      certifiedNumber: get(cCert),
+      deliveredDate: get(cDelivered),
+      responseDate: get(cResponse),
+      outcome,
+      nextAction: get(cNext),
+      nextActionDue: get(cNextDue),
+      notes: get(cNotes),
+      createdAt: Date.now() + r,
+    });
+  }
+  return { entries: out, skipped };
+}
+
 function TrackerPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [editing, setEditing] = useState<Entry | null>(null);
