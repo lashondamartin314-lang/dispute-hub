@@ -224,6 +224,8 @@ function PhasePage() {
               </div>
             </section>
           )}
+
+          <CreditAcademyUpsell accentColor={`var(${phase.colorVar}-deep)`} />
         </div>
 
         <aside className="hidden xl:block">
@@ -232,10 +234,12 @@ function PhasePage() {
             accentColor={`var(${phase.colorVar}-deep)`}
             items={[
               { id: "the-work", label: "The work" },
+              { id: "checklist", label: "Phase checklist" },
               ...(phase.teaching ? [{ id: "teach", label: "Teach me" }] : []),
               ...(phase.teaching?.modules.map((m, i) => ({ id: `module-${i + 1}`, label: m.title })) ?? []),
               ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
               ...letters.map((l) => ({ id: l.id, label: `${l.id} · ${LETTERS_BY_ID[l.id].title}` })),
+              { id: "academy", label: "Credit Academy" },
             ]}
           />
         </aside>
