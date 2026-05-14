@@ -34,8 +34,20 @@ export const RESOURCES: Resource[] = [
     description: "AnnualCreditReport.com, the only federally authorized source for your free Equifax, Experian, and TransUnion reports.",
     url: "https://www.annualcreditreport.com",
     category: "report",
+    actionLabel: "Pull Your Official Credit Reports",
     pinned: true,
     rounds: [1],
+    playbookRef: { label: "Phase 1 · Validate", href: "/playbook/phase/validate" },
+    steps: [
+      "Go to AnnualCreditReport.com (this is the only federally authorized site, do not use copycats).",
+      "Choose 'Request your free credit reports' and pick all three bureaus in one session.",
+      "Verify identity: full legal name, current address, SSN, date of birth, and a few prior-address questions.",
+      "Download each PDF as soon as it loads. Do not just screenshot the on-screen view.",
+      "Save each file to Drive named: BUREAU_YYYY-MM-DD_Report.pdf (Equifax_2025-01-12_Report.pdf).",
+      "On page 1 of every PDF, highlight the official Report Number. You'll cite this verbatim in every dispute letter.",
+      "Highlight every disputable account: name, partial account number, date of last activity, balance, status.",
+      "List the personal info errors (wrong addresses, wrong employers, name spellings) on a separate page.",
+    ],
     usage:
       "Pull all three bureau reports (Equifax, Experian, TransUnion) the day you start a dispute round. What you need from this site: the official report number printed on each PDF, the exact account names and partial account numbers as the bureau lists them, and the dates of last activity. These are the identifiers you cite verbatim in every letter, so save each PDF to your Drive folder labeled with the bureau and date.",
     checklist: [
