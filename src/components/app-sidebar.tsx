@@ -122,11 +122,10 @@ export function AppSidebar() {
 
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
-  const STORAGE_KEY = "sidebar:groups:v1";
-  const ORDER_KEY = "sidebar:order:v1";
-  type GroupId = "playbook" | "phases" | "companion";
-  const DEFAULT_ORDER: GroupId[] = ["playbook", "phases", "companion"];
-  const [playbookOpen, setPlaybookOpen] = useState(true);
+  const STORAGE_KEY = "sidebar:groups:v2";
+  const ORDER_KEY = "sidebar:order:v2";
+  type GroupId = "companion" | "phases";
+  const DEFAULT_ORDER: GroupId[] = ["companion", "phases"];
   const [companionOpen, setCompanionOpen] = useState(true);
   const [phasesOpen, setPhasesOpen] = useState(true);
   const [order, setOrder] = useState<GroupId[]>(DEFAULT_ORDER);
