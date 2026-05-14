@@ -21,6 +21,8 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
 
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [hydrated, setHydrated] = useState(false);
+  const [milestoneOpen, setMilestoneOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
 
   // Load
   useEffect(() => {
