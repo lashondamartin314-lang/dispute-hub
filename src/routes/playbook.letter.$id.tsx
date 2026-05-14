@@ -609,6 +609,10 @@ function LetterDetail() {
             items={[
               { id: "open-template", label: "Open the template" },
               { id: "send-checklist", label: "Send checklist" },
+              { id: "who-where", label: "Who it's for" },
+              { id: "when-to-send", label: "When to send" },
+              { id: "rules", label: "Rules & watch-outs" },
+              { id: "what-happens-next", label: "What happens next" },
               { id: "related-phase", label: `${phase.name} phase` },
               ...(prevLetter || nextLetter ? [{ id: "continue", label: "Continue reading" }] : []),
             ]}
