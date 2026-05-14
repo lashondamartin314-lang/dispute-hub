@@ -143,6 +143,7 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
                     >
                       Open the site
                       <ArrowUpRight className="size-3.5" aria-hidden />
+                      <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
                     </a>
                     <button
                       type="button"
