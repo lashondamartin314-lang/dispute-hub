@@ -32,7 +32,7 @@ export const PHASES: Phase[] = [
       { title: "Categorize each account", description: "Open · Closed in good standing · Closed with damage · Collections · Public records · Inquiries." },
       { title: "Choose your route", description: "Validation-first, accuracy-first, or hybrid. The Account Router decides this for you." },
     ],
-    colorVar: "--phase-3",
+    colorVar: "--phase-1",
   },
   {
     id: "validate",
@@ -50,7 +50,7 @@ export const PHASES: Phase[] = [
       { title: "Wait the 30-day window", description: "Track the date received. No response by day 31 triggers L02." },
       { title: "Evaluate the response", description: "Inadequate paper triggers L03. Errors identified pivots to L04 and forward into Phase 4." },
     ],
-    colorVar: "--phase-5",
+    colorVar: "--phase-2",
   },
   {
     id: "clean-identity",
@@ -68,7 +68,7 @@ export const PHASES: Phase[] = [
       { title: "Escalate non-investigations (L07)", description: "If the bureau closes without investigating, cite §1681i and reopen." },
       { title: "Mixed-file or theft? L08 / L10", description: "Separate intermingled files and anchor SSN/DOB before continuing." },
     ],
-    colorVar: "--phase-1",
+    colorVar: "--phase-3",
   },
   {
     id: "dispute-bureaus",
@@ -86,7 +86,7 @@ export const PHASES: Phase[] = [
       { title: "Round 3 — Intent to file (L13)", description: "Formal notice that CFPB and State AG complaints are the next step." },
       { title: "Round 4 — Final notice (L14)", description: "Document everything for Phase 6 escalation. The paper trail is the case." },
     ],
-    colorVar: "--phase-2",
+    colorVar: "--phase-4",
   },
   {
     id: "challenge-furnishers",
@@ -104,7 +104,7 @@ export const PHASES: Phase[] = [
       { title: "Inconsistency attack (L16)", description: "Three bureaus, three versions. Use the gaps as your wedge." },
       { title: "Advanced & specialty (L17–L19)", description: "Charge-off violations, pay-for-delete, unauthorized inquiries." },
     ],
-    colorVar: "--phase-4",
+    colorVar: "--phase-5",
   },
   {
     id: "escalate",

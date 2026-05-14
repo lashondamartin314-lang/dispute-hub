@@ -151,12 +151,13 @@
   --brand-sky: #4FB3D9;
   --brand-sky-soft: #D9EEF7;
 
-  --phase-1: #D4A93C; --phase-1-soft: #F2E8C8; --phase-1-deep: #735C26;
-  --phase-2: #7BA8C3; --phase-2-soft: #DFE9F0; --phase-2-deep: #4A6B82;
-  --phase-3: #6E7F65; --phase-3-soft: #E5E9DF; --phase-3-deep: #4A5641;
-  --phase-4: #C25B89; --phase-4-soft: #EDD7E0; --phase-4-deep: #8B3D62;
-  --phase-5: #B97250; --phase-5-soft: #EDD8CC; --phase-5-deep: #7C4A30;
-  --phase-6: #8E3D45; --phase-6-soft: #E3CDD0; --phase-6-deep: #62292F;
+  /* Phase colors — locked per phase number, brighter saturation, expanded palette */
+  --phase-1: #F5B82E; --phase-1-soft: #FCE9B0; --phase-1-deep: #8A5A0F; /* marigold */
+  --phase-2: #2BB8B0; --phase-2-soft: #C4ECE9; --phase-2-deep: #14706A; /* turquoise */
+  --phase-3: #2E9E5C; --phase-3-soft: #C9EAD6; --phase-3-deep: #155F36; /* emerald */
+  --phase-4: #E9408C; --phase-4-soft: #F9D2E2; --phase-4-deep: #93215B; /* magenta-pink */
+  --phase-5: #7C3AED; --phase-5-soft: #DDD0FA; --phase-5-deep: #3F1A8A; /* violet */
+  --phase-6: #D7263D; --phase-6-soft: #F6CBD0; --phase-6-deep: #7C0F1E; /* crimson */
 
   /* Accent gradient stops — tweak these to retune every gradient accent across the app */
   --accent-grad-from: #F5C518;
