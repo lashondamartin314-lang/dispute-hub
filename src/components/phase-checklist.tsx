@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, RotateCcw, Trophy } from "lucide-react";
+import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
 import { PHASES, type Phase } from "@/data/phases";
 import { buildChecklist, CHECKLIST_STORAGE_PREFIX } from "@/lib/checklist";
