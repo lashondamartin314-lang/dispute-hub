@@ -15,16 +15,16 @@ export interface Resource {
 export const RESOURCES: Resource[] = [
   {
     id: "annualcreditreport",
-    label: "AnnualCreditReport.com",
-    description: "Official source for your free Equifax, Experian, and TransUnion reports.",
+    label: "Official Credit Reports",
+    description: "AnnualCreditReport.com, the only federally authorized source for your free Equifax, Experian, and TransUnion reports.",
     url: "https://www.annualcreditreport.com",
     category: "report",
     pinned: true,
   },
   {
     id: "smartcredit",
-    label: "SmartCredit",
-    description: "Daily 3-bureau monitoring with the easier-to-read report format we use throughout the Playbook.",
+    label: "Credit Report, Monitoring and Building Tools",
+    description: "SmartCredit gives you daily 3-bureau monitoring, the easier-to-read report format we use throughout the Playbook, plus credit-building tools.",
     url: "https://www.smartcredit.com",
     category: "report",
     pinned: true,
