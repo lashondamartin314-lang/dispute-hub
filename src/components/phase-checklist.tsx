@@ -79,23 +79,35 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
       fire(0.3, { origin: { x: 0.8, y: 0.7 }, angle: 120 });
       fire(0.4, { origin: { x: 0.5, y: 0.6 }, spread: 100 });
 
-      // Best-effort: persist a milestone badge to the user's profile.
-      // Silently no-ops if the user isn't signed in.
+      // Best-effort: persist a milestone badge + capture email for the prompt.
       (async () => {
         try {
           const { data } = await supabase.auth.getSession();
-          if (!data.session) return;
-          await awardPhaseBadge({
-            data: {
-              phaseId: phase.id,
-              phaseNumber: phase.number,
-              phaseName: phase.name,
-            },
-          });
+          if (data.session?.user?.email) setUserEmail(data.session.user.email);
+          if (data.session) {
+            await awardPhaseBadge({
+              data: {
+                phaseId: phase.id,
+                phaseNumber: phase.number,
+                phaseName: phase.name,
+              },
+            });
+          }
         } catch {
           /* ignore — badge will award next time the user completes/visits */
         }
       })();
+
+      // Open the milestone prompt unless the user already dismissed it for
+      // this phase on this device.
+      try {
+        const dismissed = window.localStorage.getItem(
+          `milestone-prompt-shown:${phase.id}`,
+        );
+        if (!dismissed) setMilestoneOpen(true);
+      } catch {
+        setMilestoneOpen(true);
+      }
     }
     prevPctRef.current = pct;
   }, [pct, hydrated, phase.colorVar, phase.id, phase.number, phase.name]);
