@@ -154,10 +154,10 @@
   /* Phase colors — locked per phase number, brighter saturation, expanded palette */
   --phase-1: #F5B82E; --phase-1-soft: #FCE9B0; --phase-1-deep: #8A5A0F; /* marigold */
   --phase-2: #2BB8B0; --phase-2-soft: #C4ECE9; --phase-2-deep: #14706A; /* turquoise */
-  --phase-3: #2E9E5C; --phase-3-soft: #C9EAD6; --phase-3-deep: #155F36; /* emerald */
+  --phase-3: #2563EB; --phase-3-soft: #D2DEFB; --phase-3-deep: #1B3FA8; /* cobalt blue */
   --phase-4: #E9408C; --phase-4-soft: #F9D2E2; --phase-4-deep: #93215B; /* magenta-pink */
   --phase-5: #7C3AED; --phase-5-soft: #DDD0FA; --phase-5-deep: #3F1A8A; /* violet */
-  --phase-6: #D7263D; --phase-6-soft: #F6CBD0; --phase-6-deep: #7C0F1E; /* crimson */
+  --phase-6: #F26B1A; --phase-6-soft: #FBD9C2; --phase-6-deep: #8A3508; /* orange */
 
   /* Accent gradient stops — tweak these to retune every gradient accent across the app */
   --accent-grad-from: #F5C518;
