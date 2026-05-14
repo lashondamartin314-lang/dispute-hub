@@ -56,6 +56,24 @@ export function SectionToc({
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  // Stable storage key per page so the last-focused section persists per route.
+  const storageKey = useMemo(() => {
+    if (typeof window === "undefined") return "toc:last:default";
+    return `toc:last:${window.location.pathname}`;
+  }, []);
+
+  // Detect prefers-reduced-motion (live).
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReducedMotion(mq.matches);
+    apply();
+    mq.addEventListener?.("change", apply);
+    return () => mq.removeEventListener?.("change", apply);
+  }, []);
 
   // Two refs because the same <ul> is rendered in both the desktop sidebar
   // and the mobile drawer. We track the focused item index per-instance via
@@ -65,6 +83,32 @@ export function SectionToc({
 
   // Track focus index for roving tabindex within whichever list is active.
   const [focusIdx, setFocusIdx] = useState<number>(0);
+
+  // Restore the last-focused section on mount and jump to it.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current || items.length === 0 || typeof window === "undefined") return;
+    restoredRef.current = true;
+    try {
+      const saved = window.sessionStorage.getItem(storageKey);
+      if (!saved || !items.some((i) => i.id === saved)) return;
+      // Don't override an explicit hash in the URL.
+      if (window.location.hash && window.location.hash.length > 1) return;
+      // Defer so layout settles before scrolling.
+      requestAnimationFrame(() => {
+        const target = document.getElementById(saved);
+        if (!target) return;
+        target.scrollIntoView({
+          behavior: reducedMotion ? "auto" : "smooth",
+          block: "start",
+        });
+        setActiveId(saved);
+      });
+    } catch {
+      /* ignore storage errors */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, storageKey]);
 
   useEffect(() => {
     if (typeof window === "undefined" || items.length === 0) return;
@@ -85,6 +129,43 @@ export function SectionToc({
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [items]);
+
+  // Persist the last-active section so we can restore it on return.
+  useEffect(() => {
+    if (typeof window === "undefined" || !activeId) return;
+    try {
+      window.sessionStorage.setItem(storageKey, activeId);
+    } catch {
+      /* ignore */
+    }
+  }, [activeId, storageKey]);
+
+  // Scroll-based progress through the playbook section (0 → 1).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let raf = 0;
+    const compute = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? window.scrollY / max : 0;
+      setProgress(Math.min(1, Math.max(0, ratio)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        raf = 0;
+        compute();
+      });
+    };
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", compute);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   const activeIdx = useMemo(
     () => Math.max(0, items.findIndex((i) => i.id === activeId)),
