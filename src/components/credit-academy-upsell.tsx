@@ -181,7 +181,7 @@ export function CreditAcademyUpsell({
                   ? "var(--brand-gold)"
                   : `color-mix(in oklab, ${t.accent} 28%, transparent)`,
                 background: t.highlight
-                  ? "linear-gradient(180deg, color-mix(in oklab, var(--brand-ink) 96%, transparent) 0%, color-mix(in oklab, var(--brand-magenta-deep) 30%, var(--brand-ink)) 100%)"
+                  ? "var(--gradient-brand)"
                   : "var(--card)",
                 color: t.highlight ? "var(--brand-cream)" : undefined,
               }}
