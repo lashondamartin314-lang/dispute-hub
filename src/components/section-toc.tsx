@@ -526,6 +526,7 @@ export function SectionToc({
               <Kbd>Enter</Kbd> to go, <Kbd>Esc</Kbd> to close.
             </DrawerDescription>
           </DrawerHeader>
+          {ProgressBar}
           {SkipBar}
           {renderList(drawerListRef, "drawer")}
           <DrawerClose asChild>
