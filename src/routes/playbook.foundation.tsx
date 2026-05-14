@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
 import { Ref } from "@/components/ref";
+import { SectionToc } from "@/components/section-toc";
+import { Squiggle } from "@/components/squiggle";
 import { PHASES } from "@/data/phases";
+
+const TOC = [
+  { id: "the-truth", label: "The truth about this process" },
+  { id: "phases-rounds", label: "Phases & Rounds" },
+];
 
 export const Route = createFileRoute("/playbook/foundation")({
   head: () => ({
