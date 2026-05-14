@@ -95,12 +95,12 @@
 :root {
   --radius: 1rem;
 
-  --background: #FAF6EE;
+  --background: #F5EFE0;
   --foreground: #14111A;
 
-  --card: #FFFCF5;
+  --card: #FFFFFF;
   --card-foreground: #14111A;
-  --popover: #FFFCF5;
+  --popover: #FFFFFF;
   --popover-foreground: #14111A;
 
   --primary: #00106F;
@@ -184,6 +184,8 @@
   --shadow-frame: 0 26px 70px -28px color-mix(in oklab, var(--brand-navy) 45%, transparent),
     0 0 0 1px color-mix(in oklab, var(--brand-navy) 10%, transparent) inset;
   --shadow-glow: 0 0 60px -10px color-mix(in oklab, var(--brand-magenta) 45%, transparent);
+  --shadow-card: 0 1px 0 color-mix(in oklab, var(--brand-ink) 4%, transparent),
+    0 4px 14px -8px color-mix(in oklab, var(--brand-navy) 22%, transparent);
 }
 
 .dark {
@@ -228,6 +230,7 @@
 @utility shadow-elegant { box-shadow: var(--shadow-elegant); }
 @utility shadow-frame { box-shadow: var(--shadow-frame); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
+@utility shadow-card { box-shadow: var(--shadow-card); }
 @utility font-display { font-family: var(--font-display); }
 @utility font-editorial { font-family: var(--font-editorial); font-style: italic; }
 @utility font-script { font-family: var(--font-script); }
