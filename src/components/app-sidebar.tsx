@@ -9,6 +9,7 @@ import {
   Sparkles,
   ArrowUpRight,
   ClipboardList,
+  ScanSearch,
 } from "lucide-react";
 import {
   Sidebar,
