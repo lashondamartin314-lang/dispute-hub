@@ -30,7 +30,7 @@ function FoundationPage() {
           eyebrow="Before you start · The truth"
           numeral="i"
           numeralColor="var(--brand-magenta)"
-          title={<>The truth <em className="font-editorial text-accent-grad">about</em> this process.</>}
+          title={<>The truth about this <em className="font-editorial text-accent-grad">process</em>.</>}
           lede="Understand this upfront and you will finish the journey while others quit halfway. This is the most important page in the kit."
         />
         <Squiggle variant="underline" color="var(--brand-magenta)" />
