@@ -92,7 +92,6 @@ function HubPage() {
           </Link>
         </div>
 
-        <div className="relative">
         <Accordion type="multiple" className="relative z-10 flex flex-col gap-4">
           {PHASES.map((p) => {
             const letters = lettersForPhase(p.id);
