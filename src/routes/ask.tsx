@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { submitQuestion } from "@/lib/questions.functions";
-import shondaPhoto from "@/assets/shonda.png";
+import { SHONDA_AVATAR } from "@/data/branding";
 
 export const Route = createFileRoute("/ask")({
   head: () => ({
@@ -102,8 +102,8 @@ function AskPage() {
     <div className="mx-auto max-w-2xl px-6 py-16 md:px-10 md:py-24">
       <header className="mb-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         <img
-          src={shondaPhoto}
-          alt="Shonda Martin"
+          src={SHONDA_AVATAR.src}
+          alt={SHONDA_AVATAR.alt}
           className="size-20 shrink-0 rounded-full object-cover ring-2 ring-[color:var(--brand-gold)] ring-offset-2 ring-offset-background sm:size-24"
         />
         <div>
