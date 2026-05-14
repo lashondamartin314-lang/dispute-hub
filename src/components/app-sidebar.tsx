@@ -116,7 +116,8 @@ export function AppSidebar() {
   const companionHasActive =
     pathname.startsWith("/tracker") ||
     pathname.startsWith("/decoder") ||
-    pathname.startsWith("/resources");
+    pathname.startsWith("/resources") ||
+    pathname.startsWith("/progress");
 
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
