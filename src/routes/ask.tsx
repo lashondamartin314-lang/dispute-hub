@@ -99,17 +99,24 @@ function AskPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16 md:px-10 md:py-24">
-      <header className="mb-10">
-        <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--brand-gold-deep)]">
-          Ask Shonda
-        </p>
-        <h1 className="font-display mt-2 text-4xl font-bold leading-tight md:text-5xl">
-          Submit a question to Shonda.
-        </h1>
-        <p className="mt-3 max-w-prose text-base leading-relaxed text-foreground/80 md:text-lg">
-          Stuck on a letter, a bureau response, or a furnisher tactic? Send the details below.
-          Shonda reviews submissions weekly and answers in the monthly Q&amp;A or directly by email.
-        </p>
+      <header className="mb-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+        <img
+          src={shondaPhoto}
+          alt="Shonda Martin"
+          className="size-20 shrink-0 rounded-full object-cover ring-2 ring-[color:var(--brand-gold)] ring-offset-2 ring-offset-background sm:size-24"
+        />
+        <div>
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-[color:var(--brand-gold-deep)]">
+            Ask Shonda
+          </p>
+          <h1 className="font-display mt-2 text-4xl font-bold leading-tight md:text-5xl">
+            Submit a question to Shonda.
+          </h1>
+          <p className="mt-3 max-w-prose text-base leading-relaxed text-foreground/80 md:text-lg">
+            Stuck on a letter, a bureau response, or a furnisher tactic? Send the details below.
+            Shonda reviews submissions weekly and answers in the monthly Q&amp;A or directly by email.
+          </p>
+        </div>
       </header>
 
       {done ? (
