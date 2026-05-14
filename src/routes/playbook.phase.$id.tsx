@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, XCircle, Lightbulb, Spar
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
 import { SectionToc } from "@/components/section-toc";
+import { PhaseChecklist } from "@/components/phase-checklist";
+import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
 import { PHASES, PHASES_BY_ID } from "@/data/phases";
 import { lettersForPhase, LETTERS_BY_ID } from "@/data/letters";
 import type { PhaseId } from "@/data/letters";
@@ -74,6 +76,8 @@ function PhasePage() {
               ))}
             </ol>
           </section>
+
+          <PhaseChecklist phase={phase} />
 
           {phase.teaching && (
             <section id="teach" className="scroll-mt-24">
@@ -220,6 +224,8 @@ function PhasePage() {
               </div>
             </section>
           )}
+
+          <CreditAcademyUpsell accentColor={`var(${phase.colorVar}-deep)`} />
         </div>
 
         <aside className="hidden xl:block">
@@ -228,10 +234,12 @@ function PhasePage() {
             accentColor={`var(${phase.colorVar}-deep)`}
             items={[
               { id: "the-work", label: "The work" },
+              { id: "checklist", label: "Phase checklist" },
               ...(phase.teaching ? [{ id: "teach", label: "Teach me" }] : []),
               ...(phase.teaching?.modules.map((m, i) => ({ id: `module-${i + 1}`, label: m.title })) ?? []),
               ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
               ...letters.map((l) => ({ id: l.id, label: `${l.id} · ${LETTERS_BY_ID[l.id].title}` })),
+              { id: "academy", label: "Credit Academy" },
             ]}
           />
         </aside>

@@ -3,6 +3,7 @@ import { ArrowRight, Bookmark } from "lucide-react";
 import { useLastLetter } from "@/hooks/use-last-letter";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
+import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
 
 export const Route = createFileRoute("/playbook/")({
   head: () => ({
@@ -127,6 +128,10 @@ function PlaybookCover() {
           <span>Board-Certified Credit Educator</span><span className="opacity-30">·</span>
           <span>Edition 2026</span>
         </div>
+      </section>
+
+      <section className="relative mx-auto max-w-5xl px-6 pb-24 md:pb-32">
+        <CreditAcademyUpsell variant="compact" />
       </section>
     </div>
   );
