@@ -168,7 +168,19 @@ export const RESOURCES: Resource[] = [
     description: "Federal Trade Commission complaint intake.",
     url: "https://reportfraud.ftc.gov/",
     category: "complaint",
+    actionLabel: "Report Collector Misconduct to the FTC",
     rounds: [4, 5],
+    playbookRef: { label: "Phase 6 · Escalate", href: "/playbook/phase/escalate" },
+    steps: [
+      "Document every collector call: date, time, phone number, what was said. A spreadsheet works.",
+      "Save every voicemail, text, and email from the collector to your Drive evidence folder.",
+      "Identify the specific FDCPA violation (calls before 8am or after 9pm, third-party disclosure, threats, false amount).",
+      "Go to reportfraud.ftc.gov and click 'Report Now'.",
+      "Choose 'Debt collection' as the category.",
+      "Enter the collector's company name, address, and phone number.",
+      "Paste your factual summary and reference your CFPB case number if you already filed one.",
+      "Submit and save the FTC confirmation page screenshot to Drive — you'll attach this to your State AG complaint next.",
+    ],
     usage:
       "File here for collector misconduct that is not strictly identity theft: harassment, calling outside legal hours, refusing to validate a debt, or misrepresenting the amount owed. The FTC does not resolve your individual case, but the report becomes evidence and supports any state Attorney General complaint you file in parallel.",
     checklist: [
