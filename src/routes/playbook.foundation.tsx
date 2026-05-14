@@ -24,8 +24,7 @@ export const Route = createFileRoute("/playbook/foundation")({
 function FoundationPage() {
   return (
     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 md:px-10 md:py-24 xl:grid-cols-[minmax(0,1fr)_220px]">
-      <div className="max-w-3xl space-y-24 xl:order-1">
-      <SectionToc items={TOC} className="xl:order-2" />
+      <div className="max-w-3xl space-y-24">
       <section id="the-truth" className="scroll-mt-24 space-y-10">
         <EditorialHeader
           eyebrow="Before you start · The truth"
