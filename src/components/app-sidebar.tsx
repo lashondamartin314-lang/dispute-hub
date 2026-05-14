@@ -47,25 +47,25 @@ const phaseIcon = {
   escalate: BookOpen,
 } as const;
 
-// Active-state classes used on every menu/sub-button so the currently-rendered
-// page is unmistakable inside the mobile sheet (and remains clear on desktop).
+// Pearl-pill aesthetic: every nav row is a soft white pill with an inner
+// hairline, lifting on hover. Active uses a magenta-tinted shadow and a
+// magenta dot accent, signaling "you are here" without color noise.
+const PILL_BASE =
+  "rounded-2xl px-4 py-3 bg-white/40 border border-white/70 shadow-[inset_0_1px_2px_rgba(255,255,255,0.6)] " +
+  "transition-all duration-300 ease-out " +
+  "hover:bg-white hover:border-white hover:shadow-[0_8px_18px_-6px_rgba(12,19,64,0.10),inset_0_1px_2px_rgba(255,255,255,0.85)] " +
+  "hover:-translate-y-px";
+
 const ACTIVE_CLS =
-  "data-[active=true]:bg-[color:var(--brand-gold)]/20 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-sm";
+  PILL_BASE +
+  " data-[active=true]:bg-white data-[active=true]:border-[color:var(--brand-magenta)]/35 " +
+  "data-[active=true]:shadow-[0_12px_24px_-8px_rgba(241,0,133,0.28),inset_0_1px_2px_rgba(255,255,255,1)] " +
+  "data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold";
 
-// Phase rows get a slightly stronger active wash so the selected phase reads
-// at the same visual weight as the hover state (gold bar + tint + nudge).
-const PHASE_ACTIVE_CLS =
-  "data-[active=true]:bg-[color:var(--brand-gold)]/25 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-md data-[active=true]:translate-x-0.5";
+const PHASE_ACTIVE_CLS = ACTIVE_CLS + " data-[active=true]:scale-[1.015]";
 
-// Pronounced hover treatment shared across menu items: subtle gold wash,
-// gentle slide, and a soft shadow lift so the cursor target is unmistakable.
-const HOVER_CLS =
-  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/20 hover:text-foreground hover:translate-x-0.5 hover:shadow-sm";
-
-// Stronger hover for phase rows: adds a gold accent bar on the left edge so
-// phases feel like primary navigation targets.
-const PHASE_HOVER_CLS =
-  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/25 hover:text-foreground hover:translate-x-1 hover:shadow-md hover:border-l-4 hover:border-[color:var(--brand-gold-deep)] hover:rounded-l-none hover:pl-3";
+const HOVER_CLS = "";
+const PHASE_HOVER_CLS = "";
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
