@@ -16,13 +16,9 @@ export const Route = createFileRoute("/resources")({
 const CATEGORIES = [
   {
     id: "report" as const,
-    label: "Pull your credit report",
-    blurb: "The only federally authorized site for your free Equifax, Experian, and TransUnion reports.",
-  },
-  {
-    id: "monitoring" as const,
-    label: "Credit monitoring",
-    blurb: "Track score changes, new accounts, and inquiries across all three bureaus daily.",
+    label: "Get your credit reports",
+    blurb:
+      "Pull from both — AnnualCreditReport.com is the only federally authorized source for your free Equifax, Experian, and TransUnion files (use it once you're ready to dispute, since it gives you the official report numbers). SmartCredit is the daily 3-bureau monitor we use throughout the Playbook because its report format is far easier to read and it surfaces changes the moment they hit your file.",
   },
   {
     id: "kit" as const,
