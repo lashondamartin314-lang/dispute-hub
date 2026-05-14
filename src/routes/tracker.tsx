@@ -552,13 +552,38 @@ function TrackerPage() {
             <Button onClick={openAdd} size="lg" className="rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
               <Plus className="size-4" /> Log a letter
             </Button>
+            <Button onClick={triggerImport} variant="outline" size="lg" className="rounded-full">
+              <Upload className="size-4" /> Import CSV
+            </Button>
             <Button onClick={exportCsv} variant="outline" size="lg" className="rounded-full" disabled={entries.length === 0}>
               <Download className="size-4" /> Export CSV
             </Button>
+            {notifPerm !== "granted" && notifPerm !== "unsupported" && (
+              <Button
+                onClick={requestNotifications}
+                variant="outline"
+                size="lg"
+                className="rounded-full border-[color:var(--brand-gold)] text-[color:var(--brand-gold-deep)] hover:bg-[color:var(--brand-gold)]/10"
+              >
+                <BellRing className="size-4" /> Turn on reminders
+              </Button>
+            )}
             <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:border-[color:var(--brand-gold)]">
               Browse letter library <ExternalLink className="size-3.5" />
             </Link>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={handleImportFile}
+            />
           </div>
+          {notifPerm === "granted" && (
+            <p className="mt-3 inline-flex items-center gap-2 text-xs text-[color:var(--brand-emerald,#2f7a4f)]">
+              <BellRing className="size-3.5" /> Reminders are on for this device. We'll alert you the moment a "Next action due" date passes.
+            </p>
+          )}
         </div>
       </section>
 
@@ -569,7 +594,7 @@ function TrackerPage() {
           <StatCard icon={<Clock className="size-4" />} label="Awaiting" value={stats.pending} tint="var(--brand-gold-deep)" />
           <StatCard icon={<Mail className="size-4" />} label="Delivered" value={stats.delivered} tint="var(--brand-violet)" />
           <StatCard icon={<CheckCircle2 className="size-4" />} label="Wins" value={stats.wins} tint="var(--brand-emerald, #2f7a4f)" />
-          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue >30d" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
+          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
         </div>
       </section>
 
