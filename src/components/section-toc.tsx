@@ -56,6 +56,24 @@ export function SectionToc({
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  // Stable storage key per page so the last-focused section persists per route.
+  const storageKey = useMemo(() => {
+    if (typeof window === "undefined") return "toc:last:default";
+    return `toc:last:${window.location.pathname}`;
+  }, []);
+
+  // Detect prefers-reduced-motion (live).
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReducedMotion(mq.matches);
+    apply();
+    mq.addEventListener?.("change", apply);
+    return () => mq.removeEventListener?.("change", apply);
+  }, []);
 
   // Two refs because the same <ul> is rendered in both the desktop sidebar
   // and the mobile drawer. We track the focused item index per-instance via
@@ -65,6 +83,32 @@ export function SectionToc({
 
   // Track focus index for roving tabindex within whichever list is active.
   const [focusIdx, setFocusIdx] = useState<number>(0);
+
+  // Restore the last-focused section on mount and jump to it.
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (restoredRef.current || items.length === 0 || typeof window === "undefined") return;
+    restoredRef.current = true;
+    try {
+      const saved = window.sessionStorage.getItem(storageKey);
+      if (!saved || !items.some((i) => i.id === saved)) return;
+      // Don't override an explicit hash in the URL.
+      if (window.location.hash && window.location.hash.length > 1) return;
+      // Defer so layout settles before scrolling.
+      requestAnimationFrame(() => {
+        const target = document.getElementById(saved);
+        if (!target) return;
+        target.scrollIntoView({
+          behavior: reducedMotion ? "auto" : "smooth",
+          block: "start",
+        });
+        setActiveId(saved);
+      });
+    } catch {
+      /* ignore storage errors */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, storageKey]);
 
   useEffect(() => {
     if (typeof window === "undefined" || items.length === 0) return;
@@ -86,6 +130,43 @@ export function SectionToc({
     return () => observer.disconnect();
   }, [items]);
 
+  // Persist the last-active section so we can restore it on return.
+  useEffect(() => {
+    if (typeof window === "undefined" || !activeId) return;
+    try {
+      window.sessionStorage.setItem(storageKey, activeId);
+    } catch {
+      /* ignore */
+    }
+  }, [activeId, storageKey]);
+
+  // Scroll-based progress through the playbook section (0 → 1).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let raf = 0;
+    const compute = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? window.scrollY / max : 0;
+      setProgress(Math.min(1, Math.max(0, ratio)));
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(() => {
+        raf = 0;
+        compute();
+      });
+    };
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", compute);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", compute);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
   const activeIdx = useMemo(
     () => Math.max(0, items.findIndex((i) => i.id === activeId)),
     [items, activeId],
@@ -101,8 +182,16 @@ export function SectionToc({
     (id: string, opts?: { focusHeading?: boolean }) => {
       const target = document.getElementById(id);
       if (!target) return;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
       history.replaceState(null, "", `#${id}`);
+      try {
+        window.sessionStorage.setItem(storageKey, id);
+      } catch {
+        /* ignore */
+      }
       // Move keyboard focus to the section heading when requested
       // so screen-reader / keyboard users land in the new context.
       if (opts?.focusHeading) {
@@ -119,7 +208,7 @@ export function SectionToc({
         heading.addEventListener("blur", cleanup);
       }
     },
-    [],
+    [reducedMotion, storageKey],
   );
 
   const jumpByDelta = useCallback(
@@ -285,7 +374,10 @@ export function SectionToc({
               <span
                 key={`rail-${instance}-${item.id}`}
                 aria-hidden
-                className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full animate-toc-rail"
+                className={cn(
+                  "absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full",
+                  !reducedMotion && "animate-toc-rail",
+                )}
                 style={{
                   background: accentColor,
                   boxShadow: `0 0 0 2px color-mix(in oklab, ${accentColor} 18%, transparent)`,
@@ -306,11 +398,18 @@ export function SectionToc({
               onFocus={() => setFocusIdx(i)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none transition-all duration-300",
+                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none",
+                !reducedMotion && "transition-all duration-300",
                 "focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                 active
-                  ? "pl-3 font-semibold text-[color:var(--brand-ink)] animate-toc-pill"
-                  : "pl-2 text-foreground/60 hover:translate-x-0.5 hover:text-foreground",
+                  ? cn(
+                      "pl-3 font-semibold text-[color:var(--brand-ink)]",
+                      !reducedMotion && "animate-toc-pill",
+                    )
+                  : cn(
+                      "pl-2 text-foreground/60 hover:text-foreground",
+                      !reducedMotion && "hover:translate-x-0.5",
+                    ),
               )}
               style={
                 {
@@ -323,7 +422,8 @@ export function SectionToc({
             >
               <span
                 className={cn(
-                  "font-mono text-[10px] tabular-nums transition-colors",
+                  "font-mono text-[10px] tabular-nums",
+                  !reducedMotion && "transition-colors",
                   active ? "text-[color:var(--brand-ink)]/70" : "text-muted-foreground/60",
                 )}
               >
@@ -333,7 +433,10 @@ export function SectionToc({
               {active && (
                 <span
                   aria-hidden
-                  className="size-1.5 shrink-0 rounded-full animate-toc-dot"
+                  className={cn(
+                    "size-1.5 shrink-0 rounded-full",
+                    !reducedMotion && "animate-toc-dot",
+                  )}
                   style={{ background: accentColor }}
                 />
               )}
@@ -342,6 +445,31 @@ export function SectionToc({
         );
       })}
     </ul>
+  );
+
+  const ProgressBar = (
+    <div
+      className="mb-3"
+      role="progressbar"
+      aria-label="Reading progress"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(progress * 100)}
+    >
+      <div className="mb-1 flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
+        <span>Progress</span>
+        <span style={{ color: accentColor }}>{Math.round(progress * 100)}%</span>
+      </div>
+      <div
+        className="h-1 overflow-hidden rounded-full"
+        style={{ background: `color-mix(in oklab, ${accentColor} 12%, transparent)` }}
+      >
+        <div
+          className={cn("h-full rounded-full", !reducedMotion && "transition-[width] duration-200 ease-out")}
+          style={{ width: `${progress * 100}%`, background: accentColor }}
+        />
+      </div>
+    </div>
   );
 
   return (
@@ -364,6 +492,7 @@ export function SectionToc({
             <Keyboard className="size-3" aria-hidden /> keys
           </button>
         </div>
+        {ProgressBar}
         {SkipBar}
         {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
         {renderList(desktopListRef, "desktop")}
@@ -397,6 +526,7 @@ export function SectionToc({
               <Kbd>Enter</Kbd> to go, <Kbd>Esc</Kbd> to close.
             </DrawerDescription>
           </DrawerHeader>
+          {ProgressBar}
           {SkipBar}
           {renderList(drawerListRef, "drawer")}
           <DrawerClose asChild>
