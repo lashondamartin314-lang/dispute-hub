@@ -54,9 +54,9 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
-        <SidebarGroup>
-          <SidebarGroupLabel className="eyebrow text-[10px]">Companion</SidebarGroupLabel>
+      <SidebarContent className="gap-0 px-2 py-2">
+        <SidebarGroup className="px-2 py-3">
+          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Companion</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -88,8 +88,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="eyebrow text-[10px]">Phases</SidebarGroupLabel>
+        <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
+          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Phases</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {PHASES.map((p) => {
@@ -128,8 +128,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel className="eyebrow text-[10px]">Quick access</SidebarGroupLabel>
+        <SidebarGroup className="mt-auto border-t border-sidebar-border/60 px-2 py-3">
+          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Quick access</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {PINNED_RESOURCES.map((r) => (
