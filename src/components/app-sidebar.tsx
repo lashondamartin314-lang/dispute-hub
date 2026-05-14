@@ -264,6 +264,7 @@ export function AppSidebar() {
       collapsible="icon"
       className="border-r border-sidebar-border"
       style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+      data-lenis-prevent
     >
       <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <Link
