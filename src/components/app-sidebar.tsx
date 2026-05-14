@@ -87,6 +87,11 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/decoder")}>
+                  <Link to="/decoder"><ScanSearch className="size-4" /> Response decoder</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/resources")}>
                   <Link to="/resources"><Sparkles className="size-4" /> Resources</Link>
                 </SidebarMenuButton>
