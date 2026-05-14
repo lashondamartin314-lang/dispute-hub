@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
+import { MobileCollapsible } from "@/components/mobile-collapsible";
 import { PhaseCard } from "@/components/phase-card";
 import { Ref } from "@/components/ref";
 import { SectionToc } from "@/components/section-toc";
@@ -25,7 +26,14 @@ function FoundationPage() {
   return (
     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 md:px-10 md:py-24 xl:grid-cols-[minmax(0,1fr)_220px]">
       <div className="max-w-3xl space-y-24">
-      <section id="the-truth" className="scroll-mt-24 space-y-10">
+      <MobileCollapsible
+        id="the-truth"
+        eyebrow="Before you start"
+        title="The truth about this process"
+        accentColor="var(--brand-magenta-deep)"
+        defaultOpen
+      >
+        <div className="space-y-10">
         <EditorialHeader
           eyebrow="Before you start · The truth"
           numeral="i"
@@ -67,9 +75,16 @@ function FoundationPage() {
           <span className="absolute -top-3 left-6 font-display text-6xl text-[color:var(--brand-gold)] leading-none">“</span>
           Credit repair is <span className="text-[color:var(--brand-gold)]">progress through correction</span>, not just removal.
         </blockquote>
-      </section>
+        </div>
+      </MobileCollapsible>
 
-      <section id="phases-rounds" className="space-y-8 scroll-mt-20">
+      <MobileCollapsible
+        id="phases-rounds"
+        eyebrow="Foundation"
+        title="Phases & Rounds"
+        accentColor="var(--brand-gold-deep)"
+      >
+        <div className="space-y-8">
         <EditorialHeader
           eyebrow="Foundation · Read this first"
           title={<>Phases <em className="font-editorial text-accent-grad">{"&"}</em> Rounds.</>}
@@ -102,7 +117,8 @@ function FoundationPage() {
             />
           ))}
         </div>
-      </section>
+        </div>
+      </MobileCollapsible>
       </div>
       <SectionToc items={TOC} />
     </div>
