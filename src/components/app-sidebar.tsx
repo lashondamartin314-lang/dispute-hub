@@ -300,13 +300,16 @@ export function AppSidebar() {
                           const active = isPhaseActive(p.id);
                           return (
                             <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={`${PHASE_ACTIVE_CLS} ${PHASE_HOVER_CLS}`}>
+                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={PHASE_ACTIVE_CLS}>
                                 <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
-                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                                  <span className="truncate">
-                                    <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
-                                    {p.name}
+                                  <span
+                                    className="mr-1 inline-flex h-6 min-w-[1.75rem] items-center justify-center rounded-lg border border-white bg-white/90 px-1.5 font-mono text-[10px] font-bold shadow-sm"
+                                    style={{ color: `var(${p.colorVar}-deep)` }}
+                                  >
+                                    P{p.number}
                                   </span>
+                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
+                                  <span className="truncate">{p.name}</span>
                                 </Link>
                               </SidebarMenuButton>
                               {active && letters.length > 0 && (
@@ -318,7 +321,7 @@ export function AppSidebar() {
                                         <SidebarMenuSubButton
                                           asChild
                                           isActive={lActive}
-                                          className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
+                                          className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
                                           aria-current={lActive ? "page" : undefined}
                                         >
                                           <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
