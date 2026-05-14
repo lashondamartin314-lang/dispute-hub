@@ -1,4 +1,5 @@
-import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library } from "lucide-react";
 import {
   Breadcrumb,
@@ -8,10 +9,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EditorialHeader } from "@/components/editorial-header";
 import { SectionToc } from "@/components/section-toc";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
+import { rememberLetter } from "@/hooks/use-last-letter";
 
 const ALL_IDS = LETTERS.map((l) => l.id) as LetterId[];
 
