@@ -262,8 +262,8 @@ export function CreditAcademyUpsell({
                 )}
                 style={
                   {
-                    background: t.highlight ? "var(--gradient-brand)" : t.accent,
-                    color: t.highlight ? "var(--brand-cream)" : "var(--brand-cream)",
+                    background: t.highlight ? "var(--brand-gold)" : t.accent,
+                    color: t.highlight ? "var(--brand-ink)" : "var(--brand-cream)",
                     ["--tw-ring-color" as string]: t.highlight ? "var(--brand-gold)" : t.accent,
                   } as React.CSSProperties
                 }
