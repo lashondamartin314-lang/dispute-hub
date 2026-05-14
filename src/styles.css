@@ -267,7 +267,7 @@
   background-clip: text;
   color: transparent;
   font-style: italic;
-  font-weight: 700;
+  font-weight: inherit;
 }
 
 @utility hairline {
