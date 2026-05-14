@@ -24,9 +24,9 @@ export const RESOURCES: Resource[] = [
   {
     id: "smartcredit",
     label: "SmartCredit",
-    description: "Daily 3-bureau monitoring + the easier report format we recommend.",
+    description: "Daily 3-bureau monitoring with the easier-to-read report format we use throughout the Playbook.",
     url: "https://www.smartcredit.com",
-    category: "monitoring",
+    category: "report",
     pinned: true,
   },
   {
