@@ -65,6 +65,19 @@ export function AppSidebar() {
     wasOpenRef.current = openMobile;
   }, [openMobile, isMobile]);
 
+  // When the mobile sheet opens, auto-scroll the active phase/letter sublink
+  // into view so the user instantly sees where they are.
+  useEffect(() => {
+    if (!isMobile || !openMobile) return;
+    // Wait for sheet content to mount and animate in.
+    const t = window.setTimeout(() => {
+      const sheet = document.querySelector<HTMLElement>('[data-mobile="true"][data-sidebar="sidebar"]');
+      const target = sheet?.querySelector<HTMLElement>('[data-active-scroll="true"]');
+      target?.scrollIntoView({ block: "center", behavior: "auto" });
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, [isMobile, openMobile, pathname]);
+
   const closeMobile = () => {
     if (isMobile) setOpenMobile(false);
   };
