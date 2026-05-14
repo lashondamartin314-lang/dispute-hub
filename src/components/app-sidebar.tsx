@@ -136,15 +136,13 @@ export function AppSidebar() {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const saved = JSON.parse(raw) as Partial<{ playbook: boolean; companion: boolean; phases: boolean }>;
-        if (typeof saved.playbook === "boolean") setPlaybookOpen(saved.playbook);
+        const saved = JSON.parse(raw) as Partial<{ companion: boolean; phases: boolean }>;
         if (typeof saved.companion === "boolean") setCompanionOpen(saved.companion);
         if (typeof saved.phases === "boolean") setPhasesOpen(saved.phases);
       }
       const rawOrder = window.localStorage.getItem(ORDER_KEY);
       if (rawOrder) {
         const parsed = JSON.parse(rawOrder) as GroupId[];
-        // Validate: every default id present exactly once.
         if (
           Array.isArray(parsed) &&
           parsed.length === DEFAULT_ORDER.length &&
@@ -164,12 +162,12 @@ export function AppSidebar() {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ playbook: playbookOpen, companion: companionOpen, phases: phasesOpen }),
+        JSON.stringify({ companion: companionOpen, phases: phasesOpen }),
       );
     } catch {
       /* ignore */
     }
-  }, [hydrated, playbookOpen, companionOpen, phasesOpen]);
+  }, [hydrated, companionOpen, phasesOpen]);
 
   useEffect(() => {
     if (!hydrated || typeof window === "undefined") return;
@@ -180,10 +178,9 @@ export function AppSidebar() {
     }
   }, [hydrated, order]);
 
-  // Auto-expand the group containing the active route (overrides saved state
-  // only when navigating into a collapsed group, so users always see context).
+  // Auto-expand the group containing the active route.
   useEffect(() => {
-    if (playbookHasActive) setPlaybookOpen(true);
+    if (playbookHasActive) setPhasesOpen(true);
     if (companionHasActive) setCompanionOpen(true);
   }, [playbookHasActive, companionHasActive]);
 
