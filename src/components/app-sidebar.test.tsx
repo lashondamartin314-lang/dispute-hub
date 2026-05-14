@@ -1,0 +1,88 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import * as React from "react";
+
+// Mock TanStack Router so AppSidebar can render outside a real router tree.
+// `Link` becomes a plain anchor that still fires onClick (which the sidebar
+// uses to close the mobile sheet). `useRouterState` returns the home path so
+// no group is auto-active.
+vi.mock("@tanstack/react-router", () => {
+  return {
+    Link: React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }>(
+      ({ to, children, onClick, ...rest }, ref) => (
+        <a ref={ref} href={typeof to === "string" ? to : "#"} onClick={onClick} {...rest}>
+          {children}
+        </a>
+      ),
+    ),
+    useRouterState: () => "/",
+  };
+});
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+
+function Harness() {
+  return (
+    <SidebarProvider defaultOpen={false}>
+      <SidebarTrigger data-testid="trigger" />
+      <AppSidebar />
+    </SidebarProvider>
+  );
+}
+
+async function openSheet(user: ReturnType<typeof userEvent.setup>) {
+  const trigger = screen.getByTestId("trigger");
+  await user.click(trigger);
+  // The mobile sheet is rendered into a Radix portal — wait for any link.
+  await screen.findByRole("link", { name: /cover/i });
+  return trigger;
+}
+
+describe("AppSidebar mobile sheet", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  it("closes the sheet and returns focus to the trigger when an internal link is tapped", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    const trigger = await openSheet(user);
+
+    const coverLink = screen.getByRole("link", { name: /cover/i });
+    await user.click(coverLink);
+
+    // useEffect → requestAnimationFrame hop, give the browser a frame.
+    await act(async () => {
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+    });
+
+    // Sheet should have unmounted (Cover link gone) and focus should be on trigger.
+    expect(screen.queryByRole("link", { name: /cover/i })).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it("closes the sheet and returns focus to the trigger when an external companion link is tapped", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    const trigger = await openSheet(user);
+
+    // External companion links live in the Companion tools group as <a target="_blank">.
+    // Match by an external-link label (e.g. "AnnualCreditReport.com").
+    const externalLink = screen.getByRole("link", { name: /annualcreditreport/i });
+    expect(externalLink).toHaveAttribute("target", "_blank");
+    expect(externalLink).toHaveAttribute("rel", expect.stringContaining("noopener"));
+
+    await user.click(externalLink);
+
+    await act(async () => {
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+    });
+
+    expect(screen.queryByRole("link", { name: /annualcreditreport/i })).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(trigger);
+  });
+});
