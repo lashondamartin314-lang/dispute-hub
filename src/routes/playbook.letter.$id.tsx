@@ -81,7 +81,53 @@ function LetterDetail() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="mt-8">
+
+          <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: `var(${phase.colorVar}-deep)` }}>
+              Letter <span className="text-[color:var(--brand-ink)]">{idxInPhase + 1}</span> of {phaseLetters.length} · {phase.name}
+            </p>
+            <div className="flex items-center gap-1.5" aria-hidden>
+              {phaseLetters.map((l, i) => {
+                const isCurrent = l.id === letter.id;
+                const isPast = i < idxInPhase;
+                return (
+                  <Link
+                    key={l.id}
+                    to="/playbook/letter/$id"
+                    params={{ id: l.id }}
+                    aria-label={`${l.id}: ${l.title}`}
+                    title={`${l.id} · ${l.title}`}
+                    className="group/dot relative h-2.5 flex-1 sm:w-10 sm:flex-none rounded-full transition-all hover:scale-y-150"
+                    style={{
+                      background: isCurrent || isPast
+                        ? `var(${phase.colorVar}${isCurrent ? "-deep" : ""})`
+                        : `color-mix(in oklab, var(${phase.colorVar}) 18%, var(--muted))`,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          <div
+            className="mt-4 h-1.5 overflow-hidden rounded-full"
+            style={{ background: `color-mix(in oklab, var(${phase.colorVar}) 14%, var(--muted))` }}
+            role="progressbar"
+            aria-valuenow={idxInPhase + 1}
+            aria-valuemin={1}
+            aria-valuemax={phaseLetters.length}
+            aria-label={`Letter ${idxInPhase + 1} of ${phaseLetters.length} in ${phase.name}`}
+          >
+            <div
+              className="h-full rounded-full transition-[width] duration-500"
+              style={{
+                width: `${((idxInPhase + 1) / phaseLetters.length) * 100}%`,
+                background: `linear-gradient(90deg, var(${phase.colorVar}), var(${phase.colorVar}-deep))`,
+              }}
+            />
+          </div>
+
+          <div className="mt-10">
             <EditorialHeader
               eyebrow={`${phase.eyebrow} · Letter ${letter.id}`}
               numeral={letter.id.replace("L", "")}
