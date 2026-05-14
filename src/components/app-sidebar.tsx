@@ -262,10 +262,10 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-none bg-transparent p-3"
+      className="border-r border-sidebar-border"
       style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
     >
-      <SidebarHeader className="rounded-t-3xl border-b border-sidebar-border/70 bg-[color:var(--sidebar)] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+      <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <Link
           to="/"
           onClick={closeMobile}
@@ -276,7 +276,7 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="gap-0 bg-[color:var(--sidebar)] px-3 py-3 shadow-[0_30px_60px_-24px_rgba(12,19,64,0.18)]">
+      <SidebarContent className="gap-0 px-3 py-3">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
             phases: (
