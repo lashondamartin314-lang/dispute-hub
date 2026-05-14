@@ -269,17 +269,17 @@ export function AppSidebar() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
-                      <Link to="/tracker" onClick={closeMobile}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                      <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
-                      <Link to="/decoder" onClick={closeMobile}><ScanSearch className="size-4" /> Response decoder</Link>
+                      <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
-                      <Link to="/resources" onClick={closeMobile}><Sparkles className="size-4" /> Resources</Link>
+                      <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
