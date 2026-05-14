@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import {
+  PhoneCall, UserSquare, FileWarning, Building2, ArrowRight,
+  Compass, ListChecks, AlertTriangle, Clock, Sparkles,
+} from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { Ref } from "@/components/ref";
 import { LetterChip } from "@/components/letter-chip";
 import { SectionToc } from "@/components/section-toc";
 import { Squiggle } from "@/components/squiggle";
 import { PHASES } from "@/data/phases";
+import { LETTERS_BY_ID } from "@/data/letters";
 
 export const Route = createFileRoute("/playbook/strategy")({
   head: () => ({
