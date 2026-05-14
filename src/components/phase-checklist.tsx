@@ -346,6 +346,31 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
           </div>
         );
       })()}
+
+      {/* Re-open the milestone prompt anytime once the phase is complete. */}
+      {pct === 100 && (
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              window.localStorage.removeItem(`milestone-prompt-shown:${phase.id}`);
+            } catch {
+              /* ignore */
+            }
+            setMilestoneOpen(true);
+          }}
+          className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Update tracker for this phase →
+        </button>
+      )}
+
+      <MilestonePrompt
+        phase={phase}
+        open={milestoneOpen}
+        onClose={() => setMilestoneOpen(false)}
+        defaultEmail={userEmail}
+      />
     </section>
   );
 }
