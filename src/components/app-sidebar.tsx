@@ -68,37 +68,37 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/playbook")}>
-                  <Link to="/playbook"><BookOpen className="size-4" /> Cover</Link>
+                  <Link to="/playbook" onClick={closeMobile}><BookOpen className="size-4" /> Cover</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")}>
-                  <Link to="/playbook/foundation"><Compass className="size-4" /> Foundation</Link>
+                  <Link to="/playbook/foundation" onClick={closeMobile}><Compass className="size-4" /> Foundation</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")}>
-                  <Link to="/playbook/strategy"><ScrollText className="size-4" /> Strategy</Link>
+                  <Link to="/playbook/strategy" onClick={closeMobile}><ScrollText className="size-4" /> Strategy</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/letters")}>
-                  <Link to="/letters"><Library className="size-4" /> Letter library</Link>
+                  <Link to="/letters" onClick={closeMobile}><Library className="size-4" /> Letter library</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/tracker")}>
-                  <Link to="/tracker"><ClipboardList className="size-4" /> Dispute tracker</Link>
+                  <Link to="/tracker" onClick={closeMobile}><ClipboardList className="size-4" /> Dispute tracker</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/decoder")}>
-                  <Link to="/decoder"><ScanSearch className="size-4" /> Response decoder</Link>
+                  <Link to="/decoder" onClick={closeMobile}><ScanSearch className="size-4" /> Response decoder</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/resources")}>
-                  <Link to="/resources"><Sparkles className="size-4" /> Resources</Link>
+                  <Link to="/resources" onClick={closeMobile}><Sparkles className="size-4" /> Resources</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
