@@ -357,8 +357,10 @@ function CategoryChip({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
         "rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         active
           ? "border-[color:var(--brand-magenta-deep)] bg-[color:var(--brand-magenta-deep)] text-[color:var(--brand-cream)] shadow-card"
           : "border-border bg-card text-foreground/70 hover:border-foreground/30 hover:text-foreground",
