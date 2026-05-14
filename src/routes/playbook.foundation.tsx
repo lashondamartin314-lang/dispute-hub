@@ -1,7 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
 import { Ref } from "@/components/ref";
+import { SectionToc } from "@/components/section-toc";
+import { Squiggle } from "@/components/squiggle";
 import { PHASES } from "@/data/phases";
+
+const TOC = [
+  { id: "the-truth", label: "The truth about this process" },
+  { id: "phases-rounds", label: "Phases & Rounds" },
+];
 
 export const Route = createFileRoute("/playbook/foundation")({
   head: () => ({
@@ -15,16 +22,18 @@ export const Route = createFileRoute("/playbook/foundation")({
 
 function FoundationPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16 md:px-10 md:py-24 space-y-24">
-      <EditorialHeader
-        eyebrow="Before you start · The truth"
-        numeral="i"
-        numeralColor="var(--brand-magenta)"
-        title="The truth about this process."
-        lede="Understand this upfront and you will finish the journey while others quit halfway. This is the most important page in the kit."
-      />
-
-      <section className="space-y-10">
+    <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 md:px-10 md:py-24 xl:grid-cols-[220px_minmax(0,1fr)]">
+      <SectionToc items={TOC} />
+      <div className="max-w-3xl space-y-24">
+      <section id="the-truth" className="scroll-mt-24 space-y-10">
+        <EditorialHeader
+          eyebrow="Before you start · The truth"
+          numeral="i"
+          numeralColor="var(--brand-magenta)"
+          title={<>The truth <em className="font-editorial text-accent-grad">about</em> this process.</>}
+          lede="Understand this upfront and you will finish the journey while others quit halfway. This is the most important page in the kit."
+        />
+        <Squiggle variant="underline" color="var(--brand-magenta)" />
         {[
           { n: "01", t: "Not all accounts are equal", b: "Some accounts delete quickly because they are newer errors or furnisher mistakes. Others fight back for months because the furnisher has documentation. Medical collections often delete faster than credit card charge-offs. Student loans and mortgages run on different rules entirely. The kit accounts for all of it." },
           { n: "02", t: "Your score will move", b: "Your score might dip before it rises. That is data shifting, not failure. New negative marks may appear as old ones get removed because the bureaus catch up. Utilization changes can swing your score 20 to 50 points in a single month. None of that means you did anything wrong. The work continues." },
@@ -95,6 +104,7 @@ function FoundationPage() {
           ))}
         </div>
       </section>
+      </div>
     </div>
   );
 }
