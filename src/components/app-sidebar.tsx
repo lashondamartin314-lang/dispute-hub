@@ -80,7 +80,12 @@ export function AppSidebar() {
         // Fallback: no active match — scroll to the first nav item so the
         // user lands at the top of the menu instead of wherever it last was.
         sheet?.querySelector<HTMLElement>('[data-sidebar="menu-button"]');
-      target?.scrollIntoView({ block: "center", behavior: "auto" });
+      if (!target) return;
+      target.scrollIntoView({ block: "center", behavior: "auto" });
+      // Move keyboard focus to the active item so screen-reader and
+      // keyboard users land on the same place sighted users see.
+      // preventScroll avoids fighting the scrollIntoView we just ran.
+      target.focus({ preventScroll: true });
     }, 120);
     return () => window.clearTimeout(t);
   }, [isMobile, openMobile, pathname]);
