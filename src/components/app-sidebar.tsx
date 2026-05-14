@@ -116,7 +116,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={p.id}>
                     <SidebarMenuButton asChild isActive={active}>
-                      <Link to="/playbook/phase/$id" params={{ id: p.id }}>
+                      <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile}>
                         <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                         <span className="truncate">
                           <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
@@ -129,7 +129,7 @@ export function AppSidebar() {
                         {letters.map((l) => (
                           <SidebarMenuSubItem key={l.id}>
                             <SidebarMenuSubButton asChild>
-                              <Link to="/playbook/letter/$id" params={{ id: l.id }}>
+                              <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile}>
                                 <span className="font-mono text-[10px] opacity-60">{l.id}</span>
                                 <span className="truncate">{l.title}</span>
                               </Link>
