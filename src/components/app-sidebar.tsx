@@ -14,6 +14,7 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
+  Home,
 } from "lucide-react";
 import {
   Sidebar,
@@ -121,11 +122,10 @@ export function AppSidebar() {
 
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
-  const STORAGE_KEY = "sidebar:groups:v1";
-  const ORDER_KEY = "sidebar:order:v1";
-  type GroupId = "playbook" | "phases" | "companion";
-  const DEFAULT_ORDER: GroupId[] = ["playbook", "phases", "companion"];
-  const [playbookOpen, setPlaybookOpen] = useState(true);
+  const STORAGE_KEY = "sidebar:groups:v2";
+  const ORDER_KEY = "sidebar:order:v2";
+  type GroupId = "companion" | "phases";
+  const DEFAULT_ORDER: GroupId[] = ["companion", "phases"];
   const [companionOpen, setCompanionOpen] = useState(true);
   const [phasesOpen, setPhasesOpen] = useState(true);
   const [order, setOrder] = useState<GroupId[]>(DEFAULT_ORDER);
@@ -136,15 +136,13 @@ export function AppSidebar() {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
-        const saved = JSON.parse(raw) as Partial<{ playbook: boolean; companion: boolean; phases: boolean }>;
-        if (typeof saved.playbook === "boolean") setPlaybookOpen(saved.playbook);
+        const saved = JSON.parse(raw) as Partial<{ companion: boolean; phases: boolean }>;
         if (typeof saved.companion === "boolean") setCompanionOpen(saved.companion);
         if (typeof saved.phases === "boolean") setPhasesOpen(saved.phases);
       }
       const rawOrder = window.localStorage.getItem(ORDER_KEY);
       if (rawOrder) {
         const parsed = JSON.parse(rawOrder) as GroupId[];
-        // Validate: every default id present exactly once.
         if (
           Array.isArray(parsed) &&
           parsed.length === DEFAULT_ORDER.length &&
@@ -164,12 +162,12 @@ export function AppSidebar() {
     try {
       window.localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ playbook: playbookOpen, companion: companionOpen, phases: phasesOpen }),
+        JSON.stringify({ companion: companionOpen, phases: phasesOpen }),
       );
     } catch {
       /* ignore */
     }
-  }, [hydrated, playbookOpen, companionOpen, phasesOpen]);
+  }, [hydrated, companionOpen, phasesOpen]);
 
   useEffect(() => {
     if (!hydrated || typeof window === "undefined") return;
@@ -180,10 +178,9 @@ export function AppSidebar() {
     }
   }, [hydrated, order]);
 
-  // Auto-expand the group containing the active route (overrides saved state
-  // only when navigating into a collapsed group, so users always see context).
+  // Auto-expand the group containing the active route.
   useEffect(() => {
-    if (playbookHasActive) setPlaybookOpen(true);
+    if (playbookHasActive) setPhasesOpen(true);
     if (companionHasActive) setCompanionOpen(true);
   }, [playbookHasActive, companionHasActive]);
 
@@ -243,29 +240,30 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-5">
-        <Link to="/" className="block group" onClick={closeMobile}>
-          <p className="eyebrow text-[10px]">Credit Academy</p>
-          <h2 className="font-display mt-1 text-2xl leading-none">
-            The Dispute<br />Playbook
-          </h2>
-          <p className="font-editorial mt-2 text-xs text-muted-foreground">Hub & companion</p>
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+        <Link
+          to="/"
+          onClick={closeMobile}
+          aria-label="Home"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-sidebar-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+        >
+          <Home className="size-5" aria-hidden="true" />
         </Link>
       </SidebarHeader>
 
       <SidebarContent className="gap-0 px-2 py-2">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
-            playbook: (
-              <Collapsible key="playbook" open={playbookOpen} onOpenChange={setPlaybookOpen}>
+            phases: (
+              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
                 <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
-                  {groupHeader("playbook", "Playbook", playbookOpen)}
+                  {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
-                            <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/")} className={ACTIVE_CLS}>
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
@@ -275,7 +273,7 @@ export function AppSidebar() {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
+                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
@@ -283,19 +281,6 @@ export function AppSidebar() {
                             <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
-                      </SidebarMenu>
-                    </SidebarGroupContent>
-                  </CollapsibleContent>
-                </SidebarGroup>
-              </Collapsible>
-            ),
-            phases: (
-              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
-                  {groupHeader("phases", "Phases", phasesOpen)}
-                  <CollapsibleContent>
-                    <SidebarGroupContent className="mt-1">
-                      <SidebarMenu>
                         {PHASES.map((p) => {
                           const Icon = phaseIcon[p.id];
                           const letters = lettersForPhase(p.id);
