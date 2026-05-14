@@ -77,6 +77,8 @@ function PhasePage() {
             </ol>
           </section>
 
+          <PhaseChecklist phase={phase} />
+
           {phase.teaching && (
             <section id="teach" className="scroll-mt-24">
               <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>Teach me — full walkthrough</p>
