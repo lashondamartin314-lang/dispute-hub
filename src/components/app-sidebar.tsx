@@ -49,7 +49,12 @@ const phaseIcon = {
 // Active-state classes used on every menu/sub-button so the currently-rendered
 // page is unmistakable inside the mobile sheet (and remains clear on desktop).
 const ACTIVE_CLS =
-  "data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none";
+  "data-[active=true]:bg-[color:var(--brand-gold)]/20 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-sm";
+
+// Phase rows get a slightly stronger active wash so the selected phase reads
+// at the same visual weight as the hover state (gold bar + tint + nudge).
+const PHASE_ACTIVE_CLS =
+  "data-[active=true]:bg-[color:var(--brand-gold)]/25 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-md data-[active=true]:translate-x-0.5";
 
 // Pronounced hover treatment shared across menu items: subtle gold wash,
 // gentle slide, and a soft shadow lift so the cursor target is unmistakable.
@@ -297,7 +302,7 @@ export function AppSidebar() {
                           const active = isPhaseActive(p.id);
                           return (
                             <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} className={`${ACTIVE_CLS} ${PHASE_HOVER_CLS}`}>
+                              <SidebarMenuButton asChild isActive={active} className={`${PHASE_ACTIVE_CLS} ${PHASE_HOVER_CLS}`}>
                                 <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
                                   <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                                   <span className="truncate">
