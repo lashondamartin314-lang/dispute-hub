@@ -72,7 +72,7 @@ function FoundationPage() {
       <section id="phases-rounds" className="space-y-8 scroll-mt-20">
         <EditorialHeader
           eyebrow="Foundation · Read this first"
-          title={<>Phases <em className="font-editorial text-accent-grad">&</em> Rounds.</>}
+          title={<>Phases <em className="font-editorial text-accent-grad">{"&"}</em> Rounds.</>}
           lede="Two different units of work. Confuse them and the whole system slows down."
         />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
