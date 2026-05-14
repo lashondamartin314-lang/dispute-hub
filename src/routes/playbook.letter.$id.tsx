@@ -290,6 +290,222 @@ function LetterDetail() {
             </ul>
           </section>
 
+          {/* SECTION 2.5 — WHO + WHERE (recipient + address, plain language) */}
+          <section
+            id="who-where"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-navy)_45%,transparent)] p-7 shadow-card md:p-10"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--brand-navy-soft) 55%, var(--card)), var(--card))",
+            }}
+          >
+            <p className="eyebrow text-[color:var(--brand-navy-deep)]">03 · Who this letter is for</p>
+            <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
+              Address it correctly or it doesn't count.
+            </h3>
+            <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-center gap-2 text-[color:var(--brand-navy-deep)]">
+                  <Mail className="size-5" />
+                  <p className="eyebrow !mb-0">Recipient</p>
+                </div>
+                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">{guide.recipient}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-center gap-2 text-[color:var(--brand-navy-deep)]">
+                  <MapPin className="size-5" />
+                  <p className="eyebrow !mb-0">Where to find their address</p>
+                </div>
+                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">{guide.findAddress}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 2.6 — WHEN + PREREQS (timing + prerequisites) */}
+          <section
+            id="when-to-send"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-magenta)_45%,transparent)] p-7 shadow-card md:p-10"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--brand-pink) 35%, var(--card)), var(--card))",
+            }}
+          >
+            <p className="eyebrow text-[color:var(--brand-magenta-deep)]">04 · When to send it</p>
+            <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
+              Timing is a legal element, not a preference.
+            </h3>
+            <div className="mt-5 flex items-start gap-3 rounded-xl border border-[color:color-mix(in_oklab,var(--brand-magenta)_35%,transparent)] bg-card p-5">
+              <Clock className="mt-0.5 size-5 shrink-0 text-[color:var(--brand-magenta-deep)]" />
+              <p className="text-base leading-relaxed text-foreground/90">{guide.whenToSend}</p>
+            </div>
+            <div className="mt-6">
+              <p className="eyebrow text-[color:var(--brand-ink)]/70">Before you mail this, ALL of the following must be true</p>
+              <ul className="mt-3 space-y-2.5">
+                {guide.prerequisites.map((p) => (
+                  <li key={p} className="flex items-start gap-3 text-base leading-relaxed text-foreground/90">
+                    <Check className="mt-1 size-4 shrink-0 text-[color:var(--brand-magenta-deep)]" />
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+
+          {/* SECTION 2.7 — RULES (must include / must do / do NOT) */}
+          <section
+            id="rules"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-gold)_55%,transparent)] p-7 shadow-card md:p-10"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--brand-cream) 80%, var(--card)), var(--card))",
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute -right-2 top-6 select-none rounded-l-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)] shadow-md"
+              style={{ background: "var(--brand-magenta-deep)" }}
+            >
+              Hard rules
+            </span>
+            <p className="eyebrow text-[color:var(--brand-gold-deep)]">05 · Rules &amp; watch-outs</p>
+            <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
+              Skip any of these and the letter loses its teeth.
+            </h3>
+
+            <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-3">
+              {/* Must include */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-center gap-2 text-[color:var(--brand-navy-deep)]">
+                  <Inbox className="size-5" />
+                  <p className="eyebrow !mb-0">Must include in the envelope</p>
+                </div>
+                <ul className="mt-3 space-y-2.5">
+                  {guide.mustInclude.map((m) => (
+                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                      <Check className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-navy-deep)]" />
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Must do */}
+              <div
+                className="rounded-xl border-2 p-5"
+                style={{
+                  borderColor: "color-mix(in oklab, var(--brand-magenta) 40%, transparent)",
+                  background: "color-mix(in oklab, var(--brand-pink) 30%, var(--card))",
+                }}
+              >
+                <div className="flex items-center gap-2 text-[color:var(--brand-magenta-deep)]">
+                  <ListChecks className="size-5" />
+                  <p className="eyebrow !mb-0">Must do</p>
+                </div>
+                <ul className="mt-3 space-y-2.5">
+                  {guide.mustDo.map((m) => (
+                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                      <Check className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-magenta-deep)]" />
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Do NOT */}
+              <div
+                className="rounded-xl border-2 p-5"
+                style={{
+                  borderColor: "color-mix(in oklab, #b91c1c 35%, transparent)",
+                  background: "color-mix(in oklab, #fee2e2 60%, var(--card))",
+                }}
+              >
+                <div className="flex items-center gap-2 text-[color:#991b1b]">
+                  <ShieldAlert className="size-5" />
+                  <p className="eyebrow !mb-0 !text-[color:#991b1b]">Do NOT — common mistakes</p>
+                </div>
+                <ul className="mt-3 space-y-2.5">
+                  {guide.doNot.map((m) => (
+                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                      <X className="mt-0.5 size-4 shrink-0 text-[color:#991b1b]" />
+                      <span>{m}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* SECTION 2.8 — WHAT TO EXPECT BACK + DECISION TREE */}
+          <section
+            id="what-happens-next"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 p-7 shadow-card md:p-10"
+            style={{
+              borderColor: `color-mix(in oklab, var(${phase.colorVar}) 50%, transparent)`,
+              background: `linear-gradient(180deg, color-mix(in oklab, var(${phase.colorVar}-soft) 55%, var(--card)), var(--card))`,
+            }}
+          >
+            <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>06 · What happens next</p>
+            <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
+              Decision tree — exactly which letter follows.
+            </h3>
+
+            <div className="mt-5 flex items-start gap-3 rounded-xl border border-border bg-card p-5">
+              <Inbox className="mt-0.5 size-5 shrink-0" style={{ color: `var(${phase.colorVar}-deep)` }} />
+              <div>
+                <p className="eyebrow !mb-1.5 text-[color:var(--brand-ink)]/70">What to expect back</p>
+                <p className="text-base leading-relaxed text-foreground/90">{guide.expect}</p>
+              </div>
+            </div>
+
+            <ol className="mt-6 space-y-3">
+              {guide.nextStep.map((n, i) => {
+                const linked = n.letterId ? LETTERS_BY_ID[n.letterId] : null;
+                return (
+                  <li
+                    key={i}
+                    className="rounded-xl border border-border bg-card p-5"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span
+                        className="font-display mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-[color:var(--brand-cream)]"
+                        style={{ background: `var(${phase.colorVar}-deep)` }}
+                      >
+                        {String.fromCharCode(65 + i)}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold uppercase tracking-[0.16em] text-[color:var(--brand-ink)]/65">
+                          IF {n.condition}
+                        </p>
+                        <p className="font-display mt-1.5 text-lg font-bold leading-snug text-[color:var(--brand-ink)]">
+                          <GitBranch className="-mt-1 mr-1.5 inline size-4 text-[color:var(--brand-ink)]/55" />
+                          THEN {n.action}
+                        </p>
+                        {linked && (
+                          <Link
+                            to="/playbook/letter/$id"
+                            params={{ id: linked.id }}
+                            className="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                            style={{ background: `var(${phase.colorVar}-deep)` }}
+                          >
+                            Open {linked.id} · {linked.title} <ArrowRight className="size-3.5" />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+
+            <div className="mt-6 flex items-start gap-3 rounded-xl border border-dashed border-border/70 bg-card/60 p-4">
+              <Scale className="mt-0.5 size-5 shrink-0 text-[color:var(--brand-ink)]/55" />
+              <p className="text-sm leading-relaxed text-foreground/80">
+                <span className="font-bold text-[color:var(--brand-ink)]">Legal basis: </span>
+                {guide.legalBasis}
+              </p>
+            </div>
+          </section>
+
           {/* SECTION 3 — Related phase (phase-tinted with grid texture + tape badge) */}
           <section
             id="related-phase"
