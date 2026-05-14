@@ -134,8 +134,21 @@ export const RESOURCES: Resource[] = [
     description: "Federal complaint that forces a 15-day company response.",
     url: "https://www.consumerfinance.gov/complaint/",
     category: "complaint",
+    actionLabel: "File a CFPB Complaint",
     pinned: true,
     rounds: [3, 4, 5],
+    playbookRef: { label: "Phase 6 · Escalate", href: "/playbook/phase/escalate" },
+    steps: [
+      "Confirm you have already mailed at least one prior dispute round. CFPB requires a paper trail; you cannot lead here.",
+      "Go to consumerfinance.gov/complaint and click 'Submit a complaint'.",
+      "Select the product (Credit reporting / Debt collection / Credit card) that matches the issue.",
+      "Pick the exact company to complain about: bureau, original creditor, or collector — pick only one.",
+      "In 'What happened?' write 3 to 5 factual sentences: what you sent, when you mailed it, what they failed to do.",
+      "Cite the specific law violated when applicable: FCRA §611 (bureau), FCRA §623 (furnisher), FDCPA §1692g (collector).",
+      "Combine your prior dispute letter, certified mail receipts, and any company response into one PDF.",
+      "Upload that PDF as the supporting attachment.",
+      "Submit. Save the CFPB case number to your tracker the moment it is issued — the company has 15 days to respond.",
+    ],
     usage:
       "File here after the bureau or furnisher has stalled a Round 2 or Round 3 dispute. Pick the company you are complaining about, attach your prior dispute letter and any response, and write a short factual summary with the account number and the specific FCRA or FDCPA violation. The company is required to respond in 15 days, and that pressure resolves a large share of stuck items. Save the case number and the public response.",
     checklist: [
