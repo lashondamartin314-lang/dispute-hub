@@ -115,6 +115,9 @@ function PlaybookCover() {
           <Link to="/playbook/strategy" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold hover:border-[color:var(--brand-gold)]">
             Strategy first
           </Link>
+          <Link to="/tracker" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-emerald,#2f7a4f)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] hover:opacity-90">
+            Open tracker
+          </Link>
         </div>
 
         <ProgressSummary />

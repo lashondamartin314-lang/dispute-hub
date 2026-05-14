@@ -1,0 +1,686 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ClipboardList,
+  Plus,
+  Trash2,
+  Download,
+  Mail,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  ExternalLink,
+  Pencil,
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
+import { PHASES_BY_ID } from "@/data/phases";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/tracker")({
+  head: () => ({
+    meta: [
+      { title: "Dispute Tracker · The Dispute Playbook" },
+      {
+        name: "description",
+        content:
+          "Log every letter you send. Track sent dates, certified mail, delivery, bureau and furnisher responses, and your next action — all in one place.",
+      },
+      { property: "og:title", content: "Dispute Tracker · Credit Academy" },
+      {
+        property: "og:description",
+        content:
+          "A free, private dispute tracker for sent dates, certified tracking, responses, and next actions.",
+      },
+    ],
+  }),
+  component: TrackerPage,
+});
+
+type Outcome = "pending" | "deleted" | "verified" | "updated" | "no_response" | "other";
+type Recipient = "Equifax" | "Experian" | "TransUnion" | "Furnisher" | "Collector" | "Creditor" | "Other";
+
+interface Entry {
+  id: string;
+  letterId?: LetterId | "";
+  customLabel?: string;
+  recipient: Recipient;
+  recipientName: string;
+  accountRef: string;
+  sentDate: string;
+  certifiedNumber: string;
+  deliveredDate: string;
+  responseDate: string;
+  outcome: Outcome;
+  nextAction: string;
+  nextActionDue: string;
+  notes: string;
+  createdAt: number;
+}
+
+const STORAGE_KEY = "dispute-tracker-v1";
+
+const outcomeMeta: Record<Outcome, { label: string; tone: string }> = {
+  pending: { label: "Awaiting response", tone: "var(--brand-gold-deep)" },
+  deleted: { label: "Deleted ✓", tone: "var(--brand-emerald, #2f7a4f)" },
+  verified: { label: "Verified (still on)", tone: "var(--brand-magenta)" },
+  updated: { label: "Updated", tone: "var(--brand-violet)" },
+  no_response: { label: "No response", tone: "var(--brand-magenta-deep, #9b1c5b)" },
+  other: { label: "Other", tone: "var(--brand-ink)" },
+};
+
+const emptyEntry = (): Entry => ({
+  id: crypto.randomUUID(),
+  letterId: "",
+  customLabel: "",
+  recipient: "Equifax",
+  recipientName: "",
+  accountRef: "",
+  sentDate: "",
+  certifiedNumber: "",
+  deliveredDate: "",
+  responseDate: "",
+  outcome: "pending",
+  nextAction: "",
+  nextActionDue: "",
+  notes: "",
+  createdAt: Date.now(),
+});
+
+function loadEntries(): Entry[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed as Entry[];
+  } catch {
+    return [];
+  }
+}
+
+function saveEntries(entries: Entry[]) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function fmtDate(d: string) {
+  if (!d) return "—";
+  try {
+    const date = new Date(d + "T00:00:00");
+    return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+  } catch {
+    return d;
+  }
+}
+
+function daysSince(d: string): number | null {
+  if (!d) return null;
+  const sent = new Date(d + "T00:00:00").getTime();
+  if (Number.isNaN(sent)) return null;
+  return Math.floor((Date.now() - sent) / 86_400_000);
+}
+
+function toCSV(entries: Entry[]): string {
+  const headers = [
+    "Letter",
+    "Recipient",
+    "Recipient Name",
+    "Account/Item",
+    "Sent",
+    "Certified #",
+    "Delivered",
+    "Response Date",
+    "Outcome",
+    "Next Action",
+    "Next Action Due",
+    "Notes",
+  ];
+  const escape = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
+  const rows = entries.map((e) => {
+    const letter = e.letterId ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim() : (e.customLabel ?? "");
+    return [
+      letter,
+      e.recipient,
+      e.recipientName,
+      e.accountRef,
+      e.sentDate,
+      e.certifiedNumber,
+      e.deliveredDate,
+      e.responseDate,
+      outcomeMeta[e.outcome].label,
+      e.nextAction,
+      e.nextActionDue,
+      e.notes,
+    ].map(escape).join(",");
+  });
+  return [headers.join(","), ...rows].join("\n");
+}
+
+function TrackerPage() {
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [editing, setEditing] = useState<Entry | null>(null);
+  const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | Outcome>("all");
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setEntries(loadEntries());
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (hydrated) saveEntries(entries);
+  }, [entries, hydrated]);
+
+  const stats = useMemo(() => {
+    const total = entries.length;
+    const pending = entries.filter((e) => e.outcome === "pending").length;
+    const delivered = entries.filter((e) => e.deliveredDate).length;
+    const wins = entries.filter((e) => e.outcome === "deleted" || e.outcome === "updated").length;
+    const overdue = entries.filter((e) => {
+      const d = daysSince(e.sentDate);
+      return e.outcome === "pending" && d !== null && d > 30;
+    }).length;
+    return { total, pending, delivered, wins, overdue };
+  }, [entries]);
+
+  const visible = useMemo(
+    () => (filter === "all" ? entries : entries.filter((e) => e.outcome === filter)),
+    [entries, filter],
+  );
+
+  const sorted = useMemo(
+    () =>
+      [...visible].sort((a, b) => {
+        if (a.sentDate && b.sentDate) return b.sentDate.localeCompare(a.sentDate);
+        return b.createdAt - a.createdAt;
+      }),
+    [visible],
+  );
+
+  function openAdd() {
+    setEditing(emptyEntry());
+    setOpen(true);
+  }
+  function openEdit(e: Entry) {
+    setEditing({ ...e });
+    setOpen(true);
+  }
+  function saveDraft() {
+    if (!editing) return;
+    setEntries((prev) => {
+      const exists = prev.some((p) => p.id === editing.id);
+      if (exists) return prev.map((p) => (p.id === editing.id ? editing : p));
+      return [editing, ...prev];
+    });
+    setOpen(false);
+    setEditing(null);
+    toast.success("Saved to your tracker");
+  }
+  function removeEntry(id: string) {
+    setEntries((prev) => prev.filter((p) => p.id !== id));
+    toast.success("Entry removed");
+  }
+  function clearAll() {
+    setEntries([]);
+    toast.success("Tracker cleared");
+  }
+  function exportCsv() {
+    const csv = toCSV(entries);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `dispute-tracker-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div className="relative">
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-border">
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-95"
+          style={{
+            background:
+              "radial-gradient(60% 80% at 80% 0%, color-mix(in oklab, var(--brand-emerald, #2f7a4f) 22%, transparent), transparent 70%), radial-gradient(60% 70% at 0% 100%, color-mix(in oklab, var(--brand-violet) 18%, transparent), transparent 70%), var(--background)",
+          }}
+        />
+        <div className="relative mx-auto max-w-6xl px-6 py-14 md:py-20">
+          <p className="eyebrow text-[color:var(--brand-gold-deep)]">Companion Tool · Private to your browser</p>
+          <h1 className="font-display mt-4 text-5xl leading-[0.95] md:text-7xl">
+            Dispute <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-magenta)] via-[color:var(--brand-violet)] to-[color:var(--brand-navy)] bg-clip-text text-transparent not-italic">Tracker</em>
+          </h1>
+          <p className="font-editorial mt-5 max-w-2xl text-lg text-foreground/80 md:text-xl">
+            Log every letter you mail. Capture sent dates, certified tracking, delivery, the bureau or furnisher response, and your next move — all in one place. Saved privately on this device.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button onClick={openAdd} size="lg" className="rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
+              <Plus className="size-4" /> Log a letter
+            </Button>
+            <Button onClick={exportCsv} variant="outline" size="lg" className="rounded-full" disabled={entries.length === 0}>
+              <Download className="size-4" /> Export CSV
+            </Button>
+            <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:border-[color:var(--brand-gold)]">
+              Browse letter library <ExternalLink className="size-3.5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="mx-auto max-w-6xl px-6 pt-10">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+          <StatCard icon={<ClipboardList className="size-4" />} label="Logged" value={stats.total} tint="var(--brand-navy)" />
+          <StatCard icon={<Clock className="size-4" />} label="Awaiting" value={stats.pending} tint="var(--brand-gold-deep)" />
+          <StatCard icon={<Mail className="size-4" />} label="Delivered" value={stats.delivered} tint="var(--brand-violet)" />
+          <StatCard icon={<CheckCircle2 className="size-4" />} label="Wins" value={stats.wins} tint="var(--brand-emerald, #2f7a4f)" />
+          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue >30d" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
+        </div>
+      </section>
+
+      {/* Filters + table */}
+      <section className="mx-auto max-w-6xl px-6 py-10">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="eyebrow text-[10px]">Filter</span>
+            {(["all", "pending", "deleted", "verified", "updated", "no_response"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all ${
+                  filter === f
+                    ? "border-[color:var(--brand-navy)] bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)]"
+                    : "border-border bg-card hover:border-[color:var(--brand-gold)]"
+                }`}
+              >
+                {f === "all" ? "All" : outcomeMeta[f].label}
+              </button>
+            ))}
+          </div>
+          {entries.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  <Trash2 className="size-4" /> Clear all
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear the entire tracker?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This permanently removes all {entries.length} entr{entries.length === 1 ? "y" : "ies"} from this device. Export a CSV first if you want a backup.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={clearAll}>Clear all</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
+
+        {sorted.length === 0 ? (
+          <EmptyState onAdd={openAdd} />
+        ) : (
+          <div className="grid gap-3">
+            {sorted.map((e) => (
+              <EntryCard key={e.id} entry={e} onEdit={() => openEdit(e)} onRemove={() => removeEntry(e.id)} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Editor dialog */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-h-[92vh] max-w-2xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl">
+              {editing && entries.some((p) => p.id === editing.id) ? "Edit entry" : "Log a letter"}
+            </DialogTitle>
+            <DialogDescription>
+              Record what you sent, where it went, and what came back. Required: letter and sent date.
+            </DialogDescription>
+          </DialogHeader>
+
+          {editing && (
+            <div className="grid gap-4 py-2">
+              <div className="grid gap-2">
+                <Label>Letter</Label>
+                <Select
+                  value={editing.letterId || "custom"}
+                  onValueChange={(v) =>
+                    setEditing({ ...editing, letterId: v === "custom" ? "" : (v as LetterId) })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a Playbook letter" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {LETTERS.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>
+                        <span className="font-mono text-xs opacity-60 mr-1.5">{l.id}</span>
+                        {l.title}
+                      </SelectItem>
+                    ))}
+                    <SelectItem value="custom">— Custom (not in Playbook)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!editing.letterId && (
+                  <Input
+                    placeholder="Custom letter label (e.g., Goodwill — Capital One)"
+                    value={editing.customLabel ?? ""}
+                    onChange={(ev) => setEditing({ ...editing, customLabel: ev.target.value })}
+                  />
+                )}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-2">
+                  <Label>Recipient type</Label>
+                  <Select value={editing.recipient} onValueChange={(v) => setEditing({ ...editing, recipient: v as Recipient })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Equifax">Equifax</SelectItem>
+                      <SelectItem value="Experian">Experian</SelectItem>
+                      <SelectItem value="TransUnion">TransUnion</SelectItem>
+                      <SelectItem value="Collector">Collector</SelectItem>
+                      <SelectItem value="Creditor">Original creditor</SelectItem>
+                      <SelectItem value="Furnisher">Furnisher (other)</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label>Recipient name (optional)</Label>
+                  <Input
+                    placeholder="e.g., Midland Credit Mgmt"
+                    value={editing.recipientName}
+                    onChange={(ev) => setEditing({ ...editing, recipientName: ev.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Account / item reference</Label>
+                <Input
+                  placeholder="Last 4, account #, or item description"
+                  value={editing.accountRef}
+                  onChange={(ev) => setEditing({ ...editing, accountRef: ev.target.value })}
+                />
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid gap-2">
+                  <Label>Sent date</Label>
+                  <Input type="date" value={editing.sentDate} onChange={(ev) => setEditing({ ...editing, sentDate: ev.target.value })} />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Delivered</Label>
+                  <Input type="date" value={editing.deliveredDate} onChange={(ev) => setEditing({ ...editing, deliveredDate: ev.target.value })} />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Response received</Label>
+                  <Input type="date" value={editing.responseDate} onChange={(ev) => setEditing({ ...editing, responseDate: ev.target.value })} />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label>USPS certified tracking #</Label>
+                <Input
+                  placeholder="9214 7901 2345 6789 0123 45"
+                  value={editing.certifiedNumber}
+                  onChange={(ev) => setEditing({ ...editing, certifiedNumber: ev.target.value })}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Outcome</Label>
+                <Select value={editing.outcome} onValueChange={(v) => setEditing({ ...editing, outcome: v as Outcome })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {(Object.keys(outcomeMeta) as Outcome[]).map((k) => (
+                      <SelectItem key={k} value={k}>{outcomeMeta[k].label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+                <div className="grid gap-2">
+                  <Label>Next action</Label>
+                  <Input
+                    placeholder="e.g., Send L02 follow-up"
+                    value={editing.nextAction}
+                    onChange={(ev) => setEditing({ ...editing, nextAction: ev.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Due</Label>
+                  <Input type="date" value={editing.nextActionDue} onChange={(ev) => setEditing({ ...editing, nextActionDue: ev.target.value })} />
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label>Notes</Label>
+                <Textarea
+                  rows={3}
+                  placeholder="Anything you want to remember about this round."
+                  value={editing.notes}
+                  onChange={(ev) => setEditing({ ...editing, notes: ev.target.value })}
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={saveDraft} disabled={!editing || (!editing.letterId && !editing.customLabel) || !editing.sentDate}>
+              Save entry
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function StatCard({ icon, label, value, tint }: { icon: React.ReactNode; label: string; value: number; tint: string }) {
+  return (
+    <div
+      className="rounded-2xl border-2 bg-card p-4 shadow-sm"
+      style={{
+        borderColor: `color-mix(in oklab, ${tint} 35%, transparent)`,
+        background: `color-mix(in oklab, ${tint} 6%, var(--card))`,
+      }}
+    >
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: tint }}>
+        {icon} {label}
+      </div>
+      <div className="font-display mt-2 text-3xl text-[color:var(--brand-ink)]">{value}</div>
+    </div>
+  );
+}
+
+function EmptyState({ onAdd }: { onAdd: () => void }) {
+  return (
+    <div className="rounded-3xl border-2 border-dashed border-border bg-card p-10 text-center">
+      <ClipboardList className="mx-auto size-10 text-muted-foreground" />
+      <h2 className="font-display mt-4 text-2xl">No entries yet</h2>
+      <p className="font-editorial mt-2 text-muted-foreground">
+        Every letter you mail belongs here. Start with the validation letter, the bureau dispute, or whatever round you’re on now.
+      </p>
+      <Button onClick={onAdd} className="mt-5 rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
+        <Plus className="size-4" /> Log your first letter
+      </Button>
+    </div>
+  );
+}
+
+function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => void; onRemove: () => void }) {
+  const letter = entry.letterId ? LETTERS_BY_ID[entry.letterId as LetterId] : null;
+  const phase = letter ? PHASES_BY_ID[letter.phaseId] : null;
+  const accent = phase ? `var(${phase.colorVar})` : "var(--brand-navy)";
+  const days = daysSince(entry.sentDate);
+  const overdue = entry.outcome === "pending" && days !== null && days > 30;
+  const tone = outcomeMeta[entry.outcome].tone;
+
+  return (
+    <article
+      className="relative overflow-hidden rounded-2xl border-2 bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+      style={{ borderColor: `color-mix(in oklab, ${accent} 35%, transparent)` }}
+    >
+      <div
+        aria-hidden
+        className="absolute inset-y-0 left-0 w-1.5"
+        style={{ background: `linear-gradient(180deg, ${accent}, ${tone})` }}
+      />
+      <div className="flex flex-wrap items-start justify-between gap-3 pl-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            {letter ? (
+              <>
+                <span className="font-mono text-xs text-muted-foreground">{letter.id}</span>
+                <Link
+                  to="/playbook/letter/$id"
+                  params={{ id: letter.id as LetterId }}
+                  className="font-display text-lg leading-tight text-[color:var(--brand-ink)] hover:underline"
+                >
+                  {letter.title}
+                </Link>
+              </>
+            ) : (
+              <h3 className="font-display text-lg leading-tight text-[color:var(--brand-ink)]">{entry.customLabel || "Untitled letter"}</h3>
+            )}
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            <strong className="text-foreground">{entry.recipient}</strong>
+            {entry.recipientName ? ` · ${entry.recipientName}` : ""}
+            {entry.accountRef ? ` · ${entry.accountRef}` : ""}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="outline"
+            className="border-2"
+            style={{ borderColor: `color-mix(in oklab, ${tone} 50%, transparent)`, color: tone, background: `color-mix(in oklab, ${tone} 8%, transparent)` }}
+          >
+            {outcomeMeta[entry.outcome].label}
+          </Badge>
+          {overdue && (
+            <Badge className="bg-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-cream)]">
+              {days}d overdue
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      <dl className="mt-4 grid grid-cols-2 gap-3 pl-3 text-sm md:grid-cols-4">
+        <Field label="Sent" value={fmtDate(entry.sentDate)} />
+        <Field label="Delivered" value={fmtDate(entry.deliveredDate)} />
+        <Field label="Response" value={fmtDate(entry.responseDate)} />
+        <Field
+          label="Certified #"
+          value={
+            entry.certifiedNumber ? (
+              <a
+                className="break-all text-[color:var(--brand-violet)] underline-offset-2 hover:underline"
+                href={`https://tools.usps.com/go/TrackConfirmAction?tLabels=${encodeURIComponent(entry.certifiedNumber.replace(/\s+/g, ""))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {entry.certifiedNumber}
+              </a>
+            ) : (
+              "—"
+            )
+          }
+        />
+      </dl>
+
+      {(entry.nextAction || entry.notes) && (
+        <div className="mt-4 grid gap-2 rounded-xl bg-muted/40 p-3 pl-3">
+          {entry.nextAction && (
+            <p className="text-sm">
+              <span className="eyebrow text-[10px] mr-2">Next</span>
+              <span className="font-semibold">{entry.nextAction}</span>
+              {entry.nextActionDue && <span className="ml-2 text-muted-foreground">· due {fmtDate(entry.nextActionDue)}</span>}
+            </p>
+          )}
+          {entry.notes && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{entry.notes}</p>}
+        </div>
+      )}
+
+      <div className="mt-4 flex items-center justify-end gap-2 pl-3">
+        <Button variant="ghost" size="sm" onClick={onEdit}>
+          <Pencil className="size-3.5" /> Edit
+        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-[color:var(--brand-magenta-deep,#9b1c5b)]">
+              <X className="size-3.5" /> Remove
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove this entry?</AlertDialogTitle>
+              <AlertDialogDescription>This can't be undone.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={onRemove}>Remove</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </article>
+  );
+}
+
+function Field({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="eyebrow text-[10px]">{label}</dt>
+      <dd className="mt-0.5 font-medium text-foreground">{value}</dd>
+    </div>
+  );
+}
