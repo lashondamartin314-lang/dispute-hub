@@ -92,6 +92,7 @@ export function CreditAcademyUpsell({
   variant = "full",
   className,
   accentColor,
+  placement = variant === "compact" ? "compact_banner" : "full_grid",
 }: CreditAcademyUpsellProps) {
   if (variant === "compact") {
     return (
