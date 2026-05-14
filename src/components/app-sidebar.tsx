@@ -240,29 +240,30 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-5">
-        <Link to="/" className="block group" onClick={closeMobile}>
-          <p className="eyebrow text-[10px]">Credit Academy</p>
-          <h2 className="font-display mt-1 text-2xl leading-none">
-            The Dispute<br />Playbook
-          </h2>
-          <p className="font-editorial mt-2 text-xs text-muted-foreground">Hub & companion</p>
+      <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+        <Link
+          to="/"
+          onClick={closeMobile}
+          aria-label="Home"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-sidebar-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+        >
+          <Home className="size-5" aria-hidden="true" />
         </Link>
       </SidebarHeader>
 
       <SidebarContent className="gap-0 px-2 py-2">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
-            playbook: (
-              <Collapsible key="playbook" open={playbookOpen} onOpenChange={setPlaybookOpen}>
+            phases: (
+              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
                 <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
-                  {groupHeader("playbook", "Playbook", playbookOpen)}
+                  {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
-                            <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/")} className={ACTIVE_CLS}>
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
@@ -272,7 +273,7 @@ export function AppSidebar() {
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
+                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
@@ -280,19 +281,6 @@ export function AppSidebar() {
                             <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
-                      </SidebarMenu>
-                    </SidebarGroupContent>
-                  </CollapsibleContent>
-                </SidebarGroup>
-              </Collapsible>
-            ),
-            phases: (
-              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
-                  {groupHeader("phases", "Phases", phasesOpen)}
-                  <CollapsibleContent>
-                    <SidebarGroupContent className="mt-1">
-                      <SidebarMenu>
                         {PHASES.map((p) => {
                           const Icon = phaseIcon[p.id];
                           const letters = lettersForPhase(p.id);
