@@ -11,12 +11,18 @@ export interface Resource {
   description: string;
   url: string;
   category: ResourceCategory;
+  /** Short, action-oriented title (verb + noun) shown as the tile eyebrow and dialog heading. */
+  actionLabel: string;
   /** One-paragraph "what to pull" summary shown on the Resources page. */
   usage?: string;
   /** Which dispute rounds this resource is used in. */
   rounds?: DisputeRound[];
   /** "Before you file" checklist items, used in printable checklist. */
   checklist?: string[];
+  /** Numbered, do-this-now step-by-step instructions opened from the action title. */
+  steps?: string[];
+  /** Optional pointer back to the section of the Playbook that teaches this in depth. */
+  playbookRef?: { label: string; href: string };
   /** Show in sidebar quick-access list */
   pinned?: boolean;
 }
