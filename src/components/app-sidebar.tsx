@@ -52,7 +52,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-5">
-        <Link to="/" className="block group">
+        <Link to="/" className="block group" onClick={closeMobile}>
           <p className="eyebrow text-[10px]">Credit Academy</p>
           <h2 className="font-display mt-1 text-2xl leading-none">
             The Dispute<br />Playbook
