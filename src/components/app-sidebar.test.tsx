@@ -52,6 +52,7 @@ async function openSheet(user: ReturnType<typeof userEvent.setup>) {
 describe("AppSidebar mobile sheet", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
+    setPathname("/");
   });
 
   it("closes the sheet and returns focus to the trigger when an internal link is tapped", async () => {
@@ -83,5 +84,75 @@ describe("AppSidebar mobile sheet", () => {
     await waitFor(() => {
       expect(document.activeElement).toBe(trigger);
     });
+  });
+});
+
+describe("AppSidebar auto-scroll on open", () => {
+  let scrollSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    document.body.innerHTML = "";
+    setPathname("/");
+    scrollSpy = vi.spyOn(Element.prototype, "scrollIntoView").mockImplementation(() => {});
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    scrollSpy.mockRestore();
+  });
+
+  async function openMobileSheet() {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<Harness />);
+    await user.click(screen.getByTestId("trigger"));
+    await screen.findByRole("link", { name: /cover/i });
+  }
+
+  it("scrolls the active phase link into view when the sheet opens", async () => {
+    setPathname("/playbook/phase/prepare");
+    await openMobileSheet();
+
+    const phaseLink = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="phase"]',
+    );
+    expect(phaseLink).not.toBeNull();
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy).toHaveBeenCalled();
+    expect(scrollSpy.mock.instances).toContain(phaseLink);
+  });
+
+  it("prefers the active letter sublink over the phase when both are present", async () => {
+    setPathname("/playbook/letter/L01");
+    await openMobileSheet();
+
+    const letterLink = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="letter"]',
+    );
+    expect(letterLink).not.toBeNull();
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy.mock.instances).toContain(letterLink);
+  });
+
+  it("does not scroll when there is no active sublink", async () => {
+    setPathname("/some/unknown/route");
+    await openMobileSheet();
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy).not.toHaveBeenCalled();
   });
 });
