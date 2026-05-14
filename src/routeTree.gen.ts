@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackerRouteImport } from './routes/tracker'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlaybookRouteImport } from './routes/playbook'
 import { Route as LettersRouteImport } from './routes/letters'
 import { Route as DecoderRouteImport } from './routes/decoder'
@@ -30,6 +31,11 @@ const TrackerRoute = TrackerRouteImport.update({
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlaybookRoute = PlaybookRouteImport.update({
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
+  '/progress': typeof ProgressRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
+  '/progress': typeof ProgressRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
+  '/progress': typeof ProgressRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/decoder'
     | '/letters'
     | '/playbook'
+    | '/progress'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/decoder'
     | '/letters'
+    | '/progress'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/decoder'
     | '/letters'
     | '/playbook'
+    | '/progress'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   DecoderRoute: typeof DecoderRoute
   LettersRoute: typeof LettersRoute
   PlaybookRoute: typeof PlaybookRouteWithChildren
+  ProgressRoute: typeof ProgressRoute
   ResourcesRoute: typeof ResourcesRoute
   TrackerRoute: typeof TrackerRoute
 }
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/playbook': {
@@ -294,6 +314,7 @@ const rootRouteChildren: RootRouteChildren = {
   DecoderRoute: DecoderRoute,
   LettersRoute: LettersRoute,
   PlaybookRoute: PlaybookRouteWithChildren,
+  ProgressRoute: ProgressRoute,
   ResourcesRoute: ResourcesRoute,
   TrackerRoute: TrackerRoute,
 }
