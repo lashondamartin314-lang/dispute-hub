@@ -145,7 +145,7 @@ describe("AppSidebar auto-scroll on open", () => {
     expect(scrollSpy.mock.instances).toContain(trackerLink);
   });
 
-  it("does not scroll when there is no active sublink", async () => {
+  it("falls back to the first menu item when no active sublink matches", async () => {
     setPathname("/some/unknown/route");
     await openMobileSheet();
 
@@ -154,6 +154,14 @@ describe("AppSidebar auto-scroll on open", () => {
       vi.advanceTimersByTime(150);
     });
 
-    expect(scrollSpy).not.toHaveBeenCalled();
+    expect(scrollSpy).toHaveBeenCalledTimes(1);
+    const sheet = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"]',
+    );
+    const firstMenuItem = sheet?.querySelector<HTMLElement>(
+      '[data-sidebar="menu-button"]',
+    );
+    expect(firstMenuItem).toBeTruthy();
+    expect(scrollSpy.mock.instances).toContain(firstMenuItem);
   });
 });

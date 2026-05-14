@@ -76,7 +76,10 @@ export function AppSidebar() {
       const target =
         sheet?.querySelector<HTMLElement>('[data-active-scroll="letter"]') ??
         sheet?.querySelector<HTMLElement>('[data-active-scroll="phase"]') ??
-        sheet?.querySelector<HTMLElement>('[data-active-scroll="link"]');
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="link"]') ??
+        // Fallback: no active match — scroll to the first nav item so the
+        // user lands at the top of the menu instead of wherever it last was.
+        sheet?.querySelector<HTMLElement>('[data-sidebar="menu-button"]');
       target?.scrollIntoView({ block: "center", behavior: "auto" });
     }, 120);
     return () => window.clearTimeout(t);
