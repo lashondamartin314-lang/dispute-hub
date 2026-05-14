@@ -12,6 +12,7 @@ import {
   ClipboardList,
   ScanSearch,
   ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import {
   Sidebar,
