@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
 import { Ref } from "@/components/ref";
 import { LetterChip } from "@/components/letter-chip";
+import { SectionToc } from "@/components/section-toc";
+import { Squiggle } from "@/components/squiggle";
 import { PHASES } from "@/data/phases";
 
 export const Route = createFileRoute("/playbook/strategy")({
