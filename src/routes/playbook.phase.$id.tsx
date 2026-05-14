@@ -97,7 +97,7 @@ function PhasePage() {
             label="On this page"
             items={[
               { id: "the-work", label: "The work" },
-              ...(letters.length > 0 ? [{ id: "letters", label: "Letters" } as const] : []),
+              ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
               ...letters.map((l) => ({ id: l.id, label: `${l.id} · ${LETTERS_BY_ID[l.id].title}` })),
             ]}
           />
