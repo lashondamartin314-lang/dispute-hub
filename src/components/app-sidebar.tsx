@@ -221,7 +221,7 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem key={p.id}>
                         <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
-                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile}>
+                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
                             <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                             <span className="truncate">
                               <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
@@ -241,7 +241,7 @@ export function AppSidebar() {
                                     className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
                                     aria-current={lActive ? "page" : undefined}
                                   >
-                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile}>
+                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
                                       <span className="font-mono text-[10px] opacity-60">{l.id}</span>
                                       <span className="truncate">{l.title}</span>
                                     </Link>
