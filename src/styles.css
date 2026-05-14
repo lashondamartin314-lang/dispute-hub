@@ -122,19 +122,19 @@
   --input: rgba(20, 17, 26, 0.18);
   --ring: #F10085;
 
-  --sidebar: #FFFCF5;
+  --sidebar: color-mix(in oklab, var(--brand-magenta) 5%, #FFFCF5);
   --sidebar-foreground: #14111A;
   --sidebar-primary: #00106F;
   --sidebar-primary-foreground: #FAF6EE;
-  --sidebar-accent: #F5EBD4;
+  --sidebar-accent: color-mix(in oklab, var(--brand-magenta) 12%, #F5EBD4);
   --sidebar-accent-foreground: #00106F;
-  --sidebar-border: rgba(20, 17, 26, 0.14);
+  --sidebar-border: color-mix(in oklab, var(--brand-magenta) 18%, transparent);
   --sidebar-ring: #F10085;
 
   /* Hub header — shared tokens so mobile/tablet/desktop stay in sync */
-  --header-bg: var(--brand-cream);
+  --header-bg: color-mix(in oklab, var(--brand-magenta) 6%, var(--brand-cream));
   --header-fg: var(--brand-ink);
-  --header-border: color-mix(in oklab, var(--brand-ink) 10%, transparent);
+  --header-border: color-mix(in oklab, var(--brand-magenta) 22%, transparent);
   --header-muted-fg: color-mix(in oklab, var(--brand-ink) 65%, transparent);
 
   --brand-cream: #FAF6EE;
