@@ -7,6 +7,29 @@ interface CreditAcademyUpsellProps {
   className?: string;
   /** Optional accent (e.g. phase color) for the eyebrow + accent details. */
   accentColor?: string;
+  /** Where on the site this upsell renders — used as utm_content. */
+  placement?: string;
+}
+
+/**
+ * Append attribution UTM params to an outbound CTA while preserving any
+ * existing query string (e.g. SmartCredit's affiliate `PID`).
+ * Existing utm_* values on the URL are respected and not overwritten.
+ */
+function withUtm(href: string, tier: string, placement: string): string {
+  try {
+    const url = new URL(href);
+    const set = (k: string, v: string) => {
+      if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+    };
+    set("utm_source", "dispute_playbook");
+    set("utm_medium", "upsell");
+    set("utm_campaign", "credit_academy");
+    set("utm_content", `${tier}__${placement}`);
+    return url.toString();
+  } catch {
+    return href;
+  }
 }
 
 const TIERS = [
@@ -69,6 +92,7 @@ export function CreditAcademyUpsell({
   variant = "full",
   className,
   accentColor,
+  placement = variant === "compact" ? "compact_banner" : "full_grid",
 }: CreditAcademyUpsellProps) {
   if (variant === "compact") {
     return (
@@ -100,10 +124,11 @@ export function CreditAcademyUpsell({
             </p>
           </div>
           <a
-            href="https://shondamartincom.netlify.app/credit-academy-memberships"
+            href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip", placement)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-gold)] px-6 py-3 text-sm font-bold text-[color:var(--brand-ink)] shadow-elegant transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-gold-deep)] hover:text-[color:var(--brand-cream)]"
+            aria-label="Join Credit Academy VIP (opens in new tab)"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-gold)] px-6 py-3 text-sm font-bold text-[color:var(--brand-ink)] shadow-elegant transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-gold-deep)] hover:text-[color:var(--brand-cream)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Join the Academy <ArrowUpRight className="size-4" aria-hidden />
           </a>
@@ -235,20 +260,21 @@ export function CreditAcademyUpsell({
               </ul>
 
               <a
-                href={t.href}
+                href={withUtm(t.href, t.id, placement)}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${t.cta} (opens in new tab)`}
                 className={cn(
                   "mt-7 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-elegant",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 )}
-                style={{
-                  background: t.highlight
-                    ? "var(--brand-gold)"
-                    : t.accent,
-                  color: t.highlight
-                    ? "var(--brand-ink)"
-                    : "var(--brand-cream)",
-                }}
+                style={
+                  {
+                    background: t.highlight ? "var(--brand-gold)" : t.accent,
+                    color: t.highlight ? "var(--brand-ink)" : "var(--brand-cream)",
+                    ["--tw-ring-color" as string]: t.highlight ? "var(--brand-gold-deep)" : t.accent,
+                  } as React.CSSProperties
+                }
               >
                 {t.cta}
                 <ArrowUpRight className="size-4" aria-hidden />
@@ -261,10 +287,10 @@ export function CreditAcademyUpsell({
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Still undecided?{" "}
         <a
-          href="https://shondamartincom.netlify.app/credit-academy-memberships"
+          href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip_trial", placement)}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-foreground underline-offset-4 hover:underline"
+          className="font-semibold text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           Be Shonda's guest for 7 days →
         </a>
