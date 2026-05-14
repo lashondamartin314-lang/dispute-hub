@@ -13,6 +13,7 @@ import { Route as TrackerRouteImport } from './routes/tracker'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as PlaybookRouteImport } from './routes/playbook'
 import { Route as LettersRouteImport } from './routes/letters'
+import { Route as DecoderRouteImport } from './routes/decoder'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlaybookIndexRouteImport } from './routes/playbook.index'
 import { Route as PlaybookStrategyRouteImport } from './routes/playbook.strategy'
@@ -38,6 +39,11 @@ const PlaybookRoute = PlaybookRouteImport.update({
 const LettersRoute = LettersRouteImport.update({
   id: '/letters',
   path: '/letters',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DecoderRoute = DecoderRouteImport.update({
+  id: '/decoder',
+  path: '/decoder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -73,6 +79,7 @@ const PlaybookLetterIdRoute = PlaybookLetterIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/resources': typeof ResourcesRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/resources': typeof ResourcesRoute
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/decoder'
     | '/letters'
     | '/playbook'
     | '/resources'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/decoder'
     | '/letters'
     | '/resources'
     | '/tracker'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/decoder'
     | '/letters'
     | '/playbook'
     | '/resources'
@@ -147,6 +159,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DecoderRoute: typeof DecoderRoute
   LettersRoute: typeof LettersRoute
   PlaybookRoute: typeof PlaybookRouteWithChildren
   ResourcesRoute: typeof ResourcesRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/letters'
       fullPath: '/letters'
       preLoaderRoute: typeof LettersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/decoder': {
+      id: '/decoder'
+      path: '/decoder'
+      fullPath: '/decoder'
+      preLoaderRoute: typeof DecoderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -250,6 +270,7 @@ const PlaybookRouteWithChildren = PlaybookRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DecoderRoute: DecoderRoute,
   LettersRoute: LettersRoute,
   PlaybookRoute: PlaybookRouteWithChildren,
   ResourcesRoute: ResourcesRoute,
@@ -258,3 +279,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
