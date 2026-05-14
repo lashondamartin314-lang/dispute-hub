@@ -132,10 +132,10 @@
   --sidebar-ring: #F10085;
 
   /* Hub header — shared tokens so mobile/tablet/desktop stay in sync */
-  --header-bg: color-mix(in oklab, var(--brand-navy) 92%, var(--brand-violet-deep));
-  --header-fg: var(--brand-cream);
-  --header-border: color-mix(in oklab, var(--brand-gold) 35%, transparent);
-  --header-muted-fg: color-mix(in oklab, var(--brand-cream) 75%, transparent);
+  --header-bg: var(--brand-cream);
+  --header-fg: var(--brand-ink);
+  --header-border: color-mix(in oklab, var(--brand-ink) 10%, transparent);
+  --header-muted-fg: color-mix(in oklab, var(--brand-ink) 65%, transparent);
 
   --brand-cream: #FAF6EE;
   --brand-paper: #FFFCF5;
