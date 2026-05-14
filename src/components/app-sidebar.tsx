@@ -71,8 +71,11 @@ export function AppSidebar() {
     if (!isMobile || !openMobile) return;
     // Wait for sheet content to mount and animate in.
     const t = window.setTimeout(() => {
-      const sheet = document.querySelector<HTMLElement>('[data-mobile="true"][data-sidebar="sidebar"]');
-      const target = sheet?.querySelector<HTMLElement>('[data-active-scroll="true"]');
+    const sheet = document.querySelector<HTMLElement>('[data-mobile="true"][data-sidebar="sidebar"]');
+      const target =
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="letter"]') ??
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="phase"]') ??
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="link"]');
       target?.scrollIntoView({ block: "center", behavior: "auto" });
     }, 120);
     return () => window.clearTimeout(t);
