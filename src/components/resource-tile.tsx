@@ -27,12 +27,20 @@ export function ResourceTile({ resource, className }: ResourceTileProps) {
         className,
       )}
     >
-      <div className="space-y-1.5">
+      <div className="space-y-2">
         <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
           {CATEGORY_LABEL[resource.category]}
         </p>
         <h3 className="font-display text-xl leading-tight">{resource.label}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
+        {resource.usage && (
+          <div className="mt-3 border-t border-border/60 pt-3">
+            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[color:var(--brand-gold-deep)]">
+              What to pull
+            </p>
+            <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">{resource.usage}</p>
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase text-[#1a0dab] underline underline-offset-4 decoration-[#1a0dab]/40 transition-colors group-hover:decoration-[#1a0dab]">
         Open
