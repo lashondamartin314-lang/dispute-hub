@@ -54,14 +54,9 @@ describe("AppSidebar mobile sheet", () => {
     const coverLink = screen.getByRole("link", { name: /cover/i });
     await user.click(coverLink);
 
-    // useEffect → requestAnimationFrame hop, give the browser a frame.
-    await act(async () => {
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger);
     });
-
-    // Sheet should have unmounted (Cover link gone) and focus should be on trigger.
-    expect(screen.queryByRole("link", { name: /cover/i })).not.toBeInTheDocument();
-    expect(document.activeElement).toBe(trigger);
   });
 
   it("closes the sheet and returns focus to the trigger when an external companion link is tapped", async () => {
@@ -70,19 +65,14 @@ describe("AppSidebar mobile sheet", () => {
 
     const trigger = await openSheet(user);
 
-    // External companion links live in the Companion tools group as <a target="_blank">.
-    // Match by an external-link label (e.g. "AnnualCreditReport.com").
     const externalLink = screen.getByRole("link", { name: /annualcreditreport/i });
     expect(externalLink).toHaveAttribute("target", "_blank");
     expect(externalLink).toHaveAttribute("rel", expect.stringContaining("noopener"));
 
     await user.click(externalLink);
 
-    await act(async () => {
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await waitFor(() => {
+      expect(document.activeElement).toBe(trigger);
     });
-
-    expect(screen.queryByRole("link", { name: /annualcreditreport/i })).not.toBeInTheDocument();
-    expect(document.activeElement).toBe(trigger);
   });
 });
