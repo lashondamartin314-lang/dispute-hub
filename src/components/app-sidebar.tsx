@@ -25,6 +25,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
