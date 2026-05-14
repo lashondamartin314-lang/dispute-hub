@@ -47,6 +47,7 @@ function LetterDetail() {
   const { id } = Route.useParams();
   const letter = LETTERS_BY_ID[id as LetterId];
   const phase = PHASES_BY_ID[letter.phaseId];
+  const guide = LETTER_GUIDES[letter.id];
   const navigate = useNavigate();
 
   const phaseLetters = LETTERS.filter((l) => l.phaseId === letter.phaseId);
