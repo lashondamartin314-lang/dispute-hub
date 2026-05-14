@@ -37,6 +37,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
 import { lettersForPhase } from "@/data/letters";
+import { PhaseGrid } from "@/components/phase-grid";
 
 const phaseIcon = {
   prepare: Compass,
@@ -287,70 +288,69 @@ export function AppSidebar() {
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
-                        {PHASES.map((p) => {
-                          const Icon = phaseIcon[p.id];
-                          const letters = lettersForPhase(p.id);
-                          const active = isPhaseActive(p.id);
-                          const isPhaseOne = p.number === 1;
-                          const coverActive = isActive("/");
-                          // Phase 1 always exposes its sub-items (Cover + letters when active);
-                          // other phases reveal letters only while active.
-                          const showSub = isPhaseOne || (active && letters.length > 0);
-                          return (
-                            <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={PHASE_ACTIVE_CLS}>
-                                <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
-                                  <span
-                                    className="mr-1 inline-flex h-6 min-w-[1.75rem] items-center justify-center rounded-lg border border-white bg-white/90 px-1.5 font-mono text-[10px] font-bold shadow-sm"
-                                    style={{ color: `var(${p.colorVar}-deep)` }}
-                                  >
-                                    P{p.number}
-                                  </span>
-                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                                  <span className="truncate">{p.name}</span>
-                                </Link>
-                              </SidebarMenuButton>
-                              {showSub && (
-                                <SidebarMenuSub>
-                                  {isPhaseOne && (
-                                    <SidebarMenuSubItem>
-                                      <SidebarMenuSubButton
-                                        asChild
-                                        isActive={coverActive}
-                                        className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
-                                        aria-current={coverActive ? "page" : undefined}
-                                      >
-                                        <Link to="/" onClick={closeMobile} data-active-scroll={coverActive ? "link" : undefined}>
-                                          <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)]" aria-hidden />
-                                          <span className="font-semibold">Cover</span>
-                                        </Link>
-                                      </SidebarMenuSubButton>
-                                    </SidebarMenuSubItem>
-                                  )}
-                                  {active && letters.map((l) => {
-                                    const lActive = isLetterActive(l.id);
-                                    return (
-                                      <SidebarMenuSubItem key={l.id}>
-                                        <SidebarMenuSubButton
-                                          asChild
-                                          isActive={lActive}
-                                          className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
-                                          aria-current={lActive ? "page" : undefined}
-                                        >
-                                          <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
-                                            <span className="font-mono text-[10px] opacity-60">{l.id}</span>
-                                            <span className="truncate">{l.title}</span>
-                                          </Link>
-                                        </SidebarMenuSubButton>
-                                      </SidebarMenuSubItem>
-                                    );
-                                  })}
-                                </SidebarMenuSub>
-                              )}
-                            </SidebarMenuItem>
-                          );
-                        })}
+                        {/* Cover lives at the top of Phase 1 — kept as a single pill above the grid. */}
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/")}
+                            tooltip="Cover"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
+                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              <span className="font-semibold">Cover</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       </SidebarMenu>
+
+                      {/* Square P1–P6 grid replaces the stacked phase rows. */}
+                      <div className="px-1 pt-2">
+                        <PhaseGrid variant="sidebar" onSelect={closeMobile} />
+                      </div>
+
+                      {/* Active phase exposes its letters below the grid. */}
+                      {(() => {
+                        const activePhase = PHASES.find((p) => isPhaseActive(p.id));
+                        if (!activePhase) return null;
+                        const letters = lettersForPhase(activePhase.id);
+                        if (letters.length === 0) return null;
+                        return (
+                          <div className="mt-3 px-1">
+                            <p
+                              className="px-2 pb-1 text-[10px] font-bold uppercase tracking-[0.18em]"
+                              style={{ color: `var(${activePhase.colorVar}-deep)` }}
+                            >
+                              P{activePhase.number} · Letters
+                            </p>
+                            <SidebarMenu>
+                              {letters.map((l) => {
+                                const lActive = isLetterActive(l.id);
+                                return (
+                                  <SidebarMenuItem key={l.id}>
+                                    <SidebarMenuButton
+                                      asChild
+                                      isActive={lActive}
+                                      className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
+                                      aria-current={lActive ? "page" : undefined}
+                                    >
+                                      <Link
+                                        to="/playbook/letter/$id"
+                                        params={{ id: l.id }}
+                                        onClick={closeMobile}
+                                        data-active-scroll={lActive ? "letter" : undefined}
+                                      >
+                                        <span className="font-mono text-[10px] opacity-60">{l.id}</span>
+                                        <span className="truncate">{l.title}</span>
+                                      </Link>
+                                    </SidebarMenuButton>
+                                  </SidebarMenuItem>
+                                );
+                              })}
+                            </SidebarMenu>
+                          </div>
+                        );
+                      })()}
                     </SidebarGroupContent>
                   </CollapsibleContent>
                 </SidebarGroup>
@@ -365,43 +365,43 @@ export function AppSidebar() {
                       <SidebarMenu>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} tooltip="Foundation" className={ACTIVE_CLS}>
-                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4 text-[color:var(--brand-navy)]" /> Foundation</Link>
+                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} tooltip="Strategy overview" className={ACTIVE_CLS}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4 text-[color:var(--brand-violet)]" /> Strategy overview</Link>
+                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/letters")} tooltip="Letter library" className={ACTIVE_CLS}>
-                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4 text-[color:var(--brand-magenta)]" /> Letter library</Link>
+                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/tracker")} tooltip="Dispute tracker" className={ACTIVE_CLS}>
-                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4 text-[color:var(--brand-sage)]" /> Dispute tracker</Link>
+                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/decoder")} tooltip="Response decoder" className={ACTIVE_CLS}>
-                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4 text-[color:var(--brand-sky)]" /> Response decoder</Link>
+                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/resources")} tooltip="Resources" className={ACTIVE_CLS}>
-                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4 text-[color:var(--brand-gold-deep)]" /> Resources</Link>
+                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/progress")} tooltip="Your progress" className={ACTIVE_CLS}>
-                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4 text-[color:var(--brand-violet-deep)]" /> Your progress</Link>
+                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/ask")} tooltip="Ask Shonda" className={ACTIVE_CLS}>
                             <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}>
-                              <MessageCircleQuestion className="size-4 text-[color:var(--brand-magenta)]" /> Ask Shonda
+                              <MessageCircleQuestion className="size-4" /> Ask Shonda
                               <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]" aria-hidden />
                             </Link>
                           </SidebarMenuButton>
@@ -448,7 +448,7 @@ export function AppSidebar() {
                     onClick={closeMobile}
                     className="flex items-center gap-2 text-[#1a0dab]"
                   >
-                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                    <Folder className="size-4 shrink-0" />
                     <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
                     <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
                     <span className="sr-only"> (opens in a new tab)</span>
@@ -475,7 +475,7 @@ export function AppSidebar() {
                     onClick={closeMobile}
                     className="flex items-center gap-2 text-[#1a0dab]"
                   >
-                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                    <Folder className="size-4 shrink-0" />
                     <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
                     <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
                     <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>

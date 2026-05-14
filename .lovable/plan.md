@@ -1,87 +1,70 @@
-# Plan: Animated Navigation & Discovery Pass
+## Refinement plan: fonts, sidebar hues, P1–P6 grid, hero + colorways
 
-Four connected features, all powered by Framer Motion. I'll install `framer-motion` first (one dependency), then ship in this order so each step is reviewable on its own.
+### 1. Fonts — closest free substitutes (swap-ready)
 
-## 1. Mobile sidebar → Framer Motion drawer
+Replace the current display stack with substitutes that match Ethic Serif and Editor's Note in feel, kept behind two CSS variables so I can swap to your licensed files later by changing one line.
 
-The shadcn `Sidebar` already swaps to a `Sheet` on mobile, but the touch UX is thin (tap-only, no edge swipe, narrow tap targets, no spring). Replace the mobile branch only — desktop sidebar stays exactly as-is so tooltips, collapsible groups, and the gold/emerald theme are untouched.
+- `--font-display` → **Cormorant Garamond** (Italic + Regular) as the Ethic Serif stand-in for headlines and italic keywords.
+- `--font-body` → **Plus Jakarta Sans** 400/500 as the body pair (already loaded).
+- Retire `--font-editorial` (Fraunces) and `--font-script` (Caveat) so the type system collapses to display + body only.
+- Update `h1–h4`, hero headline gradient `<em>` keywords, accordion titles, and any `.font-editorial`/`.font-script` usages to the unified pair.
+- Add a one-line comment in `styles.css` explaining how to swap to Ethic Serif / Editor's Note when font files arrive.
 
-- New `MobileNavDrawer` component using `motion.aside` + `AnimatePresence`.
-- Spring slide-in from left, dim backdrop with fade.
-- Drag-to-close gesture (`drag="x"`, `dragConstraints`, snap to closed at >40% threshold or velocity).
-- 44px min-height tap targets on every nav row, larger phase chips, sticky close button.
-- Hamburger trigger lives in the existing top bar; uses `SidebarProvider`'s `openMobile` state so nothing else changes.
+### 2. Sidebar hue scope — restrict to P1–P6 chip + row icon
 
-## 2. "Dispute Hub" quick-access menu
+- Keep the colored P-number chip and the phase row's lucide icon tinted with `var(--phase-N)`.
+- Strip the brand-color tints from every Companion-tools icon (Foundation, Strategy, Letter library, Tracker, Decoder, Resources, Progress, Ask) — they all render in the indigo sidebar foreground.
+- Strip color from the Quick-access footer icons too (currently inherit gold/blue).
+- Result: the only hues visible in the sidebar are P1–P6.
 
-A new compact launcher pinned in the top header (visible on every page, both desktop and mobile). Animated dropdown grouping the user's most-used jumps in one place.
+### 3. Square P1–P6 grid — reusable component, three placements
+
+Build a single `<PhaseGrid />` component and drop it in three places.
 
 ```text
-┌─ Dispute Hub ▾ ─────────────────┐
-│ JUMP TO                          │
-│  • Foundation                    │
-│  • Strategy overview             │
-│  • Letter library                │
-│  • Dispute tracker               │
-│ PHASES                           │
-│  • Phase 1 … Phase 6             │
-│ KIT RESOURCES (external ↗)       │
-│  • State AG complaint            │
-│  • CFPB report                   │
-│  • FTC IdentityTheft.gov         │
-└──────────────────────────────────┘
+┌─────┬─────┬─────┐
+│ P1  │ P2  │ P3  │   each tile: square aspect, phase-color background,
+├─────┼─────┼─────┤   large P-number, phase name, hover lifts + saturates
+│ P4  │ P5  │ P6  │
+└─────┴─────┴─────┘
 ```
 
-- Built with Radix `Popover` for a11y + `motion.div` for the panel (scale + fade in, staggered children).
-- External rows reuse the existing "opens in new tab — leaves the Playbook" sr-only label and gold folder icon already used in the sidebar footer.
-- Internal rows use TanStack `Link` with active styling.
+- **Sidebar**: replaces the stacked phase rows with a 2-column grid of compact square tiles. Letters still expand under the active phase below the grid.
+- **Cover (`/`)**: lives in the hero as the primary navigator (3×2 on desktop, 2×3 on tablet, 1-col stack on mobile).
+- **/playbook**: same component at full size as the page's main content.
 
-## 3. Click-and-reveal phase pages
+Each tile: rounded-2xl, phase color background at low saturation, deep variant on hover, P-number in display serif, small phase name label, magenta dot when active.
 
-On `/playbook/phase/$id`, the relevant **resources checklist** and **letters list** currently render statically. Wrap each in a collapsible `motion.section`:
+### 4. Full-bleed hero with parallax (cover route)
 
-- Header row with title + count badge + chevron, click toggles open/closed.
-- `AnimatePresence` with `height: auto` + opacity transition (spring).
-- Letters and checklist items stagger in (0.04s delay each) on first reveal.
-- Default state: checklist open, letters closed (so the page lands cleanly and reveals on intent).
-- Reduced-motion users get an instant toggle (respect `useReducedMotion`).
+- Convert `src/routes/index.tsx` hero to full-viewport (`min-h-[100svh]`) with three parallax layers driven by Lenis scroll position:
+  1. Background halo (slowest, ~0.2× scroll)
+  2. Editorial headline (medium, ~0.5× scroll)
+  3. PhaseGrid + CTAs (foreground, 1× scroll)
+- Use Framer Motion `useScroll` + `useTransform` for layer translation — respects prefers-reduced-motion.
+- Keep current copy and CTAs; only the layout and motion change.
 
-## 4. Framer Motion table of contents with scroll-spy
+### 5. Hover-reactive colorways
 
-A right-rail TOC on long routes (`/playbook/foundation`, `/playbook/strategy`, `/playbook/phase/$id`, `/letters`).
+- On the cover PhaseGrid: hovering a tile fades the surrounding hero background to that phase's `-soft` color via a 400ms ease, returning to base on leave.
+- On the `/playbook` PhaseGrid: same behavior, scoped to the section background only (not the whole page).
+- On each phase page (`/playbook/phase/$id`): the page already knows its phase color — apply it as a subtle ambient wash at the top, no hover needed.
 
-- `useTableOfContents()` hook reads `h2`/`h3` headings on mount, builds a tree.
-- `IntersectionObserver` tracks which section is in view; active id stored in state.
-- Each TOC item is a `motion.a`; the active one scales slightly and gets a gold left bar (`layoutId="toc-active"` for a smooth bar slide between items).
-- Expand/collapse per `h2` parent with `AnimatePresence` for nested `h3` children.
-- Hidden under `lg` to keep mobile clean; the Dispute Hub already covers cross-page jumps on small screens.
+### Out of scope this pass (acknowledged, not built yet)
 
-## Technical details
+- Curtain-reveal CTA section
+- Full motion choreography (number tickers, scroll reveals beyond hero parallax, scale-on-press across all CTAs)
+- Engineering/components-by-numbers section
+- Licensed font swap (waiting on files)
 
-**New dependency**
-- `framer-motion` (single install, ~50KB gzipped, fully tree-shakable).
+I'll list these in the closing message so we can sequence them next.
 
-**New files**
-- `src/components/mobile-nav-drawer.tsx` — drawer for mobile only.
-- `src/components/dispute-hub.tsx` — header popover menu.
-- `src/components/phase-reveal.tsx` — collapsible motion section used by phase route.
-- `src/components/toc.tsx` + `src/hooks/use-toc.ts` — scroll-spy table of contents.
+---
 
-**Edited files**
-- `src/components/app-sidebar.tsx` — render `MobileNavDrawer` when `isMobile`, keep desktop branch.
-- `src/routes/__root.tsx` — mount `<DisputeHub />` in the top header.
-- `src/routes/playbook.phase.$id.tsx` — wrap resources + letters in `<PhaseReveal>`.
-- `src/routes/playbook.foundation.tsx`, `playbook.strategy.tsx`, `letters.tsx` — mount `<TableOfContents />` in the right rail on `lg+`.
+### Technical notes
 
-**Accessibility**
-- `prefers-reduced-motion` honored everywhere (drawer fades instead of slides, reveals are instant, TOC bar jumps).
-- Drawer traps focus and closes on `Esc`.
-- Dispute Hub announces "opens in a new tab — leaves the Playbook" on every external row, matching existing convention.
-
-## Out of scope (ask if you want these)
-
-- Replacing the desktop sidebar entirely (current one already works well; risks regressing tooltips + collapsibles).
-- Persisting Dispute Hub recents to the database.
-- Animating route transitions globally — separate, larger pass.
-
-Approve this and I'll start with step 1 (install + mobile drawer), then move through 2 → 3 → 4 in sequence so you can sanity-check each.
+- New file: `src/components/phase-grid.tsx` (variant prop: `"sidebar" | "cover" | "page"`).
+- Edit: `src/styles.css` (font tokens, drop Fraunces/Caveat imports), `src/components/app-sidebar.tsx` (icon colors stripped, phase rail swapped for `<PhaseGrid variant="sidebar" />`), `src/routes/index.tsx` (hero rebuild + grid), `src/routes/playbook.index.tsx` (insert grid).
+- Parallax: add `useLenisScroll` hook that exposes a normalized scroll value to Framer Motion `motion.div` style transforms; falls back to static positions when `prefers-reduced-motion`.
+- Hover colorway: CSS custom property `--hero-tint` set on the section element via `onMouseEnter` per tile, transitioned with `transition: background-color 400ms ease`.
+- Keep all existing routes, data files, and Supabase wiring untouched.

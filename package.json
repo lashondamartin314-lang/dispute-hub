@@ -18,10 +18,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
-    "@fontsource/caveat": "^5.2.8",
     "@fontsource/cormorant-garamond": "^5.2.11",
-    "@fontsource/fraunces": "^5.2.9",
-    "@fontsource/inter": "^5.2.8",
     "@fontsource/plus-jakarta-sans": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
