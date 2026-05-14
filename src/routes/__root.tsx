@@ -8,6 +8,8 @@ import {
 } from "@tanstack/react-router";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -75,23 +77,40 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full bg-background">
-          <AppSidebar />
-          <SidebarInset className="bg-transparent">
-            <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur-md">
-              <SidebarTrigger />
-              <div className="font-editorial text-sm text-muted-foreground">Credit Academy · The Dispute Playbook</div>
-            </header>
-            <main className="flex-1">
-              <Outlet />
-            </main>
-            <footer className="border-t border-border/60 px-6 py-8 text-center text-xs text-muted-foreground">
-              <p>Educational only · Not legal advice. © {new Date().getFullYear()} Shonda Martin · Credit Academy.</p>
-            </footer>
-          </SidebarInset>
-        </div>
-      </SidebarProvider>
+      <ThemeProvider>
+        <SidebarProvider>
+          <div className="flex min-h-screen w-full bg-background">
+            <AppSidebar />
+            <SidebarInset className="bg-transparent">
+              <header
+                className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b px-3 sm:px-4 md:px-6 backdrop-blur-md"
+                style={{
+                  backgroundColor: "color-mix(in oklab, var(--header-bg) 92%, transparent)",
+                  borderColor: "var(--header-border)",
+                  color: "var(--header-fg)",
+                }}
+              >
+                <SidebarTrigger className="text-[color:var(--header-fg)] hover:bg-white/10" />
+                <div
+                  className="font-editorial text-xs sm:text-sm truncate"
+                  style={{ color: "var(--header-muted-fg)" }}
+                >
+                  Credit Academy · The Dispute Playbook
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  <ThemeToggle />
+                </div>
+              </header>
+              <main className="flex-1">
+                <Outlet />
+              </main>
+              <footer className="border-t border-border/60 px-6 py-8 text-center text-xs text-muted-foreground">
+                <p>Educational only · Not legal advice. © {new Date().getFullYear()} Shonda Martin · Credit Academy.</p>
+              </footer>
+            </SidebarInset>
+          </div>
+        </SidebarProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
