@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Search,
@@ -11,7 +11,10 @@ import {
   ArrowUpRight,
   BookOpen,
   Sparkles,
+  ClipboardPlus,
+  Keyboard,
 } from "lucide-react";
+import { toast } from "sonner";
 import { EditorialHeader } from "@/components/editorial-header";
 import { cn } from "@/lib/utils";
 import {
@@ -23,7 +26,8 @@ import {
   type ResponseSeverity,
   type BureauResponse,
 } from "@/data/bureau-responses";
-import { LETTERS_BY_ID } from "@/data/letters";
+import { LETTERS_BY_ID, type LetterId } from "@/data/letters";
+import { appendTrackerEntry } from "@/lib/tracker-storage";
 
 export const Route = createFileRoute("/decoder")({
   head: () => ({
