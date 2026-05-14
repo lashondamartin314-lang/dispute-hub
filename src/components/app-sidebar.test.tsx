@@ -1,12 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 
+// Mutable pathname so individual tests can simulate different active routes.
+let currentPathname = "/";
+const setPathname = (p: string) => {
+  currentPathname = p;
+};
+
 // Mock TanStack Router so AppSidebar can render outside a real router tree.
 // `Link` becomes a plain anchor that still fires onClick (which the sidebar
-// uses to close the mobile sheet). `useRouterState` returns the home path so
-// no group is auto-active.
+// uses to close the mobile sheet). `useRouterState` reads from the mutable
+// `currentPathname` so tests can drive the active route.
 vi.mock("@tanstack/react-router", () => {
   return {
     Link: React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }>(
@@ -16,7 +22,10 @@ vi.mock("@tanstack/react-router", () => {
         </a>
       ),
     ),
-    useRouterState: () => "/",
+    useRouterState: (opts?: { select?: (s: { location: { pathname: string } }) => unknown }) => {
+      const state = { location: { pathname: currentPathname } };
+      return opts?.select ? opts.select(state) : currentPathname;
+    },
   };
 });
 
@@ -43,6 +52,7 @@ async function openSheet(user: ReturnType<typeof userEvent.setup>) {
 describe("AppSidebar mobile sheet", () => {
   beforeEach(() => {
     document.body.innerHTML = "";
+    setPathname("/");
   });
 
   it("closes the sheet and returns focus to the trigger when an internal link is tapped", async () => {
@@ -74,5 +84,76 @@ describe("AppSidebar mobile sheet", () => {
     await waitFor(() => {
       expect(document.activeElement).toBe(trigger);
     });
+  });
+});
+
+describe("AppSidebar auto-scroll on open", () => {
+  let scrollSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    document.body.innerHTML = "";
+    setPathname("/");
+    scrollSpy = vi.spyOn(Element.prototype, "scrollIntoView").mockImplementation(() => {});
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    scrollSpy.mockRestore();
+  });
+
+  async function openMobileSheet() {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<Harness />);
+    await user.click(screen.getByTestId("trigger"));
+    await screen.findByRole("link", { name: /cover/i });
+  }
+
+  it("scrolls the active phase link into view when the sheet opens", async () => {
+    setPathname("/playbook/phase/prepare");
+    await openMobileSheet();
+
+    const phaseLink = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="phase"]',
+    );
+    expect(phaseLink).not.toBeNull();
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy).toHaveBeenCalled();
+    expect(scrollSpy.mock.instances).toContain(phaseLink);
+  });
+
+  it("scrolls a top-level link into view when it is the active route", async () => {
+    setPathname("/tracker");
+    await openMobileSheet();
+
+    const trackerLink = document.querySelector<HTMLElement>(
+      '[data-mobile="true"][data-sidebar="sidebar"] [data-active-scroll="link"]',
+    );
+    expect(trackerLink).not.toBeNull();
+    expect(trackerLink?.getAttribute("href")).toBe("/tracker");
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy.mock.instances).toContain(trackerLink);
+  });
+
+  it("does not scroll when there is no active sublink", async () => {
+    setPathname("/some/unknown/route");
+    await openMobileSheet();
+
+    scrollSpy.mockClear();
+    await act(async () => {
+      vi.advanceTimersByTime(150);
+    });
+
+    expect(scrollSpy).not.toHaveBeenCalled();
   });
 });
