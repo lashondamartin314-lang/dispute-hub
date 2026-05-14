@@ -62,7 +62,7 @@ function HubPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
             </div>
             <h2
-              className="font-display text-[color:var(--brand-ink)] text-5xl leading-[0.9] tracking-tight md:text-7xl"
+              className="font-display leading-[0.9] tracking-tight md:text-7xl text-6xl"
             >
               <span className="italic font-medium">Where</span> you are in the journey.
             </h2>
