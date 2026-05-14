@@ -203,16 +203,31 @@ function LetterDetail() {
 
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-14 md:px-10 md:py-20 xl:grid-cols-[1fr_220px]">
         <div className="min-w-0 max-w-3xl space-y-12">
-          <section id="open-template" className="scroll-mt-24 rounded-2xl border border-border bg-card p-7 shadow-card md:p-10">
-            <p className="eyebrow">Open the template</p>
-            <h2 className="font-display mt-3 text-3xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-4xl">
+          {/* SECTION 1 — Open the template (sky-tinted card with dotted texture) */}
+          <section
+            id="open-template"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-sky)_55%,transparent)] p-7 shadow-card md:p-10"
+            style={{
+              background:
+                "radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--brand-sky) 22%, transparent) 1px, transparent 0) 0 0 / 14px 14px, linear-gradient(135deg, color-mix(in oklab, var(--brand-sky-soft) 60%, var(--card)), var(--card))",
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-50 blur-2xl"
+              style={{ background: "var(--brand-sky)" }}
+            />
+            <p className="eyebrow relative" style={{ color: "color-mix(in oklab, var(--brand-sky) 30%, var(--brand-ink))" }}>
+              01 · Open the template
+            </p>
+            <h2 className="font-display relative mt-3 text-3xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-4xl">
               Two ways in.
             </h2>
-            <p className="font-editorial mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">
+            <p className="font-editorial relative mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">
               <strong className="font-semibold">"Use template"</strong> creates your own copy in Google Drive — that's the working version you edit and send.{" "}
               <strong className="font-semibold">"Preview"</strong> opens read-only so you can read it before committing.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="relative mt-7 flex flex-wrap gap-3">
               <a
                 href={letter.copyUrl}
                 target="_blank"
@@ -232,8 +247,23 @@ function LetterDetail() {
             </div>
           </section>
 
-          <section id="send-checklist" className="scroll-mt-24 rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-gold)_40%,transparent)] bg-[color:color-mix(in_oklab,var(--brand-peach)_28%,var(--card))] p-7 shadow-card md:p-10">
-            <p className="eyebrow text-[color:var(--brand-gold-deep)]">Send checklist</p>
+          {/* SECTION 2 — Send checklist (peach card with diagonal stripes texture + corner ribbon) */}
+          <section
+            id="send-checklist"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 border-[color:color-mix(in_oklab,var(--brand-gold)_55%,transparent)] p-7 shadow-card md:p-10"
+            style={{
+              background:
+                "repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in oklab, var(--brand-gold) 8%, transparent) 14px 15px), linear-gradient(180deg, color-mix(in oklab, var(--brand-peach) 38%, var(--card)), color-mix(in oklab, var(--brand-peach) 18%, var(--card)))",
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute -right-2 top-6 select-none rounded-l-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)] shadow-md"
+              style={{ background: "var(--brand-gold-deep)" }}
+            >
+              Critical
+            </span>
+            <p className="eyebrow text-[color:var(--brand-gold-deep)]">02 · Send checklist</p>
             <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
               Five steps before it ships.
             </h3>
@@ -258,15 +288,29 @@ function LetterDetail() {
             </ul>
           </section>
 
+          {/* SECTION 3 — Related phase (phase-tinted with grid texture + tape badge) */}
           <section
             id="related-phase"
-            className="scroll-mt-24 rounded-2xl border-2 p-7 shadow-card md:p-10"
+            className="scroll-mt-24 relative overflow-hidden rounded-2xl border-2 p-7 shadow-card md:p-10"
             style={{
-              borderColor: `color-mix(in oklab, var(${phase.colorVar}) 45%, transparent)`,
-              background: `color-mix(in oklab, var(${phase.colorVar}-soft) 38%, var(--card))`,
+              borderColor: `color-mix(in oklab, var(${phase.colorVar}) 55%, transparent)`,
+              background: `
+                linear-gradient(color-mix(in oklab, var(${phase.colorVar}) 6%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
+                linear-gradient(90deg, color-mix(in oklab, var(${phase.colorVar}) 6%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
+                color-mix(in oklab, var(${phase.colorVar}-soft) 42%, var(--card))
+              `,
             }}
           >
-            <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>{phase.eyebrow}</p>
+            <span
+              aria-hidden
+              className="absolute -left-6 top-5 -rotate-6 select-none rounded-sm px-4 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[color:var(--brand-cream)] shadow-md"
+              style={{ background: `var(${phase.colorVar}-deep)` }}
+            >
+              Phase
+            </span>
+            <p className="eyebrow ml-12" style={{ color: `var(${phase.colorVar}-deep)` }}>
+              03 · {phase.eyebrow}
+            </p>
             <h2 className="font-display mt-3 text-3xl font-bold leading-tight md:text-4xl" style={{ color: `var(${phase.colorVar}-deep)` }}>
               This letter belongs to {phase.name}.
             </h2>
@@ -291,7 +335,15 @@ function LetterDetail() {
           </section>
 
           {(prevLetter || nextLetter) && (
-            <section id="continue" className="scroll-mt-24">
+            <section
+              id="continue"
+              className="scroll-mt-24 rounded-2xl border border-dashed border-border/70 p-5 md:p-6"
+              style={{
+                background:
+                  "linear-gradient(180deg, color-mix(in oklab, var(--brand-stone) 30%, var(--card)), var(--card))",
+              }}
+            >
+              <p className="eyebrow mb-4 text-[color:var(--brand-ink)]/55">04 · Continue reading</p>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {prevLetter ? (
                   <Link
@@ -332,9 +384,10 @@ function LetterDetail() {
           )}
         </div>
 
-        <aside className="hidden xl:block">
+        <aside>
           <SectionToc
             label="On this page"
+            accentColor={`var(${phase.colorVar}-deep)`}
             items={[
               { id: "open-template", label: "Open the template" },
               { id: "send-checklist", label: "Send checklist" },
