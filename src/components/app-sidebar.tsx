@@ -14,6 +14,7 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
+  MessageCircleQuestion,
   Home,
 } from "lucide-react";
 import {
