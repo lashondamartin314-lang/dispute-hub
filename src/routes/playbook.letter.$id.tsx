@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUpRight, FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
@@ -28,6 +28,11 @@ function LetterDetail() {
   const { id } = Route.useParams();
   const letter = LETTERS_BY_ID[id as LetterId];
   const phase = PHASES_BY_ID[letter.phaseId];
+
+  const phaseLetters = LETTERS.filter((l) => l.phaseId === letter.phaseId);
+  const idxInPhase = phaseLetters.findIndex((l) => l.id === letter.id);
+  const prevLetter = idxInPhase > 0 ? phaseLetters[idxInPhase - 1] : null;
+  const nextLetter = idxInPhase < phaseLetters.length - 1 ? phaseLetters[idxInPhase + 1] : null;
 
   const hero = `radial-gradient(900px 480px at 12% -10%, color-mix(in oklab, var(${phase.colorVar}) 30%, transparent), transparent 60%), var(--brand-cream)`;
 
