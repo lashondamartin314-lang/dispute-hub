@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Bookmark } from "lucide-react";
+import { useState } from "react";
 import { useLastLetter } from "@/hooks/use-last-letter";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
 import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
 import { DownloadProgressPdf } from "@/components/download-progress-pdf";
+import { PhaseGrid } from "@/components/phase-grid";
 
 export const Route = createFileRoute("/playbook/")({
   head: () => ({
@@ -97,16 +99,17 @@ function ProgressSummary() {
 }
 
 function PlaybookCover() {
+  const [tintVar, setTintVar] = useState<string | null>(null);
   return (
     <div className="relative min-h-[80vh]">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-0 opacity-90" />
       <section className="relative mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center md:py-28">
         <p className="eyebrow text-[color:var(--brand-gold-deep)]">Field Manual · Vol. I · Members Edition</p>
         <h1 className="font-display mt-6 text-6xl leading-none text-balance md:text-8xl">
-          Your <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent not-italic">Dispute</em>
+          Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em>
           <br />Playbook.
         </h1>
-        <p className="font-editorial mt-8 max-w-2xl text-xl text-foreground/80 text-pretty md:text-2xl">
+        <p className="font-display italic mt-8 max-w-2xl text-xl text-foreground/80 text-pretty md:text-2xl">
           A complete six-phase, five-round dispute system. Built on FCRA and FDCPA law. Walk through the work, slow down where it matters, finish on the other side.
         </p>
 
@@ -129,6 +132,26 @@ function PlaybookCover() {
           <span>Shonda Martin</span><span className="opacity-30">·</span>
           <span>Board-Certified Credit Educator</span><span className="opacity-30">·</span>
           <span>Edition 2026</span>
+        </div>
+      </section>
+
+      {/* Square P1–P6 grid — section background reacts to hovered tile. */}
+      <section
+        className="relative w-full transition-[background-color] duration-500 ease-out"
+        style={{
+          backgroundColor: tintVar
+            ? `color-mix(in oklab, var(${tintVar}) 50%, var(--background))`
+            : "transparent",
+        }}
+      >
+        <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
+          <p className="eyebrow">The six phases</p>
+          <h2 className="font-display mt-2 text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl">
+            <span className="italic font-medium">Pick</span> a phase to enter.
+          </h2>
+          <div className="mt-10">
+            <PhaseGrid variant="page" onTintChange={setTintVar} />
+          </div>
         </div>
       </section>
 
