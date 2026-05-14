@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, RotateCcw, Trophy } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Check, RotateCcw, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Phase } from "@/data/phases";
+import { PHASES, type Phase } from "@/data/phases";
 import { lettersForPhase } from "@/data/letters";
 
 interface PhaseChecklistProps {
