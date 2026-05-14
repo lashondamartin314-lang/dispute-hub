@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    name: Vitest + coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run sidebar test suite with coverage
+        run: bunx vitest run src/components/app-sidebar.test.tsx --coverage
+
+      - name: Append coverage summary to PR
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ] || [ -d coverage ]; then
+            echo "## Coverage report" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            # vitest --coverage prints the text-summary table to stdout already;
+            # re-derive a compact view from lcov so the summary survives reruns.
+            if [ -f coverage/lcov.info ]; then
+              awk -F: '
+                /^SF:/   { file=$2; next }
+                /^LF:/   { lf+=$2 }
+                /^LH:/   { lh+=$2 }
+                END {
+                  if (lf > 0) printf("Lines covered: %d / %d  (%.1f%%)\n", lh, lf, 100*lh/lf)
+                  else        print "No coverage data."
+                }' coverage/lcov.info >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload coverage artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 14
