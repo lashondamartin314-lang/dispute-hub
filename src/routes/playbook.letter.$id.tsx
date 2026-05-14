@@ -102,7 +102,7 @@ function LetterDetail() {
           <div className="mt-5 flex flex-wrap gap-3">
             <Link
               to="/playbook/phase/$id"
-              params={{ id: phase.phaseLink ?? phase.id }}
+              params={{ id: phase.id }}
               className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
               style={{ background: `var(${phase.colorVar}-deep)` }}
             >
