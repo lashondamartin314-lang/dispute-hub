@@ -122,14 +122,14 @@
   --input: rgba(20, 17, 26, 0.18);
   --ring: #F10085;
 
-  --sidebar: #064e3b;
-  --sidebar-foreground: #f5f0e0;
-  --sidebar-primary: #c9a84c;
-  --sidebar-primary-foreground: #064e3b;
-  --sidebar-accent: color-mix(in oklab, #c9a84c 18%, #064e3b);
-  --sidebar-accent-foreground: #f5f0e0;
-  --sidebar-border: color-mix(in oklab, #c9a84c 28%, transparent);
-  --sidebar-ring: #c9a84c;
+  --sidebar: color-mix(in oklab, #064e3b 18%, #f8f5ec);
+  --sidebar-foreground: #1f2a24;
+  --sidebar-primary: #064e3b;
+  --sidebar-primary-foreground: #f5f0e0;
+  --sidebar-accent: color-mix(in oklab, #064e3b 10%, #f8f5ec);
+  --sidebar-accent-foreground: #064e3b;
+  --sidebar-border: color-mix(in oklab, #064e3b 14%, transparent);
+  --sidebar-ring: color-mix(in oklab, #c9a84c 70%, #064e3b);
 
   /* Hub header — shared tokens so mobile/tablet/desktop stay in sync */
   --header-bg: linear-gradient(90deg, #064e3b 0%, #0d7a5f 100%);
