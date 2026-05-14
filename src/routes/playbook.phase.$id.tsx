@@ -59,18 +59,25 @@ function PhasePage() {
           <section id="the-work" className="scroll-mt-24">
             <p className="eyebrow">The work, step by step</p>
             <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Inside this phase.</h2>
-            <ol className="mt-6 space-y-4">
+            <ol className="mt-6 space-y-6 md:space-y-7">
               {phase.steps.map((s, i) => (
-                <li key={i} className="flex gap-5 rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+                <li key={i} className="flex gap-4 md:gap-5">
                   <span
-                    className="font-display inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl font-bold text-[color:var(--brand-cream)]"
+                    className="font-display inline-flex h-9 w-9 md:h-10 md:w-10 shrink-0 items-center justify-center rounded-full text-sm md:text-base font-semibold text-[color:var(--brand-cream)] shadow-sm mt-1"
                     style={{ background: `var(${phase.colorVar}-deep)` }}
                   >
                     {i + 1}
                   </span>
-                  <div>
-                    <h3 className="font-display text-xl font-bold leading-snug md:text-2xl">{s.title}</h3>
-                    <p className="font-editorial mt-2 text-base leading-relaxed text-foreground/85 md:text-lg">{s.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-2xl md:text-3xl font-bold leading-[1.15] tracking-tight text-[color:var(--brand-ink)]">
+                      {s.title}
+                    </h3>
+                    <p
+                      className="font-editorial italic mt-3 text-[17px] md:text-lg leading-relaxed text-foreground/80 border-l pl-4"
+                      style={{ borderColor: `color-mix(in oklab, var(${phase.colorVar}-deep) 35%, transparent)` }}
+                    >
+                      {s.description}
+                    </p>
                   </div>
                 </li>
               ))}
