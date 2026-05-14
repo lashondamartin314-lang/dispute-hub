@@ -297,7 +297,7 @@ export function AppSidebar() {
                           const active = isPhaseActive(p.id);
                           return (
                             <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
+                              <SidebarMenuButton asChild isActive={active} className={`${ACTIVE_CLS} ${PHASE_HOVER_CLS}`}>
                                 <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
                                   <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                                   <span className="truncate">
