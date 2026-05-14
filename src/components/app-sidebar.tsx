@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   BookOpen,
@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
   ClipboardList,
   ScanSearch,
+  ChevronDown,
 } from "lucide-react";
 import {
   Sidebar,
@@ -28,6 +29,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
 import { lettersForPhase } from "@/data/letters";
@@ -41,19 +43,20 @@ const phaseIcon = {
   escalate: BookOpen,
 } as const;
 
+// Active-state classes used on every menu/sub-button so the currently-rendered
+// page is unmistakable inside the mobile sheet (and remains clear on desktop).
+const ACTIVE_CLS =
+  "data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none";
+
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { setOpenMobile, isMobile, openMobile } = useSidebar();
   const wasOpenRef = useRef(false);
 
-  // After the mobile sheet closes (programmatically, e.g. via a link tap),
-  // return focus to the SidebarTrigger so keyboard users land back on the
-  // control they activated. Radix only auto-restores focus when the user
-  // dismisses the sheet itself; manual close needs this hop.
+  // Return focus to the SidebarTrigger after the mobile sheet closes via a tap.
   useEffect(() => {
     if (!isMobile) return;
     if (wasOpenRef.current && !openMobile) {
-      // Wait one frame so the sheet finishes unmounting and the trigger is focusable.
       requestAnimationFrame(() => {
         const trigger = document.querySelector<HTMLElement>('[data-sidebar="trigger"]');
         trigger?.focus();
@@ -67,6 +70,45 @@ export function AppSidebar() {
   };
   const isActive = (path: string) => pathname === path;
   const isPhaseActive = (id: string) => pathname.startsWith(`/playbook/phase/${id}`);
+  const isLetterActive = (id: string) => pathname === `/playbook/letter/${id}`;
+
+  // Collapsible group state — open by default; auto-expand the group containing the active route.
+  const playbookHasActive =
+    pathname === "/playbook" ||
+    pathname.startsWith("/playbook/foundation") ||
+    pathname.startsWith("/playbook/strategy") ||
+    pathname.startsWith("/playbook/phase") ||
+    pathname.startsWith("/playbook/letter") ||
+    pathname.startsWith("/letters");
+  const companionHasActive =
+    pathname.startsWith("/tracker") ||
+    pathname.startsWith("/decoder") ||
+    pathname.startsWith("/resources");
+
+  const [playbookOpen, setPlaybookOpen] = useState(true);
+  const [companionOpen, setCompanionOpen] = useState(true);
+  const [phasesOpen, setPhasesOpen] = useState(true);
+
+  useEffect(() => {
+    if (playbookHasActive) setPlaybookOpen(true);
+    if (companionHasActive) setCompanionOpen(true);
+  }, [playbookHasActive, companionHasActive]);
+
+  const groupHeader = (label: string, open: boolean) => (
+    <CollapsibleTrigger asChild>
+      <button
+        type="button"
+        className="flex w-full items-center justify-between px-2 py-1.5 text-left rounded hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+        aria-expanded={open}
+      >
+        <SidebarGroupLabel className="eyebrow m-0 text-[10px]">{label}</SidebarGroupLabel>
+        <ChevronDown
+          className={`size-3.5 text-muted-foreground transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
+          aria-hidden="true"
+        />
+      </button>
+    </CollapsibleTrigger>
+  );
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
@@ -81,111 +123,149 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-0 px-2 py-2">
-        <SidebarGroup className="px-2 py-3">
-          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Companion</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/playbook")}>
-                  <Link to="/playbook" onClick={closeMobile}><BookOpen className="size-4" /> Cover</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")}>
-                  <Link to="/playbook/foundation" onClick={closeMobile}><Compass className="size-4" /> Foundation</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")}>
-                  <Link to="/playbook/strategy" onClick={closeMobile}><ScrollText className="size-4" /> Strategy</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/letters")}>
-                  <Link to="/letters" onClick={closeMobile}><Library className="size-4" /> Letter library</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/tracker")}>
-                  <Link to="/tracker" onClick={closeMobile}><ClipboardList className="size-4" /> Dispute tracker</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/decoder")}>
-                  <Link to="/decoder" onClick={closeMobile}><ScanSearch className="size-4" /> Response decoder</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={isActive("/resources")}>
-                  <Link to="/resources" onClick={closeMobile}><Sparkles className="size-4" /> Resources</Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
-          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Phases</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {PHASES.map((p) => {
-                const Icon = phaseIcon[p.id];
-                const letters = lettersForPhase(p.id);
-                const active = isPhaseActive(p.id);
-                return (
-                  <SidebarMenuItem key={p.id}>
-                    <SidebarMenuButton asChild isActive={active}>
-                      <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile}>
-                        <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                        <span className="truncate">
-                          <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
-                          {p.name}
-                        </span>
-                      </Link>
+        {/* PLAYBOOK */}
+        <Collapsible open={playbookOpen} onOpenChange={setPlaybookOpen}>
+          <SidebarGroup className="px-2 py-3">
+            {groupHeader("Playbook", playbookOpen)}
+            <CollapsibleContent>
+              <SidebarGroupContent className="mt-1">
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
+                      <Link to="/playbook" onClick={closeMobile}><BookOpen className="size-4" /> Cover</Link>
                     </SidebarMenuButton>
-                    {active && letters.length > 0 && (
-                      <SidebarMenuSub>
-                        {letters.map((l) => (
-                          <SidebarMenuSubItem key={l.id}>
-                            <SidebarMenuSubButton asChild>
-                              <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile}>
-                                <span className="font-mono text-[10px] opacity-60">{l.id}</span>
-                                <span className="truncate">{l.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    )}
                   </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
+                      <Link to="/playbook/foundation" onClick={closeMobile}><Compass className="size-4" /> Foundation</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
+                      <Link to="/playbook/strategy" onClick={closeMobile}><ScrollText className="size-4" /> Strategy</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
+                      <Link to="/letters" onClick={closeMobile}><Library className="size-4" /> Letter library</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
 
-        <SidebarGroup className="mt-auto border-t border-sidebar-border/60 px-2 py-3">
-          <SidebarGroupLabel className="eyebrow mb-1 text-[10px]">Quick access</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {PINNED_RESOURCES.map((r) => (
-                <SidebarMenuItem key={r.id}>
-                  <SidebarMenuButton asChild>
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                      <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                      <span className="truncate">{r.label}</span>
-                      <ArrowUpRight className="ml-auto size-3 opacity-50" />
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {/* PHASES */}
+        <Collapsible open={phasesOpen} onOpenChange={setPhasesOpen}>
+          <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
+            {groupHeader("Phases", phasesOpen)}
+            <CollapsibleContent>
+              <SidebarGroupContent className="mt-1">
+                <SidebarMenu>
+                  {PHASES.map((p) => {
+                    const Icon = phaseIcon[p.id];
+                    const letters = lettersForPhase(p.id);
+                    const active = isPhaseActive(p.id);
+                    return (
+                      <SidebarMenuItem key={p.id}>
+                        <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
+                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile}>
+                            <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
+                            <span className="truncate">
+                              <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
+                              {p.name}
+                            </span>
+                          </Link>
+                        </SidebarMenuButton>
+                        {active && letters.length > 0 && (
+                          <SidebarMenuSub>
+                            {letters.map((l) => {
+                              const lActive = isLetterActive(l.id);
+                              return (
+                                <SidebarMenuSubItem key={l.id}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={lActive}
+                                    className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
+                                    aria-current={lActive ? "page" : undefined}
+                                  >
+                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile}>
+                                      <span className="font-mono text-[10px] opacity-60">{l.id}</span>
+                                      <span className="truncate">{l.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            })}
+                          </SidebarMenuSub>
+                        )}
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+
+        {/* COMPANION TOOLS — internal tools then external companion links, in order */}
+        <Collapsible open={companionOpen} onOpenChange={setCompanionOpen}>
+          <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
+            {groupHeader("Companion tools", companionOpen)}
+            <CollapsibleContent>
+              <SidebarGroupContent className="mt-1">
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
+                      <Link to="/tracker" onClick={closeMobile}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
+                      <Link to="/decoder" onClick={closeMobile}><ScanSearch className="size-4" /> Response decoder</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
+                      <Link to="/resources" onClick={closeMobile}><Sparkles className="size-4" /> Resources</Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+
+                  {/* External companion links — same ordered group, tappable, close sheet on tap */}
+                  {PINNED_RESOURCES.map((r) => (
+                    <SidebarMenuItem key={r.id}>
+                      <SidebarMenuButton asChild>
+                        <a
+                          href={r.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={closeMobile}
+                          className="flex items-center gap-2"
+                        >
+                          <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                          <span className="truncate">{r.label}</span>
+                          <ArrowUpRight className="ml-auto size-3 opacity-50" aria-hidden="true" />
+                          <span className="sr-only"> (opens in new tab)</span>
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border px-4 py-3">
-        <a href="https://shondamartin.com" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground">
+        <a
+          href="https://shondamartin.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={closeMobile}
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
           shondamartin.com ↗
         </a>
       </SidebarFooter>
