@@ -12,6 +12,7 @@ import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 import { DisputeHub } from "@/components/dispute-hub";
 import { DisputeHubFab } from "@/components/dispute-hub-fab";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LenisProvider } from "@/components/lenis-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
@@ -82,6 +83,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+        <LenisProvider />
         <SidebarProvider>
           <div className="flex min-h-screen w-full bg-background">
             <AppSidebar />
