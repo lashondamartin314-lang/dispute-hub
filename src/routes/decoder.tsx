@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Search,
@@ -11,7 +11,10 @@ import {
   ArrowUpRight,
   BookOpen,
   Sparkles,
+  ClipboardPlus,
+  Keyboard,
 } from "lucide-react";
+import { toast } from "sonner";
 import { EditorialHeader } from "@/components/editorial-header";
 import { cn } from "@/lib/utils";
 import {
@@ -23,7 +26,8 @@ import {
   type ResponseSeverity,
   type BureauResponse,
 } from "@/data/bureau-responses";
-import { LETTERS_BY_ID } from "@/data/letters";
+import { LETTERS_BY_ID, type LetterId } from "@/data/letters";
+import { appendTrackerEntry } from "@/lib/tracker-storage";
 
 export const Route = createFileRoute("/decoder")({
   head: () => ({
@@ -81,6 +85,9 @@ const SEVERITY_TOKEN: Record<
 function DecoderPage() {
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState<ResponseCategory | "all">("all");
+  const [focusIdx, setFocusIdx] = useState(0);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const cardsRef = useRef<HTMLUListElement | null>(null);
 
   const filtered = useMemo(() => {
     let list: BureauResponse[] = searchResponses(query);
@@ -98,6 +105,54 @@ function DecoderPage() {
     BUREAU_RESPONSES.forEach((r) => c[r.severity]++);
     return c;
   }, []);
+
+  // Reset roving focus when results change.
+  useEffect(() => {
+    setFocusIdx(0);
+  }, [query, activeCat]);
+
+  // Global shortcuts: "/" focuses search, Esc clears it (when focused).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      const typing =
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable);
+      if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      } else if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        if (query) {
+          e.preventDefault();
+          setQuery("");
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [query]);
+
+  const focusCard = (idx: number) => {
+    const el = cardsRef.current?.querySelectorAll<HTMLElement>("[data-decoder-card]")[idx];
+    el?.focus();
+  };
+
+  const onListKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
+    if (filtered.length === 0) return;
+    let next: number | null = null;
+    if (e.key === "ArrowDown" || e.key === "j") next = Math.min(filtered.length - 1, focusIdx + 1);
+    else if (e.key === "ArrowUp" || e.key === "k") next = Math.max(0, focusIdx - 1);
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = filtered.length - 1;
+    else return;
+    e.preventDefault();
+    setFocusIdx(next);
+    focusCard(next);
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
@@ -164,27 +219,42 @@ function DecoderPage() {
             aria-hidden
           />
           <input
+            ref={searchRef}
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type a phrase from your bureau letter — e.g. 'verified', 'remains', 'frivolous'"
-            className="w-full rounded-full border-2 border-border bg-card py-3 pl-11 pr-12 text-sm font-medium shadow-card outline-none transition-colors focus:border-[color:var(--brand-magenta)]"
+            aria-keyshortcuts="/"
+            className="w-full rounded-full border-2 border-border bg-card py-3 pl-11 pr-12 text-sm font-medium shadow-card outline-none transition-colors focus:border-[color:var(--brand-magenta)] focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
-              className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+              className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <X className="size-4" />
             </button>
           )}
         </label>
-        <p className="text-xs text-muted-foreground md:w-48 md:text-right">
-          Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
-          {BUREAU_RESPONSES.length}
-        </p>
+        <div className="flex items-center justify-between gap-3 md:w-auto md:justify-end">
+          <p className="text-xs text-muted-foreground">
+            Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
+            {BUREAU_RESPONSES.length}
+          </p>
+          <span
+            className="hidden items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground sm:inline-flex"
+            title="Keyboard: / to search · ↑ ↓ to browse · Esc to clear"
+          >
+            <Keyboard className="size-3" aria-hidden />
+            <kbd className="rounded border border-border bg-background px-1">/</kbd>
+            <span>search</span>
+            <span aria-hidden>·</span>
+            <kbd className="rounded border border-border bg-background px-1">↑↓</kbd>
+            <span>browse</span>
+          </span>
+        </div>
       </div>
 
       {/* Category chips */}
@@ -217,10 +287,15 @@ function DecoderPage() {
           </p>
         </div>
       ) : (
-        <ul className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {filtered.map((r) => (
+        <ul
+          ref={cardsRef}
+          onKeyDown={onListKeyDown}
+          aria-label="Bureau response results"
+          className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2"
+        >
+          {filtered.map((r, i) => (
             <li key={r.id}>
-              <ResponseCard response={r} />
+              <ResponseCard response={r} tabbable={i === focusIdx} onFocus={() => setFocusIdx(i)} />
             </li>
           ))}
         </ul>
@@ -282,8 +357,10 @@ function CategoryChip({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
         "rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-all",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         active
           ? "border-[color:var(--brand-magenta-deep)] bg-[color:var(--brand-magenta-deep)] text-[color:var(--brand-cream)] shadow-card"
           : "border-border bg-card text-foreground/70 hover:border-foreground/30 hover:text-foreground",
@@ -294,18 +371,58 @@ function CategoryChip({
   );
 }
 
-function ResponseCard({ response }: { response: BureauResponse }) {
+function ResponseCard({
+  response,
+  tabbable = true,
+  onFocus,
+}: {
+  response: BureauResponse;
+  tabbable?: boolean;
+  onFocus?: () => void;
+}) {
   const tok = SEVERITY_TOKEN[response.severity];
   const Icon = tok.icon;
   const suggested =
     response.suggestedLetters
       ?.map((id) => LETTERS_BY_ID[id as keyof typeof LETTERS_BY_ID])
       .filter(Boolean) ?? [];
+  const primaryLetter = suggested[0];
+
+  const saveToTracker = () => {
+    const entry = appendTrackerEntry({
+      letterId: primaryLetter?.id as LetterId | undefined,
+      customLabel: primaryLetter ? undefined : `Decoder: "${response.phrase}"`,
+      notes: `From Response Decoder — "${response.phrase}". ${response.nextStep}`,
+    });
+    toast.success("Saved to dispute tracker", {
+      description: primaryLetter
+        ? `${primaryLetter.id} · ${primaryLetter.title} — due ${entry.nextActionDue || "soon"}`
+        : `Tracker entry created — due ${entry.nextActionDue || "soon"}`,
+      action: {
+        label: "Open tracker",
+        onClick: () => {
+          window.location.href = "/tracker";
+        },
+      },
+    });
+  };
 
   return (
     <article
-      className="relative flex h-full flex-col gap-4 rounded-3xl border-2 bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 md:p-7"
-      style={{ borderColor: tok.ring }}
+      data-decoder-card
+      tabIndex={tabbable ? 0 : -1}
+      onFocus={onFocus}
+      aria-label={`${SEVERITY_LABEL[response.severity]} response: ${response.phrase}`}
+      className={cn(
+        "relative flex h-full flex-col gap-4 rounded-3xl border-2 bg-card p-6 shadow-card outline-none transition-all hover:-translate-y-0.5 md:p-7",
+        "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      )}
+      style={
+        {
+          borderColor: tok.ring,
+          ["--tw-ring-color" as string]: tok.color,
+        } as React.CSSProperties
+      }
     >
       <header className="flex items-start gap-3">
         <span
@@ -340,6 +457,36 @@ function ResponseCard({ response }: { response: BureauResponse }) {
         accent={tok.color}
       />
 
+      <div className="-mt-1">
+        <button
+          type="button"
+          onClick={saveToTracker}
+          className={cn(
+            "inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 sm:w-auto",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          )}
+          style={
+            {
+              background: tok.color,
+              ["--tw-ring-color" as string]: tok.color,
+            } as React.CSSProperties
+          }
+          aria-label={
+            primaryLetter
+              ? `Save to dispute tracker with ${primaryLetter.id} ${primaryLetter.title}`
+              : "Save to dispute tracker"
+          }
+        >
+          <ClipboardPlus className="size-4" aria-hidden />
+          Save to tracker
+          {primaryLetter && (
+            <span className="ml-1 rounded-full bg-[color:color-mix(in_oklab,var(--brand-cream)_20%,transparent)] px-2 py-0.5 font-mono text-[10px]">
+              {primaryLetter.id}
+            </span>
+          )}
+        </button>
+      </div>
+
       {(suggested.length > 0 || response.citation) && (
         <footer className="mt-auto flex flex-wrap items-center gap-2 border-t border-border/60 pt-4">
           {suggested.map((l) => (
@@ -347,7 +494,10 @@ function ResponseCard({ response }: { response: BureauResponse }) {
               key={l.id}
               to="/playbook/letter/$id"
               params={{ id: l.id }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-ink)] px-3 py-1.5 text-xs font-bold text-[color:var(--brand-cream)] transition-transform hover:-translate-y-0.5"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-ink)] px-3 py-1.5 text-xs font-bold text-[color:var(--brand-cream)] transition-transform hover:-translate-y-0.5",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              )}
             >
               <Sparkles className="size-3" aria-hidden />
               {l.id} · {l.title}
