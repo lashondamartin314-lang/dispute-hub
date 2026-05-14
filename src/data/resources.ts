@@ -100,8 +100,21 @@ export const RESOURCES: Resource[] = [
     description: "FTC recovery plan and official identity-theft affidavit.",
     url: "https://www.identitytheft.gov",
     category: "complaint",
+    actionLabel: "File an FTC Identity Theft Report",
     pinned: true,
     rounds: [1],
+    playbookRef: { label: "Phase 2 · Clean identity", href: "/playbook/phase/clean-identity" },
+    steps: [
+      "Confirm the account is genuinely not yours or was opened by fraud (not just inaccurate). For inaccurate accounts use the bureau dispute, not this site.",
+      "Go to IdentityTheft.gov and click 'Get started'.",
+      "Choose the category that matches your situation (e.g. someone opened a credit account in my name).",
+      "Enter every fraudulent account in one session: company name, account number, opening date, bureau where it appears.",
+      "Upload your government ID when prompted.",
+      "Download the FTC Identity Theft Report PDF (the official affidavit) when intake completes.",
+      "Download the personalized recovery plan PDF as well.",
+      "Save both to Drive named: FTC_IdentityTheftReport_YYYY-MM-DD.pdf and FTC_RecoveryPlan_YYYY-MM-DD.pdf.",
+      "Attach the affidavit to your bureau dispute letter and to your CFPB complaint.",
+    ],
     usage:
       "Use this only when an account is genuinely not yours or was opened through fraud. Generate the FTC Identity Theft Report (the official affidavit) and download the personalized recovery plan. Attach the affidavit to your bureau dispute and to a CFPB complaint, and keep a copy in your Drive folder. Do not file here for accounts that are simply inaccurate; that is what the bureau dispute and CFPB are for.",
     checklist: [
