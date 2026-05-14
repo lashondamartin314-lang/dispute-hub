@@ -13,6 +13,7 @@ import {
   ScanSearch,
   ChevronDown,
   ChevronUp,
+  Award,
 } from "lucide-react";
 import {
   Sidebar,
