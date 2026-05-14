@@ -37,6 +37,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
 import { lettersForPhase } from "@/data/letters";
+import { PhaseGrid } from "@/components/phase-grid";
 
 const phaseIcon = {
   prepare: Compass,
