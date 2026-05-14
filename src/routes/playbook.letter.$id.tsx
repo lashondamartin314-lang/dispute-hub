@@ -1,4 +1,5 @@
-import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library } from "lucide-react";
 import {
   Breadcrumb,
@@ -8,10 +9,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EditorialHeader } from "@/components/editorial-header";
 import { SectionToc } from "@/components/section-toc";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
+import { rememberLetter } from "@/hooks/use-last-letter";
 
 const ALL_IDS = LETTERS.map((l) => l.id) as LetterId[];
 
@@ -37,11 +46,16 @@ function LetterDetail() {
   const { id } = Route.useParams();
   const letter = LETTERS_BY_ID[id as LetterId];
   const phase = PHASES_BY_ID[letter.phaseId];
+  const navigate = useNavigate();
 
   const phaseLetters = LETTERS.filter((l) => l.phaseId === letter.phaseId);
   const idxInPhase = phaseLetters.findIndex((l) => l.id === letter.id);
   const prevLetter = idxInPhase > 0 ? phaseLetters[idxInPhase - 1] : null;
   const nextLetter = idxInPhase < phaseLetters.length - 1 ? phaseLetters[idxInPhase + 1] : null;
+
+  useEffect(() => {
+    rememberLetter(letter.id);
+  }, [letter.id]);
 
   const hero = `radial-gradient(900px 480px at 12% -10%, color-mix(in oklab, var(${phase.colorVar}) 30%, transparent), transparent 60%), var(--brand-cream)`;
 
@@ -87,27 +101,44 @@ function LetterDetail() {
             <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: `var(${phase.colorVar}-deep)` }}>
               Letter <span className="text-[color:var(--brand-ink)]">{idxInPhase + 1}</span> of {phaseLetters.length} · {phase.name}
             </p>
-            <div className="flex items-center gap-1.5" aria-hidden>
-              {phaseLetters.map((l, i) => {
-                const isCurrent = l.id === letter.id;
-                const isPast = i < idxInPhase;
-                return (
-                  <Link
-                    key={l.id}
-                    to="/playbook/letter/$id"
-                    params={{ id: l.id }}
-                    aria-label={`${l.id}: ${l.title}`}
-                    title={`${l.id} · ${l.title}`}
-                    className="group/dot relative h-2.5 flex-1 sm:w-10 sm:flex-none rounded-full transition-all hover:scale-y-150"
-                    style={{
-                      background: isCurrent || isPast
-                        ? `var(${phase.colorVar}${isCurrent ? "-deep" : ""})`
-                        : `color-mix(in oklab, var(${phase.colorVar}) 18%, var(--muted))`,
-                    }}
-                  />
-                );
-              })}
-            </div>
+            <nav
+              aria-label={`Letters in ${phase.name}`}
+              className="flex items-center gap-1.5"
+            >
+              <ol className="flex flex-1 items-center gap-1.5 sm:flex-none">
+                {phaseLetters.map((l, i) => {
+                  const isCurrent = l.id === letter.id;
+                  const isPast = i < idxInPhase;
+                  const status = isCurrent ? "current" : isPast ? "completed" : "upcoming";
+                  return (
+                    <li key={l.id} className="flex flex-1 sm:flex-none">
+                      <Link
+                        to="/playbook/letter/$id"
+                        params={{ id: l.id }}
+                        aria-label={`Letter ${i + 1} of ${phaseLetters.length}: ${l.id} ${l.title} (${status})`}
+                        aria-current={isCurrent ? "page" : undefined}
+                        title={`${l.id} · ${l.title}`}
+                        className="group/dot relative block h-3 w-full sm:w-10 rounded-full transition-all hover:scale-y-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        style={{
+                          background: isCurrent || isPast
+                            ? `var(${phase.colorVar}${isCurrent ? "-deep" : ""})`
+                            : `color-mix(in oklab, var(${phase.colorVar}) 18%, var(--muted))`,
+                          ["--tw-ring-color" as string]: `var(${phase.colorVar}-deep)`,
+                        }}
+                      >
+                        {isCurrent && (
+                          <span
+                            aria-hidden
+                            className="pointer-events-none absolute inset-0 rounded-full ring-2 ring-offset-2 ring-offset-background"
+                            style={{ ["--tw-ring-color" as string]: `var(${phase.colorVar}-deep)` }}
+                          />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
           </div>
 
           <div
@@ -126,6 +157,36 @@ function LetterDetail() {
                 background: `linear-gradient(90deg, var(${phase.colorVar}), var(${phase.colorVar}-deep))`,
               }}
             />
+          </div>
+
+          <div className="mt-5">
+            <label htmlFor="jump-to-letter" className="sr-only">
+              Jump to a letter in {phase.name}
+            </label>
+            <Select
+              value={letter.id}
+              onValueChange={(value) =>
+                navigate({ to: "/playbook/letter/$id", params: { id: value as LetterId } })
+              }
+            >
+              <SelectTrigger
+                id="jump-to-letter"
+                aria-label={`Jump to a letter in ${phase.name}`}
+                className="h-11 w-full rounded-full border-border bg-card px-5 text-sm font-semibold text-[color:var(--brand-ink)] shadow-card focus-visible:ring-2 focus-visible:ring-offset-2"
+                style={{ ["--tw-ring-color" as string]: `var(${phase.colorVar}-deep)` }}
+              >
+                <SelectValue placeholder="Jump to letter…" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[60vh]">
+                {phaseLetters.map((l, i) => (
+                  <SelectItem key={l.id} value={l.id} className="cursor-pointer">
+                    <span className="mr-2 font-mono text-xs text-muted-foreground">{l.id}</span>
+                    <span className="font-medium">{l.title}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">({i + 1}/{phaseLetters.length})</span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="mt-10">
