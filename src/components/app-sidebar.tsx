@@ -13,6 +13,7 @@ import {
   ScanSearch,
   ChevronDown,
   ChevronUp,
+  Award,
 } from "lucide-react";
 import {
   Sidebar,
@@ -115,7 +116,8 @@ export function AppSidebar() {
   const companionHasActive =
     pathname.startsWith("/tracker") ||
     pathname.startsWith("/decoder") ||
-    pathname.startsWith("/resources");
+    pathname.startsWith("/resources") ||
+    pathname.startsWith("/progress");
 
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
@@ -360,6 +362,11 @@ export function AppSidebar() {
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
                             <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/progress")} className={ACTIVE_CLS}>
+                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
 
