@@ -42,7 +42,25 @@ const phaseIcon = {
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { setOpenMobile, isMobile } = useSidebar();
+  const { setOpenMobile, isMobile, openMobile } = useSidebar();
+  const wasOpenRef = useRef(false);
+
+  // After the mobile sheet closes (programmatically, e.g. via a link tap),
+  // return focus to the SidebarTrigger so keyboard users land back on the
+  // control they activated. Radix only auto-restores focus when the user
+  // dismisses the sheet itself; manual close needs this hop.
+  useEffect(() => {
+    if (!isMobile) return;
+    if (wasOpenRef.current && !openMobile) {
+      // Wait one frame so the sheet finishes unmounting and the trigger is focusable.
+      requestAnimationFrame(() => {
+        const trigger = document.querySelector<HTMLElement>('[data-sidebar="trigger"]');
+        trigger?.focus();
+      });
+    }
+    wasOpenRef.current = openMobile;
+  }, [openMobile, isMobile]);
+
   const closeMobile = () => {
     if (isMobile) setOpenMobile(false);
   };
