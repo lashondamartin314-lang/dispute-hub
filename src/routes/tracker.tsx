@@ -348,31 +348,106 @@ function fromCSV(text: string): { entries: Entry[]; skipped: number } {
   return { entries: out, skipped };
 }
 
+const NOTIFIED_KEY = "dispute-tracker-notified-v1";
+
+function loadNotified(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try { return JSON.parse(window.localStorage.getItem(NOTIFIED_KEY) || "{}"); } catch { return {}; }
+}
+function saveNotified(map: Record<string, string>) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(NOTIFIED_KEY, JSON.stringify(map));
+}
+
+function isOverdueDue(entry: Entry): boolean {
+  if (entry.outcome !== "pending") return false;
+  if (!entry.nextActionDue) return false;
+  const due = new Date(entry.nextActionDue + "T23:59:59").getTime();
+  return !Number.isNaN(due) && Date.now() > due;
+}
+
 function TrackerPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [editing, setEditing] = useState<Entry | null>(null);
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | Outcome>("all");
   const [hydrated, setHydrated] = useState(false);
+  const [notifPerm, setNotifPerm] = useState<NotificationPermission | "unsupported">("default");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setEntries(loadEntries());
     setHydrated(true);
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifPerm(Notification.permission);
+    } else {
+      setNotifPerm("unsupported");
+    }
   }, []);
 
   useEffect(() => {
     if (hydrated) saveEntries(entries);
   }, [entries, hydrated]);
 
+  // Overdue scan + browser notifications (one per entry per due date)
+  useEffect(() => {
+    if (!hydrated) return;
+    const overdueEntries = entries.filter(isOverdueDue);
+    if (overdueEntries.length === 0) return;
+
+    const notified = loadNotified();
+    let dirty = false;
+    let toastShown = false;
+
+    for (const e of overdueEntries) {
+      const stamp = `${e.id}:${e.nextActionDue}`;
+      if (notified[e.id] === e.nextActionDue) continue;
+      const letterLabel = e.letterId
+        ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim()
+        : (e.customLabel || "Untitled letter");
+
+      if (!toastShown) {
+        toast.warning(`${overdueEntries.length} overdue ${overdueEntries.length === 1 ? "entry" : "entries"}`, {
+          description: `Earliest: ${letterLabel} — due ${fmtDate(e.nextActionDue)}`,
+          duration: 8000,
+        });
+        toastShown = true;
+      }
+
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification("Dispute Tracker — response overdue", {
+            body: `${letterLabel}\nNext action was due ${fmtDate(e.nextActionDue)}`,
+            tag: stamp,
+          });
+        } catch {
+          /* noop */
+        }
+      }
+      notified[e.id] = e.nextActionDue;
+      dirty = true;
+    }
+    if (dirty) saveNotified(notified);
+  }, [entries, hydrated]);
+
+  function requestNotifications() {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      toast.error("Browser notifications aren't supported here");
+      return;
+    }
+    Notification.requestPermission().then((p) => {
+      setNotifPerm(p);
+      if (p === "granted") toast.success("Reminders on — we'll alert you when an entry goes overdue");
+      else if (p === "denied") toast.error("Notifications blocked. Enable in your browser settings.");
+    });
+  }
+
   const stats = useMemo(() => {
     const total = entries.length;
     const pending = entries.filter((e) => e.outcome === "pending").length;
     const delivered = entries.filter((e) => e.deliveredDate).length;
     const wins = entries.filter((e) => e.outcome === "deleted" || e.outcome === "updated").length;
-    const overdue = entries.filter((e) => {
-      const d = daysSince(e.sentDate);
-      return e.outcome === "pending" && d !== null && d > 30;
-    }).length;
+    const overdue = entries.filter(isOverdueDue).length;
     return { total, pending, delivered, wins, overdue };
   }, [entries]);
 
@@ -426,6 +501,30 @@ function TrackerPage() {
     a.download = `dispute-tracker-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  }
+  function triggerImport() {
+    fileInputRef.current?.click();
+  }
+  async function handleImportFile(ev: React.ChangeEvent<HTMLInputElement>) {
+    const file = ev.target.files?.[0];
+    ev.target.value = "";
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const { entries: imported, skipped } = fromCSV(text);
+      if (imported.length === 0) {
+        toast.error("Couldn't find any rows. Make sure the CSV has the same headers as the export.");
+        return;
+      }
+      setEntries((prev) => [...imported, ...prev]);
+      toast.success(
+        `Imported ${imported.length} ${imported.length === 1 ? "entry" : "entries"}` +
+          (skipped ? ` · ${skipped} skipped` : ""),
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Couldn't read that file");
+    }
   }
 
   return (
