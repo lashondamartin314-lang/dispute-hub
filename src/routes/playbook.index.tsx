@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
-import { EditorialHeader } from "@/components/editorial-header";
+import { ArrowRight, Bookmark } from "lucide-react";
+import { useLastLetter } from "@/hooks/use-last-letter";
+import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
+import { PHASES_BY_ID } from "@/data/phases";
 
 export const Route = createFileRoute("/playbook/")({
   head: () => ({
@@ -11,6 +13,86 @@ export const Route = createFileRoute("/playbook/")({
   }),
   component: PlaybookCover,
 });
+
+function ProgressSummary() {
+  const lastId = useLastLetter();
+  if (!lastId || !LETTERS_BY_ID[lastId]) return null;
+
+  const letter = LETTERS_BY_ID[lastId];
+  const phase = PHASES_BY_ID[letter.phaseId];
+  const phaseLetters = LETTERS.filter((l) => l.phaseId === letter.phaseId);
+  const idxInPhase = phaseLetters.findIndex((l) => l.id === letter.id);
+  const pct = ((idxInPhase + 1) / phaseLetters.length) * 100;
+
+  return (
+    <aside
+      aria-label="Resume your last letter"
+      className="mt-12 w-full max-w-2xl rounded-2xl border-2 bg-card p-6 text-left shadow-card md:p-7"
+      style={{
+        borderColor: `color-mix(in oklab, var(${phase.colorVar}) 45%, transparent)`,
+        background: `color-mix(in oklab, var(${phase.colorVar}-soft) 24%, var(--card))`,
+      }}
+    >
+      <div className="flex items-start gap-4">
+        <span
+          aria-hidden
+          className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[color:var(--brand-cream)]"
+          style={{ background: `var(${phase.colorVar}-deep)` }}
+        >
+          <Bookmark className="size-5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>
+            Pick up where you left off
+          </p>
+          <h2 className="font-display mt-2 text-xl font-bold leading-snug text-[color:var(--brand-ink)] md:text-2xl">
+            <span className="font-mono text-base text-muted-foreground">{letter.id}</span> · {letter.title}
+          </h2>
+          <p className="mt-1.5 text-sm font-semibold uppercase tracking-[0.18em]" style={{ color: `var(${phase.colorVar}-deep)` }}>
+            Letter {idxInPhase + 1} of {phaseLetters.length} · {phase.name}
+          </p>
+
+          <div
+            className="mt-4 h-1.5 overflow-hidden rounded-full"
+            style={{ background: `color-mix(in oklab, var(${phase.colorVar}) 14%, var(--muted))` }}
+            role="progressbar"
+            aria-valuenow={idxInPhase + 1}
+            aria-valuemin={1}
+            aria-valuemax={phaseLetters.length}
+            aria-label={`Letter ${idxInPhase + 1} of ${phaseLetters.length} in ${phase.name}`}
+          >
+            <div
+              className="h-full rounded-full transition-[width] duration-500"
+              style={{
+                width: `${pct}%`,
+                background: `linear-gradient(90deg, var(${phase.colorVar}), var(${phase.colorVar}-deep))`,
+              }}
+            />
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              to="/playbook/letter/$id"
+              params={{ id: letter.id as LetterId }}
+              className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+              style={{ background: `var(${phase.colorVar}-deep)` }}
+            >
+              Jump back to {letter.id}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              to="/playbook/phase/$id"
+              params={{ id: phase.id }}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-[color:var(--brand-ink)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)]"
+            >
+              Open {phase.shortName} phase
+            </Link>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 function PlaybookCover() {
   return (
@@ -34,6 +116,8 @@ function PlaybookCover() {
             Strategy first
           </Link>
         </div>
+
+        <ProgressSummary />
 
         <div className="mt-16 flex items-center gap-6 text-xs uppercase tracking-[0.2em] text-muted-foreground">
           <span>Shonda Martin</span><span className="opacity-30">·</span>
