@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, FileText } from "lucide-react";
+import { ArrowUpRight, Eye, Mail, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
