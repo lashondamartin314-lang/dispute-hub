@@ -105,9 +105,13 @@ export function AppSidebar() {
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
   const STORAGE_KEY = "sidebar:groups:v1";
+  const ORDER_KEY = "sidebar:order:v1";
+  type GroupId = "playbook" | "phases" | "companion";
+  const DEFAULT_ORDER: GroupId[] = ["playbook", "phases", "companion"];
   const [playbookOpen, setPlaybookOpen] = useState(true);
   const [companionOpen, setCompanionOpen] = useState(true);
   const [phasesOpen, setPhasesOpen] = useState(true);
+  const [order, setOrder] = useState<GroupId[]>(DEFAULT_ORDER);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -119,6 +123,18 @@ export function AppSidebar() {
         if (typeof saved.playbook === "boolean") setPlaybookOpen(saved.playbook);
         if (typeof saved.companion === "boolean") setCompanionOpen(saved.companion);
         if (typeof saved.phases === "boolean") setPhasesOpen(saved.phases);
+      }
+      const rawOrder = window.localStorage.getItem(ORDER_KEY);
+      if (rawOrder) {
+        const parsed = JSON.parse(rawOrder) as GroupId[];
+        // Validate: every default id present exactly once.
+        if (
+          Array.isArray(parsed) &&
+          parsed.length === DEFAULT_ORDER.length &&
+          DEFAULT_ORDER.every((id) => parsed.includes(id))
+        ) {
+          setOrder(parsed);
+        }
       }
     } catch {
       /* ignore */
@@ -138,6 +154,15 @@ export function AppSidebar() {
     }
   }, [hydrated, playbookOpen, companionOpen, phasesOpen]);
 
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(ORDER_KEY, JSON.stringify(order));
+    } catch {
+      /* ignore */
+    }
+  }, [hydrated, order]);
+
   // Auto-expand the group containing the active route (overrides saved state
   // only when navigating into a collapsed group, so users always see context).
   useEffect(() => {
@@ -145,22 +170,59 @@ export function AppSidebar() {
     if (companionHasActive) setCompanionOpen(true);
   }, [playbookHasActive, companionHasActive]);
 
+  const moveGroup = (id: GroupId, dir: -1 | 1) => {
+    setOrder((curr) => {
+      const idx = curr.indexOf(id);
+      const target = idx + dir;
+      if (idx < 0 || target < 0 || target >= curr.length) return curr;
+      const next = curr.slice();
+      [next[idx], next[target]] = [next[target], next[idx]];
+      return next;
+    });
+  };
 
-  const groupHeader = (label: string, open: boolean) => (
-    <CollapsibleTrigger asChild>
-      <button
-        type="button"
-        className="flex w-full items-center justify-between px-2 py-1.5 text-left rounded hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
-        aria-expanded={open}
-      >
-        <SidebarGroupLabel className="eyebrow m-0 text-[10px]">{label}</SidebarGroupLabel>
-        <ChevronDown
-          className={`size-3.5 text-muted-foreground transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
-          aria-hidden="true"
-        />
-      </button>
-    </CollapsibleTrigger>
-  );
+  const groupHeader = (id: GroupId, label: string, open: boolean) => {
+    const idx = order.indexOf(id);
+    const isFirst = idx === 0;
+    const isLast = idx === order.length - 1;
+    return (
+      <div className="flex w-full items-center gap-1">
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            className="flex flex-1 items-center justify-between px-2 py-1.5 text-left rounded hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+            aria-expanded={open}
+          >
+            <SidebarGroupLabel className="eyebrow m-0 text-[10px]">{label}</SidebarGroupLabel>
+            <ChevronDown
+              className={`size-3.5 text-muted-foreground transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
+              aria-hidden="true"
+            />
+          </button>
+        </CollapsibleTrigger>
+        <div className="flex items-center" aria-label={`Reorder ${label}`}>
+          <button
+            type="button"
+            onClick={() => moveGroup(id, -1)}
+            disabled={isFirst}
+            aria-label={`Move ${label} up`}
+            className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-sidebar-accent/50 hover:text-foreground disabled:opacity-25 disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+          >
+            <ChevronUp className="size-3.5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => moveGroup(id, 1)}
+            disabled={isLast}
+            aria-label={`Move ${label} down`}
+            className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-sidebar-accent/50 hover:text-foreground disabled:opacity-25 disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+          >
+            <ChevronDown className="size-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
