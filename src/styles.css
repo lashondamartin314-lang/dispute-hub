@@ -113,7 +113,7 @@
   --secondary-foreground: #00106F;
 
   --muted: #F2EDE2;
-  --muted-foreground: #5E5664;
+  --muted-foreground: #443C4D;
 
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: #FAF6EE;
@@ -194,7 +194,10 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; font-weight: 600; }
+  h1 { font-family: var(--font-display); letter-spacing: -0.025em; font-weight: 700; }
+  h2 { font-family: var(--font-display); letter-spacing: -0.022em; font-weight: 700; }
+  h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; font-weight: 600; }
+  strong, b { font-weight: 700; color: var(--brand-navy-deep); }
   ::selection { background: color-mix(in oklab, var(--brand-magenta) 35%, transparent); color: var(--foreground); }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 8px; }
 }
@@ -215,10 +218,40 @@
 @utility eyebrow {
   font-family: var(--font-sans);
   font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-weight: 700;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--brand-magenta);
+}
+
+@utility eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-magenta-deep);
+  background: color-mix(in oklab, var(--brand-pink) 70%, transparent);
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--brand-magenta) 22%, transparent);
+}
+
+@utility highlight {
+  background: linear-gradient(180deg, transparent 60%, color-mix(in oklab, var(--brand-gold) 55%, transparent) 60%);
+  padding: 0 0.15em;
+  font-weight: 700;
+  color: var(--brand-ink);
+}
+
+@utility text-accent-grad {
+  background: linear-gradient(135deg, var(--brand-magenta), var(--brand-violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @utility hairline {
