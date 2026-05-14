@@ -21,13 +21,13 @@ function HubPage() {
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
 
-      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-20 md:px-10 md:pt-24">
+      <section className="font-display leading-[0.9] tracking-tight md:text-7xl text-6xl">
         <EditorialHeader
           eyebrow="Credit Academy · 2026 Edition"
           numeral="✶"
           numeralColor="var(--brand-gold)"
           title={<>Your <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent not-italic">Dispute</em> Playbook, made <em className="font-script text-[color:var(--brand-magenta)] not-italic">interactive</em>.</>}
-          lede={<>A six-phase, five-round dispute system — built on FCRA and FDCPA law. Every letter linked. Every reference live. Walk through the work, slow down where it matters, finish on the other side.</>}
+          lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
         />
 
         <div className="mt-10 flex flex-wrap gap-3">
