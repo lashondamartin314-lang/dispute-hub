@@ -49,7 +49,7 @@ function LetterDetail() {
       <section className="relative border-b border-border" style={{ background: hero }}>
         <div className="mx-auto max-w-3xl px-6 py-14 md:px-10 md:py-20">
           <Breadcrumb>
-            <BreadcrumbList className="text-sm">
+            <BreadcrumbList className="text-sm md:text-base">
               <BreadcrumbItem>
                 <BreadcrumbLink asChild className="text-foreground/70 hover:text-foreground">
                   <Link to="/">Home</Link>
@@ -81,7 +81,7 @@ function LetterDetail() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="mt-6">
+          <div className="mt-8">
             <EditorialHeader
               eyebrow={`${phase.eyebrow} · Letter ${letter.id}`}
               numeral={letter.id.replace("L", "")}
@@ -93,32 +93,58 @@ function LetterDetail() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 py-12 md:px-10 space-y-10">
-        <div className="rounded-2xl border border-border bg-card p-6 md:p-8 shadow-elegant">
+      <section className="mx-auto max-w-3xl px-6 py-14 md:px-10 md:py-20 space-y-12">
+        <div className="rounded-2xl border border-border bg-card p-7 md:p-10 shadow-elegant">
           <p className="eyebrow">Open the template</p>
-          <h2 className="font-display mt-2 text-2xl">Two ways in.</h2>
-          <p className="mt-2 text-foreground/75">"Use template" creates your own copy in Google Drive — that's the working version you edit and send. "Preview" opens read-only so you can read it before committing.</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a href={letter.copyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground hover:bg-[color:var(--brand-magenta-deep)]">
-              Use template <ArrowUpRight className="size-4" />
+          <h2 className="font-display mt-3 text-3xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-4xl">
+            Two ways in.
+          </h2>
+          <p className="font-editorial mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">
+            <strong className="font-semibold">"Use template"</strong> creates your own copy in Google Drive — that's the working version you edit and send.{" "}
+            <strong className="font-semibold">"Preview"</strong> opens read-only so you can read it before committing.
+          </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a
+              href={letter.copyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-base font-semibold text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-elegant"
+            >
+              Use template <ArrowUpRight className="size-5" />
             </a>
-            <a href={letter.viewUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-6 py-3 text-sm font-medium hover:border-[color:var(--brand-gold)]">
-              <FileText className="size-4" /> Preview only
+            <a
+              href={letter.viewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-3.5 text-base font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)]"
+            >
+              <FileText className="size-5" /> Preview only
             </a>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-[color:color-mix(in_oklab,var(--brand-peach)_22%,var(--card))] p-6 md:p-8">
+        <div className="rounded-2xl border border-border bg-[color:color-mix(in_oklab,var(--brand-peach)_22%,var(--card))] p-7 md:p-10">
           <p className="eyebrow text-[color:var(--brand-gold-deep)]">Send checklist</p>
-          <ul className="mt-4 space-y-2 text-foreground/85">
+          <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
+            Five steps before it ships.
+          </h3>
+          <ul className="mt-6 space-y-3.5 text-foreground/90">
             {[
               "Make a copy in your own Drive (don't edit the master).",
               "Replace every bracketed [field] with your actual information.",
               "Print, sign, and date.",
               "Send by USPS Certified Mail · Return Receipt Requested.",
               "Log the date sent + tracking number on your Round Tracker.",
-            ].map((s) => (
-              <li key={s} className="flex gap-2"><span className="text-[color:var(--brand-magenta)]">✓</span><span>{s}</span></li>
+            ].map((s, i) => (
+              <li key={s} className="flex items-baseline gap-3 text-base leading-relaxed md:text-lg">
+                <span
+                  className="font-display inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-[color:var(--brand-cream)]"
+                  style={{ background: "var(--brand-gold-deep)" }}
+                >
+                  {i + 1}
+                </span>
+                <span>{s}</span>
+              </li>
             ))}
           </ul>
         </div>
