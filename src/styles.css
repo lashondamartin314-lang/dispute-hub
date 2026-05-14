@@ -248,10 +248,12 @@
 }
 
 @utility text-accent-grad {
-  background: linear-gradient(135deg, var(--brand-magenta), var(--brand-violet));
+  background: linear-gradient(110deg, #F5C518 0%, #EC4899 50%, #7C3AED 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  font-style: italic;
+  font-weight: 700;
 }
 
 @utility hairline {
