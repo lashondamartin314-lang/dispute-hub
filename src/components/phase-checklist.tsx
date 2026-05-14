@@ -7,6 +7,7 @@ import { PHASES, type Phase } from "@/data/phases";
 import { buildChecklist, CHECKLIST_STORAGE_PREFIX } from "@/lib/checklist";
 import { awardPhaseBadge } from "@/lib/badges.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { MilestonePrompt } from "@/components/milestone-prompt";
 
 interface PhaseChecklistProps {
   phase: Phase;
@@ -20,6 +21,8 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
 
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [hydrated, setHydrated] = useState(false);
+  const [milestoneOpen, setMilestoneOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | undefined>(undefined);
 
   // Load
   useEffect(() => {
@@ -76,23 +79,35 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
       fire(0.3, { origin: { x: 0.8, y: 0.7 }, angle: 120 });
       fire(0.4, { origin: { x: 0.5, y: 0.6 }, spread: 100 });
 
-      // Best-effort: persist a milestone badge to the user's profile.
-      // Silently no-ops if the user isn't signed in.
+      // Best-effort: persist a milestone badge + capture email for the prompt.
       (async () => {
         try {
           const { data } = await supabase.auth.getSession();
-          if (!data.session) return;
-          await awardPhaseBadge({
-            data: {
-              phaseId: phase.id,
-              phaseNumber: phase.number,
-              phaseName: phase.name,
-            },
-          });
+          if (data.session?.user?.email) setUserEmail(data.session.user.email);
+          if (data.session) {
+            await awardPhaseBadge({
+              data: {
+                phaseId: phase.id,
+                phaseNumber: phase.number,
+                phaseName: phase.name,
+              },
+            });
+          }
         } catch {
           /* ignore — badge will award next time the user completes/visits */
         }
       })();
+
+      // Open the milestone prompt unless the user already dismissed it for
+      // this phase on this device.
+      try {
+        const dismissed = window.localStorage.getItem(
+          `milestone-prompt-shown:${phase.id}`,
+        );
+        if (!dismissed) setMilestoneOpen(true);
+      } catch {
+        setMilestoneOpen(true);
+      }
     }
     prevPctRef.current = pct;
   }, [pct, hydrated, phase.colorVar, phase.id, phase.number, phase.name]);
@@ -331,6 +346,31 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
           </div>
         );
       })()}
+
+      {/* Re-open the milestone prompt anytime once the phase is complete. */}
+      {pct === 100 && (
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              window.localStorage.removeItem(`milestone-prompt-shown:${phase.id}`);
+            } catch {
+              /* ignore */
+            }
+            setMilestoneOpen(true);
+          }}
+          className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground"
+        >
+          Update tracker for this phase →
+        </button>
+      )}
+
+      <MilestonePrompt
+        phase={phase}
+        open={milestoneOpen}
+        onClose={() => setMilestoneOpen(false)}
+        defaultEmail={userEmail}
+      />
     </section>
   );
 }
