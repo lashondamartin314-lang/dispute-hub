@@ -129,6 +129,10 @@ function PlaybookCover() {
           <span>Edition 2026</span>
         </div>
       </section>
+
+      <section className="relative mx-auto max-w-5xl px-6 pb-24 md:pb-32">
+        <CreditAcademyUpsell variant="compact" />
+      </section>
     </div>
   );
 }
