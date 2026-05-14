@@ -475,7 +475,7 @@ export function AppSidebar() {
                     onClick={closeMobile}
                     className="flex items-center gap-2 text-[#1a0dab]"
                   >
-                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                    <Folder className="size-4 shrink-0" />
                     <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
                     <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
                     <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
