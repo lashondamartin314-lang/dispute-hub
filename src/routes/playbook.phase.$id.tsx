@@ -3,6 +3,8 @@ import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, XCircle, Lightbulb, Spar
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
 import { SectionToc } from "@/components/section-toc";
+import { PhaseChecklist } from "@/components/phase-checklist";
+import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
 import { PHASES, PHASES_BY_ID } from "@/data/phases";
 import { lettersForPhase, LETTERS_BY_ID } from "@/data/letters";
 import type { PhaseId } from "@/data/letters";
