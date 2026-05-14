@@ -58,17 +58,18 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
       <div className="relative flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-4">
           <span
-            aria-hidden
+            role="img"
+            aria-label={`${phase.eyebrow} dispute letter ${letter.id}`}
             className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-card md:h-14 md:w-14"
             style={{
               background: isFrame
-                ? `color-mix(in oklab, var(--brand-cream) 14%, transparent)`
-                : `color-mix(in oklab, ${phaseColor} 16%, var(--brand-paper))`,
-              color: isFrame ? "var(--brand-gold)" : phaseDeep,
-              border: `2px solid color-mix(in oklab, ${phaseColor} 45%, transparent)`,
+                ? `color-mix(in oklab, var(--brand-ink) 78%, ${phaseColor})`
+                : phaseDeep,
+              color: "var(--brand-cream)",
+              border: `2px solid color-mix(in oklab, ${phaseColor} 70%, var(--brand-ink))`,
             }}
           >
-            <Mail className="size-6 md:size-7" strokeWidth={2.25} />
+            <Mail className="size-6 md:size-7" strokeWidth={2.25} aria-hidden />
           </span>
           <div className="min-w-0 space-y-2">
             <p className="eyebrow" style={{ color: isFrame ? "var(--brand-gold)" : phaseDeep }}>
@@ -99,7 +100,7 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
 
       <div
         className={cn(
-          "pt-5 mt-auto grid gap-2.5 relative border-t sm:grid-cols-[1fr_1fr_auto] sm:gap-3",
+          "pt-5 mt-auto grid gap-2.5 relative border-t sm:grid-cols-[1fr_1fr_auto_auto] sm:gap-3 sm:items-center",
           isFrame
             ? "border-[color:color-mix(in_oklab,var(--brand-cream)_20%,transparent)]"
             : "border-[color:color-mix(in_oklab,var(--brand-ink)_12%,transparent)]",
@@ -109,15 +110,17 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
           href={letter.copyUrl}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Use template for ${letter.title} (opens in new tab)`}
           className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground shadow-card transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-glow"
         >
           Use template
-          <ArrowUpRight className="size-4" />
+          <ArrowUpRight className="size-4" aria-hidden />
         </a>
         <a
           href={letter.viewUrl}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Preview ${letter.title} letter (opens in new tab)`}
           className={cn(
             "inline-flex items-center justify-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-bold transition-all hover:-translate-y-0.5",
             isFrame
@@ -133,18 +136,33 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
               : undefined
           }
         >
-          <Eye className="size-4" strokeWidth={2.25} />
+          <Eye className="size-4" strokeWidth={2.25} aria-hidden />
           Preview
         </a>
         <Link
           to="/playbook/letter/$id"
           params={{ id: letter.id }}
+          aria-label={`Open full details for ${letter.title}`}
           className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant sm:ml-auto"
           style={{ background: isFrame ? "var(--brand-gold-deep)" : phaseDeep }}
         >
-          <BookOpen className="size-4" strokeWidth={2.25} />
+          <BookOpen className="size-4" strokeWidth={2.25} aria-hidden />
           Letter details
-          <ArrowUpRight className="size-4" />
+          <ArrowUpRight className="size-4" aria-hidden />
+        </Link>
+        <Link
+          to="/playbook/letter/$id"
+          params={{ id: letter.id }}
+          aria-label={`Open ${letter.title} details`}
+          title="Open details"
+          className="hidden sm:inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 transition-all hover:-translate-y-0.5 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          style={{
+            background: isFrame ? "var(--brand-gold-deep)" : phaseDeep,
+            color: "var(--brand-cream)",
+            borderColor: `color-mix(in oklab, ${phaseColor} 60%, var(--brand-ink))`,
+          }}
+        >
+          <ArrowUpRight className="size-5" strokeWidth={2.5} aria-hidden />
         </Link>
       </div>
     </article>
