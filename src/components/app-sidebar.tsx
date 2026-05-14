@@ -427,7 +427,6 @@ export function AppSidebar() {
             {[
               { to: "/tracker", label: "Dispute tracker", Icon: ClipboardList },
               { to: "/decoder", label: "Response decoder", Icon: ScanSearch },
-              { to: "/letters", label: "Letter library", Icon: Library },
               { to: "/ask", label: "Ask Shonda", Icon: MessageCircleQuestion },
               { to: "/progress", label: "Your progress", Icon: Award },
             ].map(({ to, label, Icon }) => (
