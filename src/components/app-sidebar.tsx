@@ -287,23 +287,11 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/")} tooltip="Cover" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} tooltip="Foundation" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} tooltip="Strategy overview" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/letters")} tooltip="Letter library" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/")} tooltip="Cover" className={ACTIVE_CLS}>
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
+                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              <span className="font-semibold">Cover</span>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         {PHASES.map((p) => {
