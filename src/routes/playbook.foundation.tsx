@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
+import { PhaseCard } from "@/components/phase-card";
 import { Ref } from "@/components/ref";
 import { SectionToc } from "@/components/section-toc";
 import { Squiggle } from "@/components/squiggle";
@@ -91,16 +92,15 @@ function FoundationPage() {
         <div className="mt-6 space-y-3">
           <p className="eyebrow-pill">How they fit together</p>
           {PHASES.map((p) => (
-            <div key={p.id} className="group flex items-center gap-5 rounded-xl border border-border bg-card p-5 transition hover:border-[color:var(--brand-gold)] hover:shadow-elegant">
-              <div className="font-display text-5xl font-bold w-12 text-center" style={{ color: `var(${p.colorVar}-deep)` }}>{p.number}</div>
-              <div className="flex-1">
-                <h4 className="font-display text-xl font-bold tracking-tight" style={{ color: `var(${p.colorVar}-deep)` }}>{p.name.toUpperCase()}</h4>
-                <p className="text-sm text-foreground/85">{p.lede}</p>
-              </div>
-              <div className="rounded-full bg-[color:color-mix(in_oklab,var(--brand-gold-soft)_70%,transparent)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[color:var(--brand-gold-deep)]">
-                {p.rounds === 0 ? "No rounds" : `${p.rounds} round${p.rounds > 1 ? "s" : ""}`}
-              </div>
-            </div>
+            <PhaseCard
+              key={p.id}
+              phase={p}
+              rightSlot={
+                <div className="rounded-full bg-[color:color-mix(in_oklab,var(--brand-gold-soft)_70%,transparent)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[color:var(--brand-gold-deep)]">
+                  {p.rounds === 0 ? "No rounds" : `${p.rounds} round${p.rounds > 1 ? "s" : ""}`}
+                </div>
+              }
+            />
           ))}
         </div>
       </section>
