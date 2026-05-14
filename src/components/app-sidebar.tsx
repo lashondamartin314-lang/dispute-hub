@@ -392,35 +392,72 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
-        <Collapsible defaultOpen={false}>
-          <CollapsibleTrigger className="group flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent/40">
-            <span className="eyebrow text-[10px]">External resources</span>
-            <ChevronDown
-              className="size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
-              aria-hidden="true"
-            />
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenu className="mt-1">
-              {PINNED_RESOURCES.map((r) => (
-                <SidebarMenuItem key={r.id}>
-                  <SidebarMenuButton asChild tooltip={r.label}>
-                    <a
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={closeMobile}
-                      className="flex items-center gap-2 text-[#1a0dab]"
-                    >
-                      <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                      <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                      <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                      <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
+        <FooterCollapsible
+          storageKey="sidebar:footer:quick-access"
+          label="Quick access"
+          defaultOpen={false}
+        >
+          <SidebarMenu className="mt-1">
+            {[
+              { to: "/tracker", label: "Dispute tracker", Icon: ClipboardList },
+              { to: "/decoder", label: "Response decoder", Icon: ScanSearch },
+              { to: "/letters", label: "Letter library", Icon: Library },
+              { to: "/ask", label: "Ask Shonda", Icon: MessageCircleQuestion },
+              { to: "/progress", label: "Your progress", Icon: Award },
+            ].map(({ to, label, Icon }) => (
+              <SidebarMenuItem key={to}>
+                <SidebarMenuButton asChild isActive={isActive(to)} tooltip={label} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
+                  <Link to={to} onClick={closeMobile}>
+                    <Icon className="size-4" /> {label}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+            {PINNED_RESOURCES.slice(0, 3).map((r) => (
+              <SidebarMenuItem key={`qa-${r.id}`}>
+                <SidebarMenuButton asChild tooltip={r.label}>
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMobile}
+                    className="flex items-center gap-2 text-[#1a0dab]"
+                  >
+                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
+                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </FooterCollapsible>
+
+        <FooterCollapsible
+          storageKey="sidebar:footer:external-resources"
+          label="External resources"
+          defaultOpen={false}
+        >
+          <SidebarMenu className="mt-1">
+            {PINNED_RESOURCES.map((r) => (
+              <SidebarMenuItem key={r.id}>
+                <SidebarMenuButton asChild tooltip={r.label}>
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={closeMobile}
+                    className="flex items-center gap-2 text-[#1a0dab]"
+                  >
+                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
+                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
+                    <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
             <a
               href="https://shondamartin.com"
               target="_blank"
@@ -432,9 +469,72 @@ export function AppSidebar() {
               <ArrowUpRight className="size-3" aria-hidden="true" />
               <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
             </a>
-          </CollapsibleContent>
-        </Collapsible>
+          </SidebarMenu>
+        </FooterCollapsible>
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+/**
+ * Footer collapsible with persisted open/closed state and a chevron + spacing
+ * that matches the rest of the sidebar footer controls. On smaller viewports
+ * the body is scroll-contained so expanding never pushes the page or overlays
+ * surrounding content.
+ */
+function FooterCollapsible({
+  storageKey,
+  label,
+  defaultOpen = false,
+  children,
+}: {
+  storageKey: string;
+  label: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (raw !== null) setOpen(raw === "1");
+    } catch {
+      /* ignore */
+    }
+    setHydrated(true);
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (!hydrated || typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(storageKey, open ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, [hydrated, open, storageKey]);
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger
+        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+        aria-expanded={open}
+      >
+        <SidebarGroupLabel className="eyebrow m-0 text-[10px]">{label}</SidebarGroupLabel>
+        <ChevronDown
+          className={`size-3.5 text-muted-foreground transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
+          aria-hidden="true"
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        {/* Cap height so an expanded section scrolls inside its own container
+            instead of pushing the page or the footer on short viewports. */}
+        <div className="max-h-[min(50vh,18rem)] overflow-y-auto overscroll-contain pr-1">
+          {children}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
