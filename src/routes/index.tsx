@@ -99,16 +99,20 @@ function HubPage() {
               >
                 <div
                   aria-hidden
-                  className="font-display pointer-events-none absolute -top-8 -right-4 text-[150px] leading-none font-bold text-[color:var(--brand-ink)] opacity-10"
+                  className="absolute -top-8 -right-4 font-display font-bold text-[150px] leading-none opacity-55 transition-opacity group-hover:opacity-80"
+                  style={{ color: `var(${p.colorVar}-deep)` }}
                 >
                   {p.number}
                 </div>
-                <p className="eyebrow relative text-[color:var(--brand-ink)]">{p.eyebrow}</p>
-                <h3 className="font-display relative mt-2 text-2xl font-bold tracking-tight text-[color:var(--brand-ink)]">
+                <p className="eyebrow relative" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
+                <h3
+                  className="font-display relative mt-2 text-2xl font-bold tracking-tight"
+                  style={{ color: `var(${p.colorVar}-deep)` }}
+                >
                   {p.name}
                 </h3>
                 <p className="font-editorial relative mt-3 text-foreground/85">{p.lede}</p>
-                <p className="relative mt-5 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[color:var(--brand-ink)] transition-transform group-hover:translate-x-1">
+                <p className="relative mt-5 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[color:var(--brand-magenta)] transition-transform group-hover:translate-x-1">
                   Open phase <ArrowRight className="size-3" />
                 </p>
               </Link>
