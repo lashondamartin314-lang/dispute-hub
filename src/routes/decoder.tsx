@@ -371,18 +371,58 @@ function CategoryChip({
   );
 }
 
-function ResponseCard({ response }: { response: BureauResponse }) {
+function ResponseCard({
+  response,
+  tabbable = true,
+  onFocus,
+}: {
+  response: BureauResponse;
+  tabbable?: boolean;
+  onFocus?: () => void;
+}) {
   const tok = SEVERITY_TOKEN[response.severity];
   const Icon = tok.icon;
   const suggested =
     response.suggestedLetters
       ?.map((id) => LETTERS_BY_ID[id as keyof typeof LETTERS_BY_ID])
       .filter(Boolean) ?? [];
+  const primaryLetter = suggested[0];
+
+  const saveToTracker = () => {
+    const entry = appendTrackerEntry({
+      letterId: primaryLetter?.id as LetterId | undefined,
+      customLabel: primaryLetter ? undefined : `Decoder: "${response.phrase}"`,
+      notes: `From Response Decoder — "${response.phrase}". ${response.nextStep}`,
+    });
+    toast.success("Saved to dispute tracker", {
+      description: primaryLetter
+        ? `${primaryLetter.id} · ${primaryLetter.title} — due ${entry.nextActionDue || "soon"}`
+        : `Tracker entry created — due ${entry.nextActionDue || "soon"}`,
+      action: {
+        label: "Open tracker",
+        onClick: () => {
+          window.location.href = "/tracker";
+        },
+      },
+    });
+  };
 
   return (
     <article
-      className="relative flex h-full flex-col gap-4 rounded-3xl border-2 bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 md:p-7"
-      style={{ borderColor: tok.ring }}
+      data-decoder-card
+      tabIndex={tabbable ? 0 : -1}
+      onFocus={onFocus}
+      aria-label={`${SEVERITY_LABEL[response.severity]} response: ${response.phrase}`}
+      className={cn(
+        "relative flex h-full flex-col gap-4 rounded-3xl border-2 bg-card p-6 shadow-card outline-none transition-all hover:-translate-y-0.5 md:p-7",
+        "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      )}
+      style={
+        {
+          borderColor: tok.ring,
+          ["--tw-ring-color" as string]: tok.color,
+        } as React.CSSProperties
+      }
     >
       <header className="flex items-start gap-3">
         <span
@@ -417,6 +457,36 @@ function ResponseCard({ response }: { response: BureauResponse }) {
         accent={tok.color}
       />
 
+      <div className="-mt-1">
+        <button
+          type="button"
+          onClick={saveToTracker}
+          className={cn(
+            "inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 sm:w-auto",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          )}
+          style={
+            {
+              background: tok.color,
+              ["--tw-ring-color" as string]: tok.color,
+            } as React.CSSProperties
+          }
+          aria-label={
+            primaryLetter
+              ? `Save to dispute tracker with ${primaryLetter.id} ${primaryLetter.title}`
+              : "Save to dispute tracker"
+          }
+        >
+          <ClipboardPlus className="size-4" aria-hidden />
+          Save to tracker
+          {primaryLetter && (
+            <span className="ml-1 rounded-full bg-[color:color-mix(in_oklab,var(--brand-cream)_20%,transparent)] px-2 py-0.5 font-mono text-[10px]">
+              {primaryLetter.id}
+            </span>
+          )}
+        </button>
+      </div>
+
       {(suggested.length > 0 || response.citation) && (
         <footer className="mt-auto flex flex-wrap items-center gap-2 border-t border-border/60 pt-4">
           {suggested.map((l) => (
@@ -424,7 +494,10 @@ function ResponseCard({ response }: { response: BureauResponse }) {
               key={l.id}
               to="/playbook/letter/$id"
               params={{ id: l.id }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-ink)] px-3 py-1.5 text-xs font-bold text-[color:var(--brand-cream)] transition-transform hover:-translate-y-0.5"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-ink)] px-3 py-1.5 text-xs font-bold text-[color:var(--brand-cream)] transition-transform hover:-translate-y-0.5",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              )}
             >
               <Sparkles className="size-3" aria-hidden />
               {l.id} · {l.title}
