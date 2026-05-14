@@ -65,6 +65,22 @@ export function AppSidebar() {
     wasOpenRef.current = openMobile;
   }, [openMobile, isMobile]);
 
+  // When the mobile sheet opens, auto-scroll the active phase/letter sublink
+  // into view so the user instantly sees where they are.
+  useEffect(() => {
+    if (!isMobile || !openMobile) return;
+    // Wait for sheet content to mount and animate in.
+    const t = window.setTimeout(() => {
+    const sheet = document.querySelector<HTMLElement>('[data-mobile="true"][data-sidebar="sidebar"]');
+      const target =
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="letter"]') ??
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="phase"]') ??
+        sheet?.querySelector<HTMLElement>('[data-active-scroll="link"]');
+      target?.scrollIntoView({ block: "center", behavior: "auto" });
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, [isMobile, openMobile, pathname]);
+
   const closeMobile = () => {
     if (isMobile) setOpenMobile(false);
   };
@@ -167,22 +183,22 @@ export function AppSidebar() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
-                      <Link to="/playbook" onClick={closeMobile}><BookOpen className="size-4" /> Cover</Link>
+                      <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/foundation" onClick={closeMobile}><Compass className="size-4" /> Foundation</Link>
+                      <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/strategy" onClick={closeMobile}><ScrollText className="size-4" /> Strategy</Link>
+                      <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
-                      <Link to="/letters" onClick={closeMobile}><Library className="size-4" /> Letter library</Link>
+                      <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -205,7 +221,7 @@ export function AppSidebar() {
                     return (
                       <SidebarMenuItem key={p.id}>
                         <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
-                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile}>
+                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
                             <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                             <span className="truncate">
                               <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
@@ -225,7 +241,7 @@ export function AppSidebar() {
                                     className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
                                     aria-current={lActive ? "page" : undefined}
                                   >
-                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile}>
+                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
                                       <span className="font-mono text-[10px] opacity-60">{l.id}</span>
                                       <span className="truncate">{l.title}</span>
                                     </Link>
@@ -253,17 +269,17 @@ export function AppSidebar() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
-                      <Link to="/tracker" onClick={closeMobile}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                      <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
-                      <Link to="/decoder" onClick={closeMobile}><ScanSearch className="size-4" /> Response decoder</Link>
+                      <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
-                      <Link to="/resources" onClick={closeMobile}><Sparkles className="size-4" /> Resources</Link>
+                      <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
 
