@@ -237,139 +237,145 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="gap-0 px-2 py-2">
-        {/* PLAYBOOK */}
-        <Collapsible open={playbookOpen} onOpenChange={setPlaybookOpen}>
-          <SidebarGroup className="px-2 py-3">
-            {groupHeader("Playbook", playbookOpen)}
-            <CollapsibleContent>
-              <SidebarGroupContent className="mt-1">
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
-                      <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
-                      <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
-                      <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+        {(() => {
+          const groups: Record<GroupId, React.ReactNode> = {
+            playbook: (
+              <Collapsible key="playbook" open={playbookOpen} onOpenChange={setPlaybookOpen}>
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                  {groupHeader("playbook", "Playbook", playbookOpen)}
+                  <CollapsibleContent>
+                    <SidebarGroupContent className="mt-1">
+                      <SidebarMenu>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook")} className={ACTIVE_CLS}>
+                            <Link to="/playbook" onClick={closeMobile} data-active-scroll={isActive("/playbook") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
+                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
+                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
+                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            ),
+            phases: (
+              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                  {groupHeader("phases", "Phases", phasesOpen)}
+                  <CollapsibleContent>
+                    <SidebarGroupContent className="mt-1">
+                      <SidebarMenu>
+                        {PHASES.map((p) => {
+                          const Icon = phaseIcon[p.id];
+                          const letters = lettersForPhase(p.id);
+                          const active = isPhaseActive(p.id);
+                          return (
+                            <SidebarMenuItem key={p.id}>
+                              <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
+                                <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
+                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
+                                  <span className="truncate">
+                                    <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
+                                    {p.name}
+                                  </span>
+                                </Link>
+                              </SidebarMenuButton>
+                              {active && letters.length > 0 && (
+                                <SidebarMenuSub>
+                                  {letters.map((l) => {
+                                    const lActive = isLetterActive(l.id);
+                                    return (
+                                      <SidebarMenuSubItem key={l.id}>
+                                        <SidebarMenuSubButton
+                                          asChild
+                                          isActive={lActive}
+                                          className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
+                                          aria-current={lActive ? "page" : undefined}
+                                        >
+                                          <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
+                                            <span className="font-mono text-[10px] opacity-60">{l.id}</span>
+                                            <span className="truncate">{l.title}</span>
+                                          </Link>
+                                        </SidebarMenuSubButton>
+                                      </SidebarMenuSubItem>
+                                    );
+                                  })}
+                                </SidebarMenuSub>
+                              )}
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            ),
+            companion: (
+              <Collapsible key="companion" open={companionOpen} onOpenChange={setCompanionOpen}>
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                  {groupHeader("companion", "Companion tools", companionOpen)}
+                  <CollapsibleContent>
+                    <SidebarGroupContent className="mt-1">
+                      <SidebarMenu>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
+                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
+                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
+                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
 
-        {/* PHASES */}
-        <Collapsible open={phasesOpen} onOpenChange={setPhasesOpen}>
-          <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
-            {groupHeader("Phases", phasesOpen)}
-            <CollapsibleContent>
-              <SidebarGroupContent className="mt-1">
-                <SidebarMenu>
-                  {PHASES.map((p) => {
-                    const Icon = phaseIcon[p.id];
-                    const letters = lettersForPhase(p.id);
-                    const active = isPhaseActive(p.id);
-                    return (
-                      <SidebarMenuItem key={p.id}>
-                        <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
-                          <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
-                            <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                            <span className="truncate">
-                              <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
-                              {p.name}
-                            </span>
-                          </Link>
-                        </SidebarMenuButton>
-                        {active && letters.length > 0 && (
-                          <SidebarMenuSub>
-                            {letters.map((l) => {
-                              const lActive = isLetterActive(l.id);
-                              return (
-                                <SidebarMenuSubItem key={l.id}>
-                                  <SidebarMenuSubButton
-                                    asChild
-                                    isActive={lActive}
-                                    className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
-                                    aria-current={lActive ? "page" : undefined}
-                                  >
-                                    <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
-                                      <span className="font-mono text-[10px] opacity-60">{l.id}</span>
-                                      <span className="truncate">{l.title}</span>
-                                    </Link>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              );
-                            })}
-                          </SidebarMenuSub>
-                        )}
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
-
-        {/* COMPANION TOOLS — internal tools then external companion links, in order */}
-        <Collapsible open={companionOpen} onOpenChange={setCompanionOpen}>
-          <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3">
-            {groupHeader("Companion tools", companionOpen)}
-            <CollapsibleContent>
-              <SidebarGroupContent className="mt-1">
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
-                      <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
-                      <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
-                      <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-
-                  {/* External companion links — same ordered group, tappable, close sheet on tap */}
-                  {PINNED_RESOURCES.map((r) => (
-                    <SidebarMenuItem key={r.id}>
-                      <SidebarMenuButton asChild>
-                        <a
-                          href={r.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={closeMobile}
-                          className="flex items-center gap-2"
-                        >
-                          <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                          <span className="truncate">{r.label}</span>
-                          <ArrowUpRight className="ml-auto size-3 opacity-50" aria-hidden="true" />
-                          <span className="sr-only"> (opens in new tab)</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
+                        {/* External companion links — same ordered group, tappable, close sheet on tap */}
+                        {PINNED_RESOURCES.map((r) => (
+                          <SidebarMenuItem key={r.id}>
+                            <SidebarMenuButton asChild>
+                              <a
+                                href={r.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={closeMobile}
+                                className="flex items-center gap-2"
+                              >
+                                <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                                <span className="truncate">{r.label}</span>
+                                <ArrowUpRight className="ml-auto size-3 opacity-50" aria-hidden="true" />
+                                <span className="sr-only"> (opens in new tab)</span>
+                              </a>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        ))}
+                      </SidebarMenu>
+                    </SidebarGroupContent>
+                  </CollapsibleContent>
+                </SidebarGroup>
+              </Collapsible>
+            ),
+          };
+          return order.map((id) => groups[id]);
+        })()}
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border px-4 py-3">
