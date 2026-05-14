@@ -9,38 +9,160 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as PlaybookRouteImport } from './routes/playbook'
+import { Route as LettersRouteImport } from './routes/letters'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PlaybookIndexRouteImport } from './routes/playbook.index'
+import { Route as PlaybookStrategyRouteImport } from './routes/playbook.strategy'
+import { Route as PlaybookFoundationRouteImport } from './routes/playbook.foundation'
+import { Route as PlaybookPhaseIdRouteImport } from './routes/playbook.phase.$id'
+import { Route as PlaybookLetterIdRouteImport } from './routes/playbook.letter.$id'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaybookRoute = PlaybookRouteImport.update({
+  id: '/playbook',
+  path: '/playbook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LettersRoute = LettersRouteImport.update({
+  id: '/letters',
+  path: '/letters',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PlaybookIndexRoute = PlaybookIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PlaybookRoute,
+} as any)
+const PlaybookStrategyRoute = PlaybookStrategyRouteImport.update({
+  id: '/strategy',
+  path: '/strategy',
+  getParentRoute: () => PlaybookRoute,
+} as any)
+const PlaybookFoundationRoute = PlaybookFoundationRouteImport.update({
+  id: '/foundation',
+  path: '/foundation',
+  getParentRoute: () => PlaybookRoute,
+} as any)
+const PlaybookPhaseIdRoute = PlaybookPhaseIdRouteImport.update({
+  id: '/phase/$id',
+  path: '/phase/$id',
+  getParentRoute: () => PlaybookRoute,
+} as any)
+const PlaybookLetterIdRoute = PlaybookLetterIdRouteImport.update({
+  id: '/letter/$id',
+  path: '/letter/$id',
+  getParentRoute: () => PlaybookRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/letters': typeof LettersRoute
+  '/playbook': typeof PlaybookRouteWithChildren
+  '/resources': typeof ResourcesRoute
+  '/playbook/foundation': typeof PlaybookFoundationRoute
+  '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/playbook/': typeof PlaybookIndexRoute
+  '/playbook/letter/$id': typeof PlaybookLetterIdRoute
+  '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/letters': typeof LettersRoute
+  '/resources': typeof ResourcesRoute
+  '/playbook/foundation': typeof PlaybookFoundationRoute
+  '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/playbook': typeof PlaybookIndexRoute
+  '/playbook/letter/$id': typeof PlaybookLetterIdRoute
+  '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/letters': typeof LettersRoute
+  '/playbook': typeof PlaybookRouteWithChildren
+  '/resources': typeof ResourcesRoute
+  '/playbook/foundation': typeof PlaybookFoundationRoute
+  '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/playbook/': typeof PlaybookIndexRoute
+  '/playbook/letter/$id': typeof PlaybookLetterIdRoute
+  '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/letters'
+    | '/playbook'
+    | '/resources'
+    | '/playbook/foundation'
+    | '/playbook/strategy'
+    | '/playbook/'
+    | '/playbook/letter/$id'
+    | '/playbook/phase/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/letters'
+    | '/resources'
+    | '/playbook/foundation'
+    | '/playbook/strategy'
+    | '/playbook'
+    | '/playbook/letter/$id'
+    | '/playbook/phase/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/letters'
+    | '/playbook'
+    | '/resources'
+    | '/playbook/foundation'
+    | '/playbook/strategy'
+    | '/playbook/'
+    | '/playbook/letter/$id'
+    | '/playbook/phase/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LettersRoute: typeof LettersRoute
+  PlaybookRoute: typeof PlaybookRouteWithChildren
+  ResourcesRoute: typeof ResourcesRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playbook': {
+      id: '/playbook'
+      path: '/playbook'
+      fullPath: '/playbook'
+      preLoaderRoute: typeof PlaybookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/letters': {
+      id: '/letters'
+      path: '/letters'
+      fullPath: '/letters'
+      preLoaderRoute: typeof LettersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +170,70 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/playbook/': {
+      id: '/playbook/'
+      path: '/'
+      fullPath: '/playbook/'
+      preLoaderRoute: typeof PlaybookIndexRouteImport
+      parentRoute: typeof PlaybookRoute
+    }
+    '/playbook/strategy': {
+      id: '/playbook/strategy'
+      path: '/strategy'
+      fullPath: '/playbook/strategy'
+      preLoaderRoute: typeof PlaybookStrategyRouteImport
+      parentRoute: typeof PlaybookRoute
+    }
+    '/playbook/foundation': {
+      id: '/playbook/foundation'
+      path: '/foundation'
+      fullPath: '/playbook/foundation'
+      preLoaderRoute: typeof PlaybookFoundationRouteImport
+      parentRoute: typeof PlaybookRoute
+    }
+    '/playbook/phase/$id': {
+      id: '/playbook/phase/$id'
+      path: '/phase/$id'
+      fullPath: '/playbook/phase/$id'
+      preLoaderRoute: typeof PlaybookPhaseIdRouteImport
+      parentRoute: typeof PlaybookRoute
+    }
+    '/playbook/letter/$id': {
+      id: '/playbook/letter/$id'
+      path: '/letter/$id'
+      fullPath: '/playbook/letter/$id'
+      preLoaderRoute: typeof PlaybookLetterIdRouteImport
+      parentRoute: typeof PlaybookRoute
+    }
   }
 }
 
+interface PlaybookRouteChildren {
+  PlaybookFoundationRoute: typeof PlaybookFoundationRoute
+  PlaybookStrategyRoute: typeof PlaybookStrategyRoute
+  PlaybookIndexRoute: typeof PlaybookIndexRoute
+  PlaybookLetterIdRoute: typeof PlaybookLetterIdRoute
+  PlaybookPhaseIdRoute: typeof PlaybookPhaseIdRoute
+}
+
+const PlaybookRouteChildren: PlaybookRouteChildren = {
+  PlaybookFoundationRoute: PlaybookFoundationRoute,
+  PlaybookStrategyRoute: PlaybookStrategyRoute,
+  PlaybookIndexRoute: PlaybookIndexRoute,
+  PlaybookLetterIdRoute: PlaybookLetterIdRoute,
+  PlaybookPhaseIdRoute: PlaybookPhaseIdRoute,
+}
+
+const PlaybookRouteWithChildren = PlaybookRoute._addFileChildren(
+  PlaybookRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LettersRoute: LettersRoute,
+  PlaybookRoute: PlaybookRouteWithChildren,
+  ResourcesRoute: ResourcesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
