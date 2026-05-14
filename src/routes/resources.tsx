@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
-import { RESOURCES } from "@/data/resources";
+import { DISPUTE_ROUNDS, RESOURCES, type DisputeRound } from "@/data/resources";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
@@ -53,9 +54,15 @@ const CATEGORIES: CategorySpec[] = [
 ];
 
 function ResourcesPage() {
+  const [activeRound, setActiveRound] = useState<DisputeRound | null>(null);
+
   const sections = CATEGORIES
     .map((c) => ({ ...c, items: RESOURCES.filter((r) => r.category === c.id) }))
     .filter((c) => c.items.length > 0);
+
+  const activeMeta = activeRound
+    ? DISPUTE_ROUNDS.find((r) => r.round === activeRound)
+    : null;
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
@@ -67,10 +74,71 @@ function ResourcesPage() {
         lede="Trusted external sites, official complaint portals, and the Drive folder with every letter template. All links open in a new tab and leave the Playbook portal."
       />
 
+      {/* Round timeline: tap a round to highlight which resources to use at that stage */}
+      <section
+        aria-label="Dispute round timeline"
+        className="mt-12 rounded-xl border-2 border-border bg-card p-5 shadow-card md:p-6"
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <p className="eyebrow text-[10px]">Which resources, which round</p>
+            <h2 className="font-display text-xl md:text-2xl">Tap a round to spotlight what you need.</h2>
+          </div>
+          {activeRound && (
+            <button
+              type="button"
+              onClick={() => setActiveRound(null)}
+              className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground underline underline-offset-4 hover:text-foreground"
+            >
+              Show all
+            </button>
+          )}
+        </div>
+
+        <ol className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-3">
+          {DISPUTE_ROUNDS.map((r) => {
+            const active = activeRound === r.round;
+            return (
+              <li key={r.round}>
+                <button
+                  type="button"
+                  onClick={() => setActiveRound(active ? null : r.round)}
+                  aria-pressed={active}
+                  className={
+                    "group flex w-full flex-col items-start gap-1 rounded-lg border-2 p-4 text-left transition-all " +
+                    (active
+                      ? "border-[color:var(--brand-gold-deep)] bg-[color:color-mix(in_oklab,var(--brand-gold)_20%,var(--card))] shadow-elegant"
+                      : "border-border bg-card hover:border-[color:var(--brand-gold-deep)] hover:-translate-y-0.5")
+                  }
+                >
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
+                    Round {r.round}
+                  </span>
+                  <span className="font-display text-base leading-tight">{r.name.split(" · ")[1]}</span>
+                  <span className="text-xs leading-relaxed text-muted-foreground">{r.focus}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+
+        {activeMeta && (
+          <p className="mt-4 rounded-md border border-[color:var(--brand-gold-deep)]/40 bg-[color:color-mix(in_oklab,var(--brand-gold)_10%,var(--card))] px-4 py-2.5 text-sm">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
+              Now showing
+            </span>{" "}
+            <span className="font-semibold">{activeMeta.name}.</span>{" "}
+            <span className="text-muted-foreground">
+              Tiles below are highlighted if you use them in this round, dimmed if you don't.
+            </span>
+          </p>
+        )}
+      </section>
+
       {/* TOC: solid white card with strong border so it pops against the page background */}
       <nav
         aria-label="On this page"
-        className="mt-12 rounded-xl border-2 border-border bg-card px-6 py-5 shadow-card"
+        className="mt-8 rounded-xl border-2 border-border bg-card px-6 py-5 shadow-card"
       >
         <p className="eyebrow text-[10px] mb-3">On this page</p>
         <ol className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
@@ -101,7 +169,9 @@ function ResourcesPage() {
             <ShondaQuote text={c.quote} />
 
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {c.items.map((r) => (<ResourceTile key={r.id} resource={r} />))}
+              {c.items.map((r) => (
+                <ResourceTile key={r.id} resource={r} activeRound={activeRound} />
+              ))}
             </div>
           </section>
         ))}
