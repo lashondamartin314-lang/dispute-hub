@@ -7,6 +7,29 @@ interface CreditAcademyUpsellProps {
   className?: string;
   /** Optional accent (e.g. phase color) for the eyebrow + accent details. */
   accentColor?: string;
+  /** Where on the site this upsell renders — used as utm_content. */
+  placement?: string;
+}
+
+/**
+ * Append attribution UTM params to an outbound CTA while preserving any
+ * existing query string (e.g. SmartCredit's affiliate `PID`).
+ * Existing utm_* values on the URL are respected and not overwritten.
+ */
+function withUtm(href: string, tier: string, placement: string): string {
+  try {
+    const url = new URL(href);
+    const set = (k: string, v: string) => {
+      if (!url.searchParams.has(k)) url.searchParams.set(k, v);
+    };
+    set("utm_source", "dispute_playbook");
+    set("utm_medium", "upsell");
+    set("utm_campaign", "credit_academy");
+    set("utm_content", `${tier}__${placement}`);
+    return url.toString();
+  } catch {
+    return href;
+  }
 }
 
 const TIERS = [
