@@ -34,33 +34,18 @@ function withUtm(href: string, tier: string, placement: string): string {
 
 const TIERS = [
   {
-    id: "hub",
-    eyebrow: "DIY · One-time access",
-    name: "Dispute Hub",
-    price: "$37.99",
-    cadence: "one-time",
-    icon: Sparkles,
-    bullets: [
-      "Full Dispute Hub access — path, tracker, templates, decoder, support tools.",
-      "Step-by-step instructional support built for true DIY clarity.",
-      "Self-guided by design — lighter than VIP, still organized and intentional.",
-    ],
-    cta: "Get the Dispute Hub",
-    href: "https://shondamartincom.netlify.app/p/cc-2026/",
-    highlight: false,
-    accent: "var(--brand-magenta-deep)",
-  },
-  {
     id: "smartcredit",
-    eyebrow: "Credit visibility · monthly",
-    name: "SmartCredit 3B",
+    eyebrow: "Tier 1 · See your file",
+    name: "SmartCredit 3B Reports",
     price: "$24.99",
     cadence: "/mo",
     icon: ShieldCheck,
     bullets: [
-      "3-bureau report spread — clear visibility into your file.",
-      "$1M identity protection with alerts and protection tools built in.",
-      "Profile-building tools: pay-date options, lending directives, and more.",
+      "3-bureau credit reports & scores — pulled side-by-side for clean visibility.",
+      "Score Tracker, Score Simulator & Money Manager to plan your next moves.",
+      "ID theft insurance up to $1M plus dark-web & SSN monitoring alerts.",
+      "Smart Credit Builder tools: ScoreBoost, ScoreBuilder & ScoreMaster.",
+      "Personal lending directives & pay-date control to protect your profile.",
     ],
     cta: "Start SmartCredit 3B",
     href: "https://www.smartcredit.com/?PID=74780",
@@ -68,18 +53,37 @@ const TIERS = [
     accent: "var(--phase-3-deep, var(--brand-ink))",
   },
   {
+    id: "hub",
+    eyebrow: "Tier 2 · DIY, self-paced",
+    name: "Dispute Playbook + Support Site",
+    price: "$37.99",
+    cadence: "one-time",
+    icon: Sparkles,
+    bullets: [
+      "Full DIY Dispute Playbook — every phase laid out, step by step.",
+      "Support site access: template dispute letters ready to personalize.",
+      "Resource library: guides, glossary, decoder & tracker tools.",
+      "Self-paced by design — no 1:1 guidance, you drive the work.",
+      "Lifetime access — revisit any phase whenever you need it.",
+    ],
+    cta: "Get the Playbook",
+    href: "https://shondamartincom.netlify.app/p/cc-2026/",
+    highlight: false,
+    accent: "var(--brand-magenta-deep)",
+  },
+  {
     id: "vip",
-    eyebrow: "VIP · The full system",
+    eyebrow: "Tier 3 · The full system",
     name: "Credit Academy VIP",
     price: "$39.99",
     cadence: "/mo",
     icon: Crown,
     bullets: [
-      "Patent-pending Dispute Engine to organize your report review and next moves.",
-      "Member-exclusive resource library: letters, templates, education, tools.",
-      "Member-only webinars, workshops & cohorts on credit, homeownership, finances.",
-      "SmartCredit 3B and full credit-building suite included.",
-      "Dedicated guidance — for the Cousin who wants less guesswork.",
+      "Personalized dispute letters written for your specific report.",
+      "Systematic, guided dispute approach — no guessing what's next.",
+      "SmartCredit 3B reports & full credit-building tools included.",
+      "Everything in the Playbook + Support Site — letters, templates, library.",
+      "Member-only webinars, workshops & cohorts on credit & homeownership.",
     ],
     cta: "Join the Academy",
     href: "https://shondamartincom.netlify.app/credit-academy-memberships",
@@ -103,8 +107,7 @@ export function CreditAcademyUpsell({
         )}
         style={{
           borderColor: "color-mix(in oklab, var(--brand-gold) 55%, transparent)",
-          background:
-            "linear-gradient(135deg, color-mix(in oklab, var(--brand-ink) 92%, transparent) 0%, color-mix(in oklab, var(--brand-magenta-deep) 80%, var(--brand-ink)) 100%)",
+          background: "var(--gradient-brand)",
         }}
       >
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
@@ -177,7 +180,7 @@ export function CreditAcademyUpsell({
                   ? "var(--brand-gold)"
                   : `color-mix(in oklab, ${t.accent} 28%, transparent)`,
                 background: t.highlight
-                  ? "linear-gradient(180deg, color-mix(in oklab, var(--brand-ink) 96%, transparent) 0%, color-mix(in oklab, var(--brand-magenta-deep) 30%, var(--brand-ink)) 100%)"
+                  ? "var(--gradient-brand)"
                   : "var(--card)",
                 color: t.highlight ? "var(--brand-cream)" : undefined,
               }}
@@ -270,9 +273,9 @@ export function CreditAcademyUpsell({
                 )}
                 style={
                   {
-                    background: t.highlight ? "var(--brand-gold)" : t.accent,
-                    color: t.highlight ? "var(--brand-ink)" : "var(--brand-cream)",
-                    ["--tw-ring-color" as string]: t.highlight ? "var(--brand-gold-deep)" : t.accent,
+                    background: t.highlight ? "var(--gradient-brand)" : t.accent,
+                    color: t.highlight ? "var(--brand-cream)" : "var(--brand-cream)",
+                    ["--tw-ring-color" as string]: t.highlight ? "var(--brand-gold)" : t.accent,
                   } as React.CSSProperties
                 }
               >
