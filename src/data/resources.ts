@@ -228,8 +228,20 @@ export const RESOURCES: Resource[] = [
     description: "Parent Google Drive folder containing every letter, organized by phase.",
     url: PARENT_DRIVE_FOLDER,
     category: "kit",
+    actionLabel: "Open & Copy a Letter Template",
     pinned: true,
     rounds: [1, 2, 3, 4, 5],
+    playbookRef: { label: "Letter library", href: "/letters" },
+    steps: [
+      "Create your own Drive folder named: Disputes_YourName, with a subfolder for each Round (Round_1, Round_2, …).",
+      "Open the parent template folder linked here.",
+      "Find the letter that matches the round and route you're sending (Phase + letter ID).",
+      "Click File → Make a copy → save into your Disputes_YourName folder. Never edit the master template.",
+      "Open your copy and replace every bracketed placeholder using your AnnualCreditReport PDF as the source of truth.",
+      "Proofread the four critical fields: report number, account name, partial account number, date of last activity.",
+      "File → Download → PDF Document. Print on plain white paper.",
+      "Sign in blue or black ink, mail certified with return receipt, and save the tracking number + scanned green card to the round subfolder.",
+    ],
     usage:
       "Open the folder, find the letter for the phase you are in, and use File > Make a copy into your own Drive before editing so the master template stays clean. Replace every bracketed placeholder with the exact data from your AnnualCreditReport PDF (report number, account name, account number, dates), then export to PDF and mail certified with return receipt. Keep the green return-receipt card and the certified tracking number in the same folder.",
     checklist: [
