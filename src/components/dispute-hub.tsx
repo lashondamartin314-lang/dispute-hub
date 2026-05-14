@@ -29,19 +29,6 @@ const JUMPS = [
 export function DisputeHub() {
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
-  const close = () => setOpen(false);
-
-  const stagger = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: reduce ? 0 : 0.025, delayChildren: reduce ? 0 : 0.04 },
-    },
-  };
-  const item = {
-    hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 6 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.18 } },
-  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -70,75 +57,97 @@ export function DisputeHub() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
         >
-          <motion.div variants={stagger} initial="hidden" animate="show" className="p-3">
-            <Section title="Jump to">
-              <div className="grid grid-cols-2 gap-1.5">
-                {JUMPS.map((j) => (
-                  <motion.div key={j.to} variants={item}>
-                    <Link
-                      to={j.to}
-                      onClick={close}
-                      className="flex h-full min-h-[52px] flex-col gap-1 rounded-lg border border-border/70 bg-card p-2.5 text-[12px] font-semibold text-foreground transition-colors hover:border-[color:var(--brand-gold-deep)]/40 hover:bg-[color:var(--brand-gold)]/10"
-                    >
-                      <j.icon className="size-4 text-[color:var(--brand-gold-deep)]" />
-                      <span className="leading-tight">{j.label}</span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </Section>
-
-            <Section title="Phases">
-              <div className="grid grid-cols-3 gap-1.5">
-                {PHASES.map((p) => (
-                  <motion.div key={p.id} variants={item}>
-                    <Link
-                      to="/playbook/phase/$id"
-                      params={{ id: p.id }}
-                      onClick={close}
-                      className="flex h-full min-h-[58px] flex-col items-start justify-between rounded-lg p-2 text-[11px] font-semibold text-foreground transition-transform hover:-translate-y-0.5"
-                      style={{
-                        background: `color-mix(in oklab, var(${p.colorVar}) 14%, var(--card))`,
-                        borderLeft: `3px solid var(${p.colorVar}-deep)`,
-                      }}
-                    >
-                      <span
-                        className="font-mono text-[10px] tracking-wider"
-                        style={{ color: `var(${p.colorVar}-deep)` }}
-                      >
-                        P{p.number}
-                      </span>
-                      <span className="leading-tight">{p.name}</span>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </Section>
-
-            <Section title="Kit resources" subtitle="open in new tab">
-              <div className="flex flex-col gap-0.5">
-                {PINNED_RESOURCES.map((r) => (
-                  <motion.a
-                    key={r.id}
-                    variants={item}
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={close}
-                    className="flex min-h-[40px] items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-foreground/90 transition-colors hover:bg-[color:var(--brand-gold)]/10"
-                  >
-                    <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                    <span className="flex-1 truncate">{r.label}</span>
-                    <ArrowUpRight className="size-3.5 shrink-0 text-foreground/50" aria-hidden />
-                    <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-                  </motion.a>
-                ))}
-              </div>
-            </Section>
-          </motion.div>
+          <DisputeHubContent onNavigate={() => setOpen(false)} />
         </motion.div>
       </PopoverContent>
     </Popover>
+  );
+}
+
+/** Reusable menu body — used by the header popover and the mobile FAB. */
+export function DisputeHubContent({ onNavigate }: { onNavigate?: () => void }) {
+  const reduce = useReducedMotion();
+  const close = () => onNavigate?.();
+
+  const stagger = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: reduce ? 0 : 0.025, delayChildren: reduce ? 0 : 0.04 },
+    },
+  };
+  const item = {
+    hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 6 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.18 } },
+  };
+
+  return (
+    <motion.div variants={stagger} initial="hidden" animate="show" className="p-3">
+      <Section title="Jump to">
+        <div className="grid grid-cols-2 gap-1.5">
+          {JUMPS.map((j) => (
+            <motion.div key={j.to} variants={item}>
+              <Link
+                to={j.to}
+                onClick={close}
+                className="flex h-full min-h-[52px] flex-col gap-1 rounded-lg border border-border/70 bg-card p-2.5 text-[12px] font-semibold text-foreground transition-colors hover:border-[color:var(--brand-gold-deep)]/40 hover:bg-[color:var(--brand-gold)]/10"
+              >
+                <j.icon className="size-4 text-[color:var(--brand-gold-deep)]" />
+                <span className="leading-tight">{j.label}</span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Phases">
+        <div className="grid grid-cols-3 gap-1.5">
+          {PHASES.map((p) => (
+            <motion.div key={p.id} variants={item}>
+              <Link
+                to="/playbook/phase/$id"
+                params={{ id: p.id }}
+                onClick={close}
+                className="flex h-full min-h-[58px] flex-col items-start justify-between rounded-lg p-2 text-[11px] font-semibold text-foreground transition-transform hover:-translate-y-0.5"
+                style={{
+                  background: `color-mix(in oklab, var(${p.colorVar}) 14%, var(--card))`,
+                  borderLeft: `3px solid var(${p.colorVar}-deep)`,
+                }}
+              >
+                <span
+                  className="font-mono text-[10px] tracking-wider"
+                  style={{ color: `var(${p.colorVar}-deep)` }}
+                >
+                  P{p.number}
+                </span>
+                <span className="leading-tight">{p.name}</span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Kit resources" subtitle="open in new tab">
+        <div className="flex flex-col gap-0.5">
+          {PINNED_RESOURCES.map((r) => (
+            <motion.a
+              key={r.id}
+              variants={item}
+              href={r.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={close}
+              className="flex min-h-[40px] items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-foreground/90 transition-colors hover:bg-[color:var(--brand-gold)]/10"
+            >
+              <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+              <span className="flex-1 truncate">{r.label}</span>
+              <ArrowUpRight className="size-3.5 shrink-0 text-foreground/50" aria-hidden />
+              <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+            </motion.a>
+          ))}
+        </div>
+      </Section>
+    </motion.div>
   );
 }
 
