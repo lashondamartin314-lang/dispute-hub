@@ -1,5 +1,13 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
@@ -40,9 +48,39 @@ function LetterDetail() {
     <div>
       <section className="relative border-b border-border" style={{ background: hero }}>
         <div className="mx-auto max-w-3xl px-6 py-14 md:px-10 md:py-20">
-          <Link to="/playbook/phase/$id" params={{ id: letter.phaseId }} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="size-3" /> Back to {phase.name}
-          </Link>
+          <Breadcrumb>
+            <BreadcrumbList className="text-sm">
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild className="text-foreground/70 hover:text-foreground">
+                  <Link to="/">Home</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild className="text-foreground/70 hover:text-foreground">
+                  <Link to="/playbook">Playbook</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  asChild
+                  className="font-semibold hover:text-foreground"
+                  style={{ color: `var(${phase.colorVar}-deep)` }}
+                >
+                  <Link to="/playbook/phase/$id" params={{ id: letter.phaseId }}>
+                    {phase.name}
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-semibold text-[color:var(--brand-ink)]">
+                  Letter {letter.id}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
           <div className="mt-6">
             <EditorialHeader
               eyebrow={`${phase.eyebrow} · Letter ${letter.id}`}
