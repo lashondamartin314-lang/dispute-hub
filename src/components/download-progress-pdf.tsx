@@ -91,9 +91,9 @@ export function DownloadProgressPdf({ className, variant = "primary" }: Download
         // progress bar
         const barW = contentW;
         const barH = 6;
-        doc.setFillColor(230);
+        doc.setFillColor(230, 230, 230);
         doc.rect(margin, y, barW, barH, "F");
-        doc.setFillColor(40);
+        doc.setFillColor(40, 40, 40);
         doc.rect(margin, y, (barW * pct) / 100, barH, "F");
         y += barH + 14;
         doc.setTextColor(20);
