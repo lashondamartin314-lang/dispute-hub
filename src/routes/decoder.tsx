@@ -219,27 +219,42 @@ function DecoderPage() {
             aria-hidden
           />
           <input
+            ref={searchRef}
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Type a phrase from your bureau letter — e.g. 'verified', 'remains', 'frivolous'"
-            className="w-full rounded-full border-2 border-border bg-card py-3 pl-11 pr-12 text-sm font-medium shadow-card outline-none transition-colors focus:border-[color:var(--brand-magenta)]"
+            aria-keyshortcuts="/"
+            className="w-full rounded-full border-2 border-border bg-card py-3 pl-11 pr-12 text-sm font-medium shadow-card outline-none transition-colors focus:border-[color:var(--brand-magenta)] focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
-              className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+              className="absolute right-3 top-1/2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <X className="size-4" />
             </button>
           )}
         </label>
-        <p className="text-xs text-muted-foreground md:w-48 md:text-right">
-          Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
-          {BUREAU_RESPONSES.length}
-        </p>
+        <div className="flex items-center justify-between gap-3 md:w-auto md:justify-end">
+          <p className="text-xs text-muted-foreground">
+            Showing <strong className="text-foreground">{filtered.length}</strong> of{" "}
+            {BUREAU_RESPONSES.length}
+          </p>
+          <span
+            className="hidden items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-muted-foreground sm:inline-flex"
+            title="Keyboard: / to search · ↑ ↓ to browse · Esc to clear"
+          >
+            <Keyboard className="size-3" aria-hidden />
+            <kbd className="rounded border border-border bg-background px-1">/</kbd>
+            <span>search</span>
+            <span aria-hidden>·</span>
+            <kbd className="rounded border border-border bg-background px-1">↑↓</kbd>
+            <span>browse</span>
+          </span>
+        </div>
       </div>
 
       {/* Category chips */}
