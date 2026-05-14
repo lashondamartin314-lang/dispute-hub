@@ -122,20 +122,20 @@
   --input: rgba(20, 17, 26, 0.18);
   --ring: #F10085;
 
-  --sidebar: color-mix(in oklab, var(--brand-magenta) 5%, #FFFCF5);
-  --sidebar-foreground: #14111A;
-  --sidebar-primary: #00106F;
-  --sidebar-primary-foreground: #FAF6EE;
-  --sidebar-accent: color-mix(in oklab, var(--brand-magenta) 12%, #F5EBD4);
-  --sidebar-accent-foreground: #00106F;
-  --sidebar-border: color-mix(in oklab, var(--brand-magenta) 18%, transparent);
-  --sidebar-ring: #F10085;
+  --sidebar: #064e3b;
+  --sidebar-foreground: #f5f0e0;
+  --sidebar-primary: #c9a84c;
+  --sidebar-primary-foreground: #064e3b;
+  --sidebar-accent: color-mix(in oklab, #c9a84c 18%, #064e3b);
+  --sidebar-accent-foreground: #f5f0e0;
+  --sidebar-border: color-mix(in oklab, #c9a84c 28%, transparent);
+  --sidebar-ring: #c9a84c;
 
   /* Hub header — shared tokens so mobile/tablet/desktop stay in sync */
-  --header-bg: color-mix(in oklab, var(--brand-magenta) 6%, var(--brand-cream));
-  --header-fg: var(--brand-ink);
-  --header-border: color-mix(in oklab, var(--brand-magenta) 22%, transparent);
-  --header-muted-fg: color-mix(in oklab, var(--brand-ink) 65%, transparent);
+  --header-bg: linear-gradient(90deg, #064e3b 0%, #0d7a5f 100%);
+  --header-fg: #f5f0e0;
+  --header-border: color-mix(in oklab, #c9a84c 35%, transparent);
+  --header-muted-fg: color-mix(in oklab, #f5f0e0 75%, transparent);
 
   --brand-cream: #FAF6EE;
   --brand-paper: #FFFCF5;
