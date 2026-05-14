@@ -67,8 +67,20 @@ export const RESOURCES: Resource[] = [
     description: "SmartCredit gives you daily 3-bureau monitoring, the easier-to-read report format we use throughout the Playbook, plus credit-building tools.",
     url: "https://www.smartcredit.com",
     category: "report",
+    actionLabel: "Set Up Daily Monitoring & Best Pay Date",
     pinned: true,
     rounds: [1, 2, 3, 4, 5],
+    playbookRef: { label: "Phase 2 · Clean identity & Best Pay Date", href: "/playbook/phase/clean-identity" },
+    steps: [
+      "Sign up at SmartCredit.com (use the same legal name and address as your AnnualCreditReport pull).",
+      "Open Settings → Alerts. Turn on daily 3-bureau alerts via email AND SMS for new accounts, inquiries, and status changes.",
+      "Open Money Manager. For each active credit card, write down the Best Pay Date it shows.",
+      "Add a calendar reminder 2 days BEFORE each Best Pay Date so utilization is reported under 10%.",
+      "Snapshot all three current scores and save to Drive as Baseline_YYYY-MM-DD.png — this is your before picture.",
+      "Run the Score Simulator before paying off, closing, or disputing any account to predict the impact.",
+      "After mailing each dispute round, log in weekly to confirm deletions actually post.",
+      "Screenshot every confirmed deletion to your Drive evidence folder, named: Deletion_BUREAU_AccountName_YYYY-MM-DD.png.",
+    ],
     usage:
       "Log in weekly to check three things: (1) the daily change alerts that flag any new account, inquiry, balance jump, or status flip on any bureau, (2) the Money Manager Best Pay Date for every credit card so you pay before the statement closes and your reported utilization stays under 10%, and (3) the score simulator before you pay down a card or close an account. SmartCredit is also where you confirm a deletion actually posted after a dispute round.",
     checklist: [
