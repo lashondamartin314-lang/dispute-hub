@@ -23,7 +23,7 @@ function HubPage() {
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
 
-      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-20 md:px-10 md:pt-24">
+      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-16 md:px-10 md:pt-24 md:pb-24">
         <EditorialHeader
           eyebrow="Credit Academy · 2026 Edition"
           numeral="✶"
@@ -32,7 +32,7 @@ function HubPage() {
           lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
         />
 
-        <div className="mt-10 flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
           <Link to="/playbook" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] transition-all hover:bg-[color:var(--brand-violet-deep)]">
             <BookOpen className="size-4" /> Open the Playbook <ArrowRight className="size-4" />
           </Link>
@@ -45,7 +45,7 @@ function HubPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20 md:px-10">
+      <section className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
         <style>{`
           @keyframes journey-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
           @keyframes journey-ripple { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2.6);opacity:0} }
@@ -54,7 +54,7 @@ function HubPage() {
           .journey-arrow-path { stroke-dasharray: 320; stroke-dashoffset: 0; transition: stroke-dashoffset .8s cubic-bezier(.65,0,.35,1); }
           .group:hover .journey-arrow-path { stroke-dashoffset: 12; }
         `}</style>
-        <div className="mb-12 flex flex-col gap-10 border-b border-[color:var(--brand-ink)]/10 pb-10 md:flex-row md:items-end md:justify-between">
+        <div className="mb-10 flex flex-col gap-10 border-b border-[color:var(--brand-ink)]/10 pb-10 md:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="space-y-5">
             <div className="flex items-center gap-3">
               <span className="relative flex items-center justify-center">
@@ -64,7 +64,7 @@ function HubPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
             </div>
             <h2
-              className="font-display text-[color:var(--brand-ink)] text-4xl font-bold leading-[1.02] tracking-tight md:text-5xl lg:text-6xl"
+              className="font-display text-[color:var(--brand-ink)] text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl"
             >
               <span className="italic font-medium">Where</span> you are in the journey.
             </h2>
@@ -112,7 +112,7 @@ function HubPage() {
                   <div className="flex-1 pr-6">
                     <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
                     <h3
-                      className="font-display mt-2 text-2xl font-bold tracking-tight md:text-3xl"
+                      className="font-display mt-2 text-xl font-bold leading-[1.15] tracking-tight md:text-2xl"
                       style={{ color: `var(${p.colorVar}-deep)` }}
                     >
                       {p.name}
@@ -199,10 +199,10 @@ function HubPage() {
         </Accordion>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-24 md:px-10">
-        <div className="mb-8">
+      <section className="mx-auto max-w-6xl px-6 pb-24 md:px-10 md:pb-32">
+        <div className="mb-10 md:mb-14">
           <p className="eyebrow">Quick access</p>
-          <h2 className="font-display mt-2 text-3xl md:text-4xl">External tools you'll need.</h2>
+          <h2 className="font-display mt-2 text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl">External tools you'll need.</h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {PINNED_RESOURCES.map((r) => (<ResourceTile key={r.id} resource={r} />))}
