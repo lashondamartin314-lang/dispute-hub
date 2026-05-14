@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrackerRouteImport } from './routes/tracker'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as PlaybookRouteImport } from './routes/playbook'
 import { Route as LettersRouteImport } from './routes/letters'
@@ -19,6 +20,11 @@ import { Route as PlaybookFoundationRouteImport } from './routes/playbook.founda
 import { Route as PlaybookPhaseIdRouteImport } from './routes/playbook.phase.$id'
 import { Route as PlaybookLetterIdRouteImport } from './routes/playbook.letter.$id'
 
+const TrackerRoute = TrackerRouteImport.update({
+  id: '/tracker',
+  path: '/tracker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/resources': typeof ResourcesRoute
+  '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
   '/playbook/': typeof PlaybookIndexRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/letters': typeof LettersRoute
   '/resources': typeof ResourcesRoute
+  '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
   '/playbook': typeof PlaybookIndexRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/resources': typeof ResourcesRoute
+  '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
   '/playbook/': typeof PlaybookIndexRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/letters'
     | '/playbook'
     | '/resources'
+    | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
     | '/playbook/'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/letters'
     | '/resources'
+    | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
     | '/playbook'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/letters'
     | '/playbook'
     | '/resources'
+    | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
     | '/playbook/'
@@ -138,10 +150,18 @@ export interface RootRouteChildren {
   LettersRoute: typeof LettersRoute
   PlaybookRoute: typeof PlaybookRouteWithChildren
   ResourcesRoute: typeof ResourcesRoute
+  TrackerRoute: typeof TrackerRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tracker': {
+      id: '/tracker'
+      path: '/tracker'
+      fullPath: '/tracker'
+      preLoaderRoute: typeof TrackerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
@@ -233,7 +253,18 @@ const rootRouteChildren: RootRouteChildren = {
   LettersRoute: LettersRoute,
   PlaybookRoute: PlaybookRouteWithChildren,
   ResourcesRoute: ResourcesRoute,
+  TrackerRoute: TrackerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
