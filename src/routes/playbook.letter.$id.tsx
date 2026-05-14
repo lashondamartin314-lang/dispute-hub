@@ -150,50 +150,54 @@ function LetterDetail() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-6 pb-16 md:px-10 md:pb-24">
+      <section className="mx-auto max-w-3xl px-6 pb-20 md:px-10 md:pb-28">
         <div
-          className="rounded-2xl border-2 p-6 md:p-8"
+          className="rounded-2xl border-2 p-7 md:p-10"
           style={{
             borderColor: `color-mix(in oklab, var(${phase.colorVar}) 35%, transparent)`,
             background: `color-mix(in oklab, var(${phase.colorVar}-soft) 30%, var(--card))`,
           }}
         >
           <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>{phase.eyebrow}</p>
-          <h2 className="font-display mt-2 text-2xl font-bold" style={{ color: `var(${phase.colorVar}-deep)` }}>
+          <h2 className="font-display mt-3 text-3xl font-bold leading-tight md:text-4xl" style={{ color: `var(${phase.colorVar}-deep)` }}>
             This letter belongs to {phase.name}.
           </h2>
-          <p className="font-editorial mt-2 text-foreground/80">{phase.lede}</p>
-          <div className="mt-5 flex flex-wrap gap-3">
+          <p className="font-editorial mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">{phase.lede}</p>
+          <div className="mt-7 flex flex-wrap gap-3">
             <Link
               to="/playbook/phase/$id"
               params={{ id: phase.id }}
-              className="group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+              className="group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
               style={{ background: `var(${phase.colorVar}-deep)` }}
             >
-              Open the {phase.shortName} phase <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+              Open the {phase.shortName} phase <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               to="/letters"
               hash={phase.id}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-ink)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[color:var(--brand-ink)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
             >
-              <Library className="size-3.5" /> All letters in this phase
+              <Library className="size-4" /> All letters in this phase
             </Link>
           </div>
         </div>
 
         {(prevLetter || nextLetter) && (
-          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {prevLetter ? (
               <Link
                 to="/playbook/letter/$id"
                 params={{ id: prevLetter.id }}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-5 no-underline transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
               >
-                <ArrowLeft className="size-4 shrink-0 text-[color:var(--brand-ink)]/50 transition-transform group-hover:-translate-x-0.5" />
+                <ArrowLeft className="size-5 shrink-0 text-[color:var(--brand-ink)]/60 transition-transform group-hover:-translate-x-0.5" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/55">Previous · {prevLetter.id}</p>
-                  <p className="font-display mt-1 truncate text-sm font-bold text-[color:var(--brand-ink)]">{prevLetter.title}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--brand-ink)]/65">
+                    Previous · {prevLetter.id}
+                  </p>
+                  <p className="font-display mt-1.5 truncate text-lg font-bold leading-snug text-[color:var(--brand-ink)] md:text-xl">
+                    {prevLetter.title}
+                  </p>
                 </div>
               </Link>
             ) : <span />}
@@ -201,13 +205,17 @@ function LetterDetail() {
               <Link
                 to="/playbook/letter/$id"
                 params={{ id: nextLetter.id }}
-                className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 text-right no-underline transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm sm:col-start-2"
+                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-5 text-right no-underline transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm sm:col-start-2"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/55">Next · {nextLetter.id}</p>
-                  <p className="font-display mt-1 truncate text-sm font-bold text-[color:var(--brand-ink)]">{nextLetter.title}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-[color:var(--brand-ink)]/65">
+                    Next · {nextLetter.id}
+                  </p>
+                  <p className="font-display mt-1.5 truncate text-lg font-bold leading-snug text-[color:var(--brand-ink)] md:text-xl">
+                    {nextLetter.title}
+                  </p>
                 </div>
-                <ArrowRight className="size-4 shrink-0 text-[color:var(--brand-ink)]/50 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="size-5 shrink-0 text-[color:var(--brand-ink)]/60 transition-transform group-hover:translate-x-0.5" />
               </Link>
             )}
           </div>
