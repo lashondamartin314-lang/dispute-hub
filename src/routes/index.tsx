@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, Library, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Library, Sparkles } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import { PINNED_RESOURCES } from "@/data/resources";
 import { PHASES } from "@/data/phases";
+import { lettersForPhase } from "@/data/letters";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -91,69 +93,111 @@ function HubPage() {
         </div>
 
         <div className="relative">
-          {/* Dashed map-style route connecting the 6 cards (desktop only) */}
-          <svg
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 hidden h-full w-full lg:block"
-            viewBox="0 0 300 200"
-            preserveAspectRatio="none"
-          >
-            <g
-              fill="none"
-              stroke="var(--brand-ink)"
-              strokeWidth="0.6"
-              strokeDasharray="2 2"
-              strokeLinecap="round"
-              opacity="0.35"
-            >
-              {/* Row 1: card 1 → 2 → 3, then curve down to row 2 */}
-              <path d="M 50 50 L 150 50" />
-              <path d="M 150 50 L 250 50" />
-              <path d="M 250 50 Q 280 50 280 100 Q 280 150 250 150" />
-              {/* Row 2 (right→left): card 4 → 5 → 6 */}
-              <path d="M 250 150 L 150 150" />
-              <path d="M 150 150 L 50 150" />
-            </g>
-            <g fill="var(--brand-ink)" opacity="0.55">
-              <circle cx="50" cy="50" r="2.2" />
-              <circle cx="150" cy="50" r="2.2" />
-              <circle cx="250" cy="50" r="2.2" />
-              <circle cx="250" cy="150" r="2.2" />
-              <circle cx="150" cy="150" r="2.2" />
-              <circle cx="50" cy="150" r="2.2" />
-            </g>
-          </svg>
-
-          <div className="relative z-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {PHASES.map((p) => (
-              <Link
+        <Accordion type="multiple" className="relative z-10 flex flex-col gap-4">
+          {PHASES.map((p) => {
+            const letters = lettersForPhase(p.id);
+            return (
+              <AccordionItem
                 key={p.id}
-                to="/playbook/phase/$id"
-                params={{ id: p.id }}
-                className="group relative overflow-hidden rounded-2xl border-2 border-border bg-card p-6 transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-elegant"
+                value={p.id}
+                className="group relative overflow-hidden rounded-2xl border-2 border-border bg-card transition-all hover:border-[color:var(--brand-gold)] data-[state=open]:border-[color:var(--brand-gold)] data-[state=open]:shadow-elegant"
               >
                 <div
                   aria-hidden
-                  className="absolute -top-8 -right-4 font-display font-bold text-[150px] leading-none opacity-55 transition-opacity group-hover:opacity-80"
+                  className="pointer-events-none absolute -top-8 -right-4 font-display font-bold text-[150px] leading-none opacity-55 transition-opacity group-hover:opacity-80"
                   style={{ color: `var(${p.colorVar}-deep)` }}
                 >
                   {p.number}
                 </div>
-                <p className="eyebrow relative" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
-                <h3
-                  className="font-display relative mt-2 text-2xl font-bold tracking-tight"
-                  style={{ color: `var(${p.colorVar}-deep)` }}
-                >
-                  {p.name}
-                </h3>
-                <p className="font-editorial relative mt-3 text-foreground/85">{p.lede}</p>
-                <p className="relative mt-5 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[color:var(--brand-magenta)] transition-transform group-hover:translate-x-1">
-                  Open phase <ArrowRight className="size-3" />
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
+                <AccordionTrigger className="relative px-6 py-6 text-left no-underline hover:no-underline [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[color:var(--brand-ink)]/60">
+                  <div className="flex-1 pr-6">
+                    <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
+                    <h3
+                      className="font-display mt-2 text-2xl font-bold tracking-tight md:text-3xl"
+                      style={{ color: `var(${p.colorVar}-deep)` }}
+                    >
+                      {p.name}
+                    </h3>
+                    <p className="font-editorial mt-2 text-foreground/85">{p.lede}</p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="relative px-6 pt-0 pb-6">
+                  <div className="grid gap-8 border-t border-[color:var(--brand-ink)]/10 pt-6 md:grid-cols-2">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                        The work
+                      </p>
+                      <ol className="mt-4 space-y-4">
+                        {p.steps.map((s, i) => (
+                          <li key={s.title} className="flex gap-3">
+                            <span
+                              className="font-display mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-[color:var(--brand-cream)]"
+                              style={{ background: `var(${p.colorVar}-deep)` }}
+                            >
+                              {i + 1}
+                            </span>
+                            <div>
+                              <p className="font-display text-sm font-bold text-[color:var(--brand-ink)]">{s.title}</p>
+                              <p className="font-editorial mt-1 text-sm text-foreground/80">{s.description}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                        {letters.length > 0 ? `Letter${letters.length === 1 ? "" : "s"} for this phase` : "No letters · strategy phase"}
+                      </p>
+                      {letters.length > 0 ? (
+                        <ul className="mt-4 space-y-2">
+                          {letters.map((l) => (
+                            <li key={l.id}>
+                              <Link
+                                to="/playbook/letter/$id"
+                                params={{ id: l.id }}
+                                className="group/letter flex items-start gap-3 rounded-lg border border-border bg-background/60 p-3 no-underline transition-all hover:-translate-y-px hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+                              >
+                                <span
+                                  className="font-display inline-flex h-7 min-w-[2.75rem] shrink-0 items-center justify-center rounded-md px-2 text-xs font-bold text-[color:var(--brand-cream)]"
+                                  style={{ background: `var(${p.colorVar}-deep)` }}
+                                >
+                                  {l.id}
+                                </span>
+                                <div className="flex-1">
+                                  <p className="font-display text-sm font-bold text-[color:var(--brand-ink)]">{l.title}</p>
+                                  <p className="font-editorial mt-0.5 text-xs text-foreground/75">{l.lede}</p>
+                                </div>
+                                <FileText className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-ink)]/40 transition-colors group-hover/letter:text-[color:var(--brand-magenta)]" />
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="font-editorial mt-4 text-sm text-foreground/75">
+                          {p.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[color:var(--brand-ink)]/10 pt-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                      {p.rounds > 0 ? `${p.rounds} round${p.rounds === 1 ? "" : "s"}` : "Strategy · no rounds"}
+                    </p>
+                    <Link
+                      to="/playbook/phase/$id"
+                      params={{ id: p.id }}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[color:var(--brand-magenta)] transition-transform hover:translate-x-1"
+                    >
+                      Open full phase <ArrowRight className="size-3" />
+                    </Link>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
       </section>
 
       <section className="mx-auto max-w-6xl px-6 pb-24 md:px-10">
