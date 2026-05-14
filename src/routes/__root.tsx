@@ -90,7 +90,7 @@ function RootComponent() {
                   color: "var(--header-fg)",
                 }}
               >
-                <SidebarTrigger className="text-[color:var(--header-fg)] hover:bg-white/10" />
+                <SidebarTrigger className="text-[color:var(--header-fg)] hover:bg-[color:var(--header-border)]" />
                 <div
                   className="font-editorial text-xs sm:text-sm truncate"
                   style={{ color: "var(--header-muted-fg)" }}
