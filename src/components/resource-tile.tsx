@@ -7,6 +7,7 @@ interface ResourceTileProps {
   className?: string;
 }
 
+/** Variant D — ticket / index card. Dashed gold top border, no shadow, mono label. */
 export function ResourceTile({ resource, className }: ResourceTileProps) {
   return (
     <a
@@ -14,12 +15,14 @@ export function ResourceTile({ resource, className }: ResourceTileProps) {
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "group flex flex-col justify-between gap-4 rounded-xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-elegant",
+        "card-ticket group flex flex-col justify-between gap-4 p-5 transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-elegant",
         className,
       )}
     >
       <div className="space-y-1.5">
-        <p className="eyebrow text-[color:var(--brand-gold-deep)]">{resource.category}</p>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
+          {resource.category}
+        </p>
         <h3 className="font-display text-xl leading-tight">{resource.label}</h3>
         <p className="text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
       </div>
