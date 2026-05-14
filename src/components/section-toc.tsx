@@ -182,8 +182,16 @@ export function SectionToc({
     (id: string, opts?: { focusHeading?: boolean }) => {
       const target = document.getElementById(id);
       if (!target) return;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
       history.replaceState(null, "", `#${id}`);
+      try {
+        window.sessionStorage.setItem(storageKey, id);
+      } catch {
+        /* ignore */
+      }
       // Move keyboard focus to the section heading when requested
       // so screen-reader / keyboard users land in the new context.
       if (opts?.focusHeading) {
@@ -200,7 +208,7 @@ export function SectionToc({
         heading.addEventListener("blur", cleanup);
       }
     },
-    [],
+    [reducedMotion, storageKey],
   );
 
   const jumpByDelta = useCallback(
