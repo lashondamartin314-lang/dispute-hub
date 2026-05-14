@@ -363,6 +363,11 @@ export function AppSidebar() {
                             <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/progress")} className={ACTIVE_CLS}>
+                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
 
                         {/* External companion links — same ordered group, tappable, close sheet on tap */}
                         {PINNED_RESOURCES.map((r) => (
