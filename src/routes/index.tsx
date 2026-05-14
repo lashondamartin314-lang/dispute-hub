@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, FileText, Library, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronsDownUp, ChevronsUpDown, FileText, Library, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -18,7 +19,35 @@ export const Route = createFileRoute("/")({
   component: HubPage,
 });
 
+const ALL_PHASE_IDS = PHASES.map((p) => p.id);
+
 function HubPage() {
+  const [openPhases, setOpenPhases] = useState<string[]>([]);
+  const phaseRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Hash deep-linking: /#validate auto-expands matching phase and scrolls to it
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const syncFromHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (!id || !ALL_PHASE_IDS.includes(id as (typeof ALL_PHASE_IDS)[number])) return;
+      setOpenPhases((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      // Wait for the accordion to start expanding before scrolling
+      requestAnimationFrame(() => {
+        phaseRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, []);
+
+  const allOpen = openPhases.length === ALL_PHASE_IDS.length;
+  const toggleAll = () => setOpenPhases(allOpen ? [] : [...ALL_PHASE_IDS]);
+
+  return (
   return (
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
