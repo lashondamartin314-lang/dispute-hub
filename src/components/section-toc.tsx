@@ -377,17 +377,19 @@ export function SectionToc({
         return (
           <li key={item.id} role="none" className="relative">
             {active && (
-              <span
-                key={`rail-${instance}-${item.id}`}
+              <motion.span
+                layoutId={`toc-rail-${layoutScope}-${instance}`}
                 aria-hidden
-                className={cn(
-                  "absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full",
-                  !reducedMotion && "animate-toc-rail",
-                )}
+                className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full"
                 style={{
                   background: accentColor,
                   boxShadow: `0 0 0 2px color-mix(in oklab, ${accentColor} 18%, transparent)`,
                 }}
+                transition={
+                  reducedMotion || fmReduce
+                    ? { duration: 0 }
+                    : { type: "spring", stiffness: 500, damping: 38, mass: 0.8 }
+                }
               />
             )}
             <a
