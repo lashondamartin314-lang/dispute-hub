@@ -81,7 +81,14 @@ export function AppSidebar() {
         // user lands at the top of the menu instead of wherever it last was.
         sheet?.querySelector<HTMLElement>('[data-sidebar="menu-button"]');
       if (!target) return;
-      target.scrollIntoView({ block: "center", behavior: "auto" });
+      // Honor prefers-reduced-motion: jump instantly instead of animating.
+      const prefersReducedMotion =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({
+        block: "center",
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
       // Move keyboard focus to the active item so screen-reader and
       // keyboard users land on the same place sighted users see.
       // preventScroll avoids fighting the scrollIntoView we just ran.
