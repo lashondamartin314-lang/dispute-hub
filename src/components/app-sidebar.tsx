@@ -287,70 +287,69 @@ export function AppSidebar() {
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
-                        {PHASES.map((p) => {
-                          const Icon = phaseIcon[p.id];
-                          const letters = lettersForPhase(p.id);
-                          const active = isPhaseActive(p.id);
-                          const isPhaseOne = p.number === 1;
-                          const coverActive = isActive("/");
-                          // Phase 1 always exposes its sub-items (Cover + letters when active);
-                          // other phases reveal letters only while active.
-                          const showSub = isPhaseOne || (active && letters.length > 0);
-                          return (
-                            <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={PHASE_ACTIVE_CLS}>
-                                <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
-                                  <span
-                                    className="mr-1 inline-flex h-6 min-w-[1.75rem] items-center justify-center rounded-lg border border-white bg-white/90 px-1.5 font-mono text-[10px] font-bold shadow-sm"
-                                    style={{ color: `var(${p.colorVar}-deep)` }}
-                                  >
-                                    P{p.number}
-                                  </span>
-                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                                  <span className="truncate">{p.name}</span>
-                                </Link>
-                              </SidebarMenuButton>
-                              {showSub && (
-                                <SidebarMenuSub>
-                                  {isPhaseOne && (
-                                    <SidebarMenuSubItem>
-                                      <SidebarMenuSubButton
-                                        asChild
-                                        isActive={coverActive}
-                                        className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
-                                        aria-current={coverActive ? "page" : undefined}
-                                      >
-                                        <Link to="/" onClick={closeMobile} data-active-scroll={coverActive ? "link" : undefined}>
-                                          <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)]" aria-hidden />
-                                          <span className="font-semibold">Cover</span>
-                                        </Link>
-                                      </SidebarMenuSubButton>
-                                    </SidebarMenuSubItem>
-                                  )}
-                                  {active && letters.map((l) => {
-                                    const lActive = isLetterActive(l.id);
-                                    return (
-                                      <SidebarMenuSubItem key={l.id}>
-                                        <SidebarMenuSubButton
-                                          asChild
-                                          isActive={lActive}
-                                          className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
-                                          aria-current={lActive ? "page" : undefined}
-                                        >
-                                          <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
-                                            <span className="font-mono text-[10px] opacity-60">{l.id}</span>
-                                            <span className="truncate">{l.title}</span>
-                                          </Link>
-                                        </SidebarMenuSubButton>
-                                      </SidebarMenuSubItem>
-                                    );
-                                  })}
-                                </SidebarMenuSub>
-                              )}
-                            </SidebarMenuItem>
-                          );
-                        })}
+                        {/* Cover lives at the top of Phase 1 — kept as a single pill above the grid. */}
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/")}
+                            tooltip="Cover"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
+                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              <span className="font-semibold">Cover</span>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       </SidebarMenu>
+
+                      {/* Square P1–P6 grid replaces the stacked phase rows. */}
+                      <div className="px-1 pt-2">
+                        <PhaseGrid variant="sidebar" onSelect={closeMobile} />
+                      </div>
+
+                      {/* Active phase exposes its letters below the grid. */}
+                      {(() => {
+                        const activePhase = PHASES.find((p) => isPhaseActive(p.id));
+                        if (!activePhase) return null;
+                        const letters = lettersForPhase(activePhase.id);
+                        if (letters.length === 0) return null;
+                        return (
+                          <div className="mt-3 px-1">
+                            <p
+                              className="px-2 pb-1 text-[10px] font-bold uppercase tracking-[0.18em]"
+                              style={{ color: `var(${activePhase.colorVar}-deep)` }}
+                            >
+                              P{activePhase.number} · Letters
+                            </p>
+                            <SidebarMenu>
+                              {letters.map((l) => {
+                                const lActive = isLetterActive(l.id);
+                                return (
+                                  <SidebarMenuItem key={l.id}>
+                                    <SidebarMenuButton
+                                      asChild
+                                      isActive={lActive}
+                                      className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
+                                      aria-current={lActive ? "page" : undefined}
+                                    >
+                                      <Link
+                                        to="/playbook/letter/$id"
+                                        params={{ id: l.id }}
+                                        onClick={closeMobile}
+                                        data-active-scroll={lActive ? "letter" : undefined}
+                                      >
+                                        <span className="font-mono text-[10px] opacity-60">{l.id}</span>
+                                        <span className="truncate">{l.title}</span>
+                                      </Link>
+                                    </SidebarMenuButton>
+                                  </SidebarMenuItem>
+                                );
+                              })}
+                            </SidebarMenu>
+                          </div>
+                        );
+                      })()}
                     </SidebarGroupContent>
                   </CollapsibleContent>
                 </SidebarGroup>
