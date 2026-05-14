@@ -104,6 +104,7 @@ function FoundationPage() {
           ))}
         </div>
       </section>
+      </div>
     </div>
   );
 }
