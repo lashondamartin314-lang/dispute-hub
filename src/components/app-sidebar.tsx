@@ -260,19 +260,23 @@ export function AppSidebar() {
   if (isMobile) return null;
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+    <Sidebar
+      collapsible="icon"
+      className="border-none bg-transparent p-3"
+      style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+    >
+      <SidebarHeader className="rounded-t-3xl border-b border-sidebar-border/70 bg-[color:var(--sidebar)] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <Link
           to="/"
           onClick={closeMobile}
           aria-label="Home"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-sidebar-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)]"
         >
           <Home className="size-5" aria-hidden="true" />
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="gap-0 px-2 py-2">
+      <SidebarContent className="gap-0 bg-[color:var(--sidebar)] px-3 py-3 shadow-[0_30px_60px_-24px_rgba(12,19,64,0.18)]">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
             phases: (
