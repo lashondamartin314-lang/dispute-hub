@@ -287,10 +287,10 @@ export function CreditAcademyUpsell({
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Still undecided?{" "}
         <a
-          href="https://shondamartincom.netlify.app/credit-academy-memberships"
+          href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip_trial", placement)}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-foreground underline-offset-4 hover:underline"
+          className="font-semibold text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           Be Shonda's guest for 7 days →
         </a>
