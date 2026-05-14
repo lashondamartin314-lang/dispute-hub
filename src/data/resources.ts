@@ -261,6 +261,7 @@ export const RESOURCES: Resource[] = [
     description: "Cohort coaching, monthly Q&A, and the deeper curriculum.",
     url: "https://shondamartin.com",
     category: "academy",
+    actionLabel: "Join Credit Academy",
     pinned: true,
     usage:
       "Join when you want me to look at your actual file, walk through your specific accounts on a live call, and stay accountable through a full 5-round cycle. Inside you get the deeper curriculum on rebuilding after deletions, the monthly Q&A where I review member files, and a community of people running the same playbook so you can compare strategies and timelines.",
