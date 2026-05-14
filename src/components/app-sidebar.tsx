@@ -8,6 +8,7 @@ import {
   ScrollText,
   Sparkles,
   ArrowUpRight,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
@@ -77,6 +78,11 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild isActive={isActive("/letters")}>
                   <Link to="/letters"><Library className="size-4" /> Letter library</Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={isActive("/tracker")}>
+                  <Link to="/tracker"><ClipboardList className="size-4" /> Dispute tracker</Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
