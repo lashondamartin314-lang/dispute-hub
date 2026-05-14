@@ -15,6 +15,11 @@
 @import "@fontsource/fraunces/600.css";
 @import "@fontsource/fraunces/700.css";
 
+@import "@fontsource/plus-jakarta-sans/400.css";
+@import "@fontsource/plus-jakarta-sans/500.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -122,14 +127,15 @@
   --input: rgba(20, 17, 26, 0.18);
   --ring: #F10085;
 
-  --sidebar: color-mix(in oklab, #064e3b 18%, #f8f5ec);
-  --sidebar-foreground: #1f2a24;
-  --sidebar-primary: #064e3b;
-  --sidebar-primary-foreground: #f5f0e0;
-  --sidebar-accent: color-mix(in oklab, #064e3b 10%, #f8f5ec);
-  --sidebar-accent-foreground: #064e3b;
-  --sidebar-border: color-mix(in oklab, #064e3b 14%, transparent);
-  --sidebar-ring: color-mix(in oklab, #c9a84c 70%, #064e3b);
+  /* Premium pearl-rail sidebar — pearl surface, deep indigo ink, magenta accent. */
+  --sidebar: #FAFAF7;
+  --sidebar-foreground: #0C1340;
+  --sidebar-primary: #F10085;
+  --sidebar-primary-foreground: #FAFAF7;
+  --sidebar-accent: rgba(255, 255, 255, 0.7);
+  --sidebar-accent-foreground: #0C1340;
+  --sidebar-border: rgba(12, 19, 64, 0.08);
+  --sidebar-ring: #F10085;
 
   /* Hub header — shared tokens so mobile/tablet/desktop stay in sync */
   --header-bg: linear-gradient(90deg, #064e3b 0%, #0d7a5f 100%);

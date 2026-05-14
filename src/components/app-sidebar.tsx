@@ -47,25 +47,25 @@ const phaseIcon = {
   escalate: BookOpen,
 } as const;
 
-// Active-state classes used on every menu/sub-button so the currently-rendered
-// page is unmistakable inside the mobile sheet (and remains clear on desktop).
+// Pearl-pill aesthetic: every nav row is a soft white pill with an inner
+// hairline, lifting on hover. Active uses a magenta-tinted shadow and a
+// magenta dot accent, signaling "you are here" without color noise.
+const PILL_BASE =
+  "rounded-2xl px-4 py-3 bg-white/40 border border-white/70 shadow-[inset_0_1px_2px_rgba(255,255,255,0.6)] " +
+  "transition-all duration-300 ease-out " +
+  "hover:bg-white hover:border-white hover:shadow-[0_8px_18px_-6px_rgba(12,19,64,0.10),inset_0_1px_2px_rgba(255,255,255,0.85)] " +
+  "hover:-translate-y-px";
+
 const ACTIVE_CLS =
-  "data-[active=true]:bg-[color:var(--brand-gold)]/20 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-sm";
+  PILL_BASE +
+  " data-[active=true]:bg-white data-[active=true]:border-[color:var(--brand-magenta)]/35 " +
+  "data-[active=true]:shadow-[0_12px_24px_-8px_rgba(241,0,133,0.28),inset_0_1px_2px_rgba(255,255,255,1)] " +
+  "data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold";
 
-// Phase rows get a slightly stronger active wash so the selected phase reads
-// at the same visual weight as the hover state (gold bar + tint + nudge).
-const PHASE_ACTIVE_CLS =
-  "data-[active=true]:bg-[color:var(--brand-gold)]/25 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-4 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none data-[active=true]:pl-3 data-[active=true]:shadow-md data-[active=true]:translate-x-0.5";
+const PHASE_ACTIVE_CLS = ACTIVE_CLS + " data-[active=true]:scale-[1.015]";
 
-// Pronounced hover treatment shared across menu items: subtle gold wash,
-// gentle slide, and a soft shadow lift so the cursor target is unmistakable.
-const HOVER_CLS =
-  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/20 hover:text-foreground hover:translate-x-0.5 hover:shadow-sm";
-
-// Stronger hover for phase rows: adds a gold accent bar on the left edge so
-// phases feel like primary navigation targets.
-const PHASE_HOVER_CLS =
-  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/25 hover:text-foreground hover:translate-x-1 hover:shadow-md hover:border-l-4 hover:border-[color:var(--brand-gold-deep)] hover:rounded-l-none hover:pl-3";
+const HOVER_CLS = "";
+const PHASE_HOVER_CLS = "";
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -260,19 +260,23 @@ export function AppSidebar() {
   if (isMobile) return null;
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-sidebar-border"
+      style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
+    >
+      <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
         <Link
           to="/"
           onClick={closeMobile}
           aria-label="Home"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-sidebar-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)]"
         >
           <Home className="size-5" aria-hidden="true" />
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="gap-0 px-2 py-2">
+      <SidebarContent className="gap-0 px-3 py-3">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
             phases: (
@@ -283,23 +287,11 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/")} tooltip="Cover" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} tooltip="Foundation" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} tooltip="Strategy overview" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/letters")} tooltip="Letter library" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/")} tooltip="Cover" className={ACTIVE_CLS}>
+                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
+                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              <span className="font-semibold">Cover</span>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         {PHASES.map((p) => {
@@ -308,13 +300,16 @@ export function AppSidebar() {
                           const active = isPhaseActive(p.id);
                           return (
                             <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={`${PHASE_ACTIVE_CLS} ${PHASE_HOVER_CLS}`}>
+                              <SidebarMenuButton asChild isActive={active} tooltip={`Phase ${p.number}: ${p.name}`} className={PHASE_ACTIVE_CLS}>
                                 <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
-                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
-                                  <span className="truncate">
-                                    <span className="font-mono text-[10px] mr-1.5 opacity-60">P{p.number}</span>
-                                    {p.name}
+                                  <span
+                                    className="mr-1 inline-flex h-6 min-w-[1.75rem] items-center justify-center rounded-lg border border-white bg-white/90 px-1.5 font-mono text-[10px] font-bold shadow-sm"
+                                    style={{ color: `var(${p.colorVar}-deep)` }}
+                                  >
+                                    P{p.number}
                                   </span>
+                                  <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
+                                  <span className="truncate">{p.name}</span>
                                 </Link>
                               </SidebarMenuButton>
                               {active && letters.length > 0 && (
@@ -326,7 +321,7 @@ export function AppSidebar() {
                                         <SidebarMenuSubButton
                                           asChild
                                           isActive={lActive}
-                                          className="data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)]"
+                                          className="rounded-xl data-[active=true]:bg-white data-[active=true]:text-[color:var(--sidebar-foreground)] data-[active=true]:font-semibold data-[active=true]:shadow-[0_6px_14px_-6px_rgba(241,0,133,0.25)]"
                                           aria-current={lActive ? "page" : undefined}
                                         >
                                           <Link to="/playbook/letter/$id" params={{ id: l.id }} onClick={closeMobile} data-active-scroll={lActive ? "letter" : undefined}>
@@ -356,28 +351,46 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/tracker")} tooltip="Dispute tracker" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} tooltip="Foundation" className={ACTIVE_CLS}>
+                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4 text-[color:var(--brand-navy)]" /> Foundation</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/decoder")} tooltip="Response decoder" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} tooltip="Strategy overview" className={ACTIVE_CLS}>
+                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4 text-[color:var(--brand-violet)]" /> Strategy overview</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/resources")} tooltip="Resources" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/letters")} tooltip="Letter library" className={ACTIVE_CLS}>
+                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4 text-[color:var(--brand-magenta)]" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/progress")} tooltip="Your progress" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/tracker")} tooltip="Dispute tracker" className={ACTIVE_CLS}>
+                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4 text-[color:var(--brand-sage)]" /> Dispute tracker</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/ask")} tooltip="Ask Shonda" className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                            <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}><MessageCircleQuestion className="size-4" /> Ask Shonda</Link>
+                          <SidebarMenuButton asChild isActive={isActive("/decoder")} tooltip="Response decoder" className={ACTIVE_CLS}>
+                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4 text-[color:var(--brand-sky)]" /> Response decoder</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/resources")} tooltip="Resources" className={ACTIVE_CLS}>
+                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4 text-[color:var(--brand-gold-deep)]" /> Resources</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/progress")} tooltip="Your progress" className={ACTIVE_CLS}>
+                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4 text-[color:var(--brand-violet-deep)]" /> Your progress</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/ask")} tooltip="Ask Shonda" className={ACTIVE_CLS}>
+                            <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}>
+                              <MessageCircleQuestion className="size-4 text-[color:var(--brand-magenta)]" /> Ask Shonda
+                              <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]" aria-hidden />
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                       </SidebarMenu>
