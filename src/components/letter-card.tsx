@@ -56,13 +56,28 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
       )}
 
       <div className="relative flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <p className="eyebrow" style={{ color: isFrame ? "var(--brand-gold)" : phaseDeep }}>
-            {phase.eyebrow} · {letter.id}
-          </p>
-          <h3 className={cn("font-display text-2xl leading-tight text-balance md:text-[28px]", titleColor)}>
-            {letter.title}
-          </h3>
+        <div className="flex min-w-0 items-start gap-4">
+          <span
+            aria-hidden
+            className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-card md:h-14 md:w-14"
+            style={{
+              background: isFrame
+                ? `color-mix(in oklab, var(--brand-cream) 14%, transparent)`
+                : `color-mix(in oklab, ${phaseColor} 16%, var(--brand-paper))`,
+              color: isFrame ? "var(--brand-gold)" : phaseDeep,
+              border: `2px solid color-mix(in oklab, ${phaseColor} 45%, transparent)`,
+            }}
+          >
+            <Mail className="size-6 md:size-7" strokeWidth={2.25} />
+          </span>
+          <div className="min-w-0 space-y-2">
+            <p className="eyebrow" style={{ color: isFrame ? "var(--brand-gold)" : phaseDeep }}>
+              {phase.eyebrow} · {letter.id}
+            </p>
+            <h3 className={cn("font-display text-2xl leading-tight text-balance md:text-[28px]", titleColor)}>
+              {letter.title}
+            </h3>
+          </div>
         </div>
         <div
           aria-hidden
@@ -84,7 +99,7 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
 
       <div
         className={cn(
-          "pt-5 mt-auto flex flex-wrap items-center gap-3 relative border-t",
+          "pt-5 mt-auto grid gap-2.5 relative border-t sm:grid-cols-[1fr_1fr_auto] sm:gap-3",
           isFrame
             ? "border-[color:color-mix(in_oklab,var(--brand-cream)_20%,transparent)]"
             : "border-[color:color-mix(in_oklab,var(--brand-ink)_12%,transparent)]",
@@ -94,7 +109,7 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
           href={letter.copyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground transition-all hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-glow"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-bold text-accent-foreground shadow-card transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-glow"
         >
           Use template
           <ArrowUpRight className="size-4" />
@@ -104,24 +119,32 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-colors",
+            "inline-flex items-center justify-center gap-2 rounded-full border-2 px-5 py-3 text-sm font-bold transition-all hover:-translate-y-0.5",
             isFrame
-              ? "border-[color:color-mix(in_oklab,var(--brand-cream)_30%,transparent)] text-[color:var(--brand-cream)]/85 hover:border-[color:var(--brand-gold)] hover:text-[color:var(--brand-gold)]"
-              : "border-border text-foreground/80 hover:border-foreground/30 hover:text-foreground",
+              ? "border-[color:color-mix(in_oklab,var(--brand-cream)_35%,transparent)] text-[color:var(--brand-cream)] hover:border-[color:var(--brand-gold)] hover:text-[color:var(--brand-gold)]"
+              : "text-foreground hover:shadow-card",
           )}
+          style={
+            !isFrame
+              ? {
+                  borderColor: `color-mix(in oklab, ${phaseColor} 55%, transparent)`,
+                  background: `color-mix(in oklab, ${phaseColor} 8%, var(--card))`,
+                }
+              : undefined
+          }
         >
-          <FileText className="size-4" />
+          <Eye className="size-4" strokeWidth={2.25} />
           Preview
         </a>
         <Link
           to="/playbook/letter/$id"
           params={{ id: letter.id }}
-          className={cn(
-            "ml-auto text-xs font-medium tracking-wide underline-offset-4 hover:underline",
-            isFrame ? "text-[color:var(--brand-cream)]/60 hover:text-[color:var(--brand-gold)]" : "text-muted-foreground hover:text-foreground",
-          )}
+          className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant sm:ml-auto"
+          style={{ background: isFrame ? "var(--brand-gold-deep)" : phaseDeep }}
         >
-          Letter detail →
+          <BookOpen className="size-4" strokeWidth={2.25} />
+          Letter details
+          <ArrowUpRight className="size-4" />
         </Link>
       </div>
     </article>
