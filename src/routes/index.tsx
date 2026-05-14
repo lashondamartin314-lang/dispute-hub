@@ -48,7 +48,6 @@ function HubPage() {
   const toggleAll = () => setOpenPhases(allOpen ? [] : [...ALL_PHASE_IDS]);
 
   return (
-  return (
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
 
