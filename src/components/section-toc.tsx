@@ -57,8 +57,13 @@ export function SectionToc({
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const fmReduce = useReducedMotion();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [progress, setProgress] = useState(0);
+  // Unique per-instance prefix so the desktop rail and the drawer rail each
+  // get their own Framer Motion layout group (otherwise the bar tries to
+  // animate between two DOM trees).
+  const layoutScope = useId();
 
   // Stable storage key per page so the last-focused section persists per route.
   const storageKey = useMemo(() => {
