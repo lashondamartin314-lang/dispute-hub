@@ -51,6 +51,16 @@ const phaseIcon = {
 const ACTIVE_CLS =
   "data-[active=true]:bg-[color:var(--brand-gold)]/15 data-[active=true]:text-foreground data-[active=true]:font-semibold data-[active=true]:border-l-2 data-[active=true]:border-[color:var(--brand-gold-deep)] data-[active=true]:rounded-l-none";
 
+// Pronounced hover treatment shared across menu items: subtle gold wash,
+// gentle slide, and a soft shadow lift so the cursor target is unmistakable.
+const HOVER_CLS =
+  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/20 hover:text-foreground hover:translate-x-0.5 hover:shadow-sm";
+
+// Stronger hover for phase rows: adds a gold accent bar on the left edge so
+// phases feel like primary navigation targets.
+const PHASE_HOVER_CLS =
+  "transition-all duration-200 ease-out hover:bg-[color:var(--brand-gold)]/25 hover:text-foreground hover:translate-x-1 hover:shadow-md hover:border-l-4 hover:border-[color:var(--brand-gold-deep)] hover:rounded-l-none hover:pl-3";
+
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { setOpenMobile, isMobile, openMobile } = useSidebar();
