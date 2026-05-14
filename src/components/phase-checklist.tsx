@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, RotateCcw, Trophy } from "lucide-react";
+import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
 import { PHASES, type Phase } from "@/data/phases";
 import { buildChecklist, CHECKLIST_STORAGE_PREFIX } from "@/lib/checklist";
@@ -43,6 +44,38 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
   const total = items.length;
   const done = items.filter((i) => checked[i.id]).length;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+  // Confetti burst when checklist transitions to fully complete.
+  const prevPctRef = useRef(0);
+  useEffect(() => {
+    if (!hydrated) {
+      prevPctRef.current = pct;
+      return;
+    }
+    if (pct === 100 && prevPctRef.current < 100) {
+      const root = getComputedStyle(document.documentElement);
+      const colors = [
+        root.getPropertyValue(`${phase.colorVar}-deep`).trim() || "#704214",
+        root.getPropertyValue(phase.colorVar).trim() || "#a87a4a",
+        root.getPropertyValue("--brand-gold").trim() || "#c9a84c",
+        root.getPropertyValue("--brand-cream").trim() || "#f5f0e0",
+      ];
+      const fire = (ratio: number, opts: confetti.Options) =>
+        confetti({
+          particleCount: Math.floor(180 * ratio),
+          spread: 70,
+          startVelocity: 45,
+          ticks: 220,
+          colors,
+          disableForReducedMotion: true,
+          ...opts,
+        });
+      fire(0.3, { origin: { x: 0.2, y: 0.7 }, angle: 60 });
+      fire(0.3, { origin: { x: 0.8, y: 0.7 }, angle: 120 });
+      fire(0.4, { origin: { x: 0.5, y: 0.6 }, spread: 100 });
+    }
+    prevPctRef.current = pct;
+  }, [pct, hydrated, phase.colorVar]);
 
   const toggle = (id: string) =>
     setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
