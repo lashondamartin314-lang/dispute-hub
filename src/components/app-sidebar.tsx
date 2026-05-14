@@ -134,7 +134,8 @@ export function AppSidebar() {
     pathname.startsWith("/tracker") ||
     pathname.startsWith("/decoder") ||
     pathname.startsWith("/resources") ||
-    pathname.startsWith("/progress");
+    pathname.startsWith("/progress") ||
+    pathname.startsWith("/ask");
 
   // Persist expanded/collapsed state across sessions so the user's preferred
   // menu layout reappears on next open. We hydrate after mount to avoid SSR mismatch.
