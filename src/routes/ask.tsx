@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { submitQuestion } from "@/lib/questions.functions";
+import shondaPhoto from "@/assets/shonda.png";
 
 export const Route = createFileRoute("/ask")({
   head: () => ({
