@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
-import { List, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronsDown,
+  ChevronsUp,
+  Keyboard,
+  List,
+  X,
+} from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -29,6 +37,15 @@ interface SectionTocProps {
  * Section table-of-contents.
  * - On `xl`+ screens: renders as a sticky sidebar.
  * - Below `xl`: renders a floating button that opens a bottom drawer with the same outline.
+ *
+ * Keyboard:
+ *   ↑/↓ or j/k         move focus between items (with roving tabindex)
+ *   Home / End         jump to first / last item
+ *   Enter / Space      jump to the focused section
+ *   [   ]              jump to previous / next section (works anywhere on the page)
+ *   g                  jump to the top section
+ *   G                  jump to the last section
+ *   Esc                close the mobile drawer
  */
 export function SectionToc({
   items,
@@ -38,6 +55,16 @@ export function SectionToc({
 }: SectionTocProps) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+
+  // Two refs because the same <ul> is rendered in both the desktop sidebar
+  // and the mobile drawer. We track the focused item index per-instance via
+  // a roving tabindex (only one anchor in each instance is tabbable at a time).
+  const desktopListRef = useRef<HTMLUListElement | null>(null);
+  const drawerListRef = useRef<HTMLUListElement | null>(null);
+
+  // Track focus index for roving tabindex within whichever list is active.
+  const [focusIdx, setFocusIdx] = useState<number>(0);
 
   useEffect(() => {
     if (typeof window === "undefined" || items.length === 0) return;
@@ -59,25 +86,204 @@ export function SectionToc({
     return () => observer.disconnect();
   }, [items]);
 
-  const jumpTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    history.replaceState(null, "", `#${id}`);
+  const activeIdx = useMemo(
+    () => Math.max(0, items.findIndex((i) => i.id === activeId)),
+    [items, activeId],
+  );
+
+  // Keep the roving focus aligned with the active section by default,
+  // unless the user has interactively focused a different item.
+  useEffect(() => {
+    setFocusIdx(activeIdx);
+  }, [activeIdx]);
+
+  const jumpTo = useCallback(
+    (id: string, opts?: { focusHeading?: boolean }) => {
+      const target = document.getElementById(id);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", `#${id}`);
+      // Move keyboard focus to the section heading when requested
+      // so screen-reader / keyboard users land in the new context.
+      if (opts?.focusHeading) {
+        const heading =
+          target.querySelector<HTMLElement>("h1, h2, h3, [data-toc-focus]") ?? target;
+        const prevTabIndex = heading.getAttribute("tabindex");
+        if (prevTabIndex === null) heading.setAttribute("tabindex", "-1");
+        heading.focus({ preventScroll: true });
+        // Restore tabindex on next blur so we don't pollute the DOM.
+        const cleanup = () => {
+          if (prevTabIndex === null) heading.removeAttribute("tabindex");
+          heading.removeEventListener("blur", cleanup);
+        };
+        heading.addEventListener("blur", cleanup);
+      }
+    },
+    [],
+  );
+
+  const jumpByDelta = useCallback(
+    (delta: number) => {
+      if (items.length === 0) return;
+      const next = Math.min(items.length - 1, Math.max(0, activeIdx + delta));
+      jumpTo(items[next].id, { focusHeading: true });
+    },
+    [items, activeIdx, jumpTo],
+  );
+
+  // Global keyboard shortcuts: [ prev, ] next, g top, G bottom.
+  // Suppressed while the user is typing in any field/contenteditable.
+  useEffect(() => {
+    if (typeof window === "undefined" || items.length === 0) return;
+    const isTypingTarget = (el: EventTarget | null) => {
+      if (!(el instanceof HTMLElement)) return false;
+      const tag = el.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return true;
+      if (el.isContentEditable) return true;
+      return false;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (isTypingTarget(e.target)) return;
+      if (e.key === "[") {
+        e.preventDefault();
+        jumpByDelta(-1);
+      } else if (e.key === "]") {
+        e.preventDefault();
+        jumpByDelta(1);
+      } else if (e.key === "g" && !e.shiftKey) {
+        e.preventDefault();
+        jumpTo(items[0].id, { focusHeading: true });
+      } else if (e.key === "G" || (e.key === "g" && e.shiftKey)) {
+        e.preventDefault();
+        jumpTo(items[items.length - 1].id, { focusHeading: true });
+      } else if (e.key === "?" && e.shiftKey) {
+        e.preventDefault();
+        setShowShortcuts((v) => !v);
+      } else if (e.key === "Escape") {
+        if (drawerOpen) setDrawerOpen(false);
+        if (showShortcuts) setShowShortcuts(false);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [items, jumpByDelta, jumpTo, drawerOpen, showShortcuts]);
+
+  // Focus the anchor at focusIdx within the given list ref.
+  const focusAnchor = (
+    listRef: React.RefObject<HTMLUListElement | null>,
+    idx: number,
+  ) => {
+    const root = listRef.current;
+    if (!root) return;
+    const anchors = root.querySelectorAll<HTMLAnchorElement>("a[data-toc-item]");
+    anchors[idx]?.focus();
   };
 
-  const activeIdx = Math.max(0, items.findIndex((i) => i.id === activeId));
+  const handleListKeyDown = (
+    e: React.KeyboardEvent<HTMLUListElement>,
+    listRef: React.RefObject<HTMLUListElement | null>,
+  ) => {
+    if (items.length === 0) return;
+    let next: number | null = null;
+    switch (e.key) {
+      case "ArrowDown":
+      case "j":
+        next = Math.min(items.length - 1, focusIdx + 1);
+        break;
+      case "ArrowUp":
+      case "k":
+        next = Math.max(0, focusIdx - 1);
+        break;
+      case "Home":
+      case "PageUp":
+        next = 0;
+        break;
+      case "End":
+      case "PageDown":
+        next = items.length - 1;
+        break;
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        jumpTo(items[focusIdx].id, { focusHeading: true });
+        if (drawerOpen) setDrawerOpen(false);
+        return;
+      default:
+        return;
+    }
+    if (next !== null) {
+      e.preventDefault();
+      setFocusIdx(next);
+      focusAnchor(listRef, next);
+    }
+  };
 
-  const list = (
+  const SkipBar = (
+    <div
+      role="group"
+      aria-label="Quick jump"
+      className="mb-3 grid grid-cols-4 gap-1 rounded-xl border border-border/70 bg-card/60 p-1"
+    >
+      <SkipBtn
+        onClick={() => jumpTo(items[0].id, { focusHeading: true })}
+        disabled={activeIdx <= 0}
+        title="Jump to top (g)"
+        accentColor={accentColor}
+      >
+        <ChevronsUp className="size-3.5" aria-hidden />
+        <span className="sr-only">Top</span>
+      </SkipBtn>
+      <SkipBtn
+        onClick={() => jumpByDelta(-1)}
+        disabled={activeIdx <= 0}
+        title="Previous section ([)"
+        accentColor={accentColor}
+      >
+        <ArrowUp className="size-3.5" aria-hidden />
+        <span className="sr-only">Previous section</span>
+      </SkipBtn>
+      <SkipBtn
+        onClick={() => jumpByDelta(1)}
+        disabled={activeIdx >= items.length - 1}
+        title="Next section (])"
+        accentColor={accentColor}
+      >
+        <ArrowDown className="size-3.5" aria-hidden />
+        <span className="sr-only">Next section</span>
+      </SkipBtn>
+      <SkipBtn
+        onClick={() => jumpTo(items[items.length - 1].id, { focusHeading: true })}
+        disabled={activeIdx >= items.length - 1}
+        title="Jump to bottom (Shift+G)"
+        accentColor={accentColor}
+      >
+        <ChevronsDown className="size-3.5" aria-hidden />
+        <span className="sr-only">Bottom</span>
+      </SkipBtn>
+    </div>
+  );
+
+  const renderList = (
+    listRef: React.RefObject<HTMLUListElement | null>,
+    instance: "desktop" | "drawer",
+  ) => (
     <ul
+      ref={listRef}
+      role="menu"
+      aria-label={label}
+      onKeyDown={(e) => handleListKeyDown(e, listRef)}
       className="relative space-y-1 border-l-2 pl-4"
       style={{ borderColor: `color-mix(in oklab, ${accentColor} 14%, transparent)` }}
     >
       {items.map((item, i) => {
         const active = activeId === item.id;
+        const tabbable = i === focusIdx;
         return (
-          <li key={item.id} className="relative">
+          <li key={item.id} role="none" className="relative">
             {active && (
               <span
-                key={`rail-${item.id}`}
+                key={`rail-${instance}-${item.id}`}
                 aria-hidden
                 className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full animate-toc-rail"
                 style={{
@@ -87,23 +293,36 @@ export function SectionToc({
               />
             )}
             <a
+              data-toc-item
+              role="menuitem"
+              tabIndex={tabbable ? 0 : -1}
               href={`#${item.id}`}
               onClick={(e) => {
                 e.preventDefault();
-                jumpTo(item.id);
+                jumpTo(item.id, { focusHeading: true });
+                setFocusIdx(i);
                 setDrawerOpen(false);
               }}
+              onFocus={() => setFocusIdx(i)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm transition-all duration-300",
+                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none transition-all duration-300",
+                "focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                 active
                   ? "pl-3 font-semibold text-[color:var(--brand-ink)] animate-toc-pill"
                   : "pl-2 text-foreground/60 hover:translate-x-0.5 hover:text-foreground",
               )}
               style={
                 active
-                  ? { background: `color-mix(in oklab, ${accentColor} 10%, transparent)` }
-                  : undefined
+                  ? {
+                      background: `color-mix(in oklab, ${accentColor} 10%, transparent)`,
+                      // @ts-expect-error CSS var override for ring color
+                      "--tw-ring-color": accentColor,
+                    }
+                  : ({
+                      // @ts-expect-error CSS var override for ring color
+                      "--tw-ring-color": accentColor,
+                    } as React.CSSProperties)
               }
             >
               <span
@@ -136,8 +355,26 @@ export function SectionToc({
         aria-label={label}
         className={cn("sticky top-24 hidden xl:block", className)}
       >
-        <p className="eyebrow mb-4" style={{ color: accentColor }}>{label}</p>
-        {list}
+        <div className="mb-3 flex items-center justify-between">
+          <p className="eyebrow" style={{ color: accentColor }}>{label}</p>
+          <button
+            type="button"
+            onClick={() => setShowShortcuts((v) => !v)}
+            aria-expanded={showShortcuts}
+            aria-controls="toc-shortcuts"
+            className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground"
+            title="Keyboard shortcuts (Shift+?)"
+          >
+            <Keyboard className="size-3" aria-hidden /> keys
+          </button>
+        </div>
+        {SkipBar}
+        {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
+        {renderList(desktopListRef, "desktop")}
+        <p className="mt-3 text-[10px] leading-snug text-muted-foreground/80">
+          Tip: press <Kbd>[</Kbd> / <Kbd>]</Kbd> anywhere on the page to move
+          between sections.
+        </p>
       </nav>
 
       {/* Mobile / tablet drawer trigger */}
@@ -159,9 +396,13 @@ export function SectionToc({
         <DrawerContent className="px-5 pb-8">
           <DrawerHeader className="px-0 text-left">
             <DrawerTitle className="font-display text-xl">{label}</DrawerTitle>
-            <DrawerDescription>Jump to any section in this letter.</DrawerDescription>
+            <DrawerDescription>
+              Jump to any section. Use <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move,{" "}
+              <Kbd>Enter</Kbd> to go, <Kbd>Esc</Kbd> to close.
+            </DrawerDescription>
           </DrawerHeader>
-          {list}
+          {SkipBar}
+          {renderList(drawerListRef, "drawer")}
           <DrawerClose asChild>
             <button
               type="button"
@@ -173,5 +414,82 @@ export function SectionToc({
         </DrawerContent>
       </Drawer>
     </>
+  );
+}
+
+function SkipBtn({
+  children,
+  onClick,
+  disabled,
+  title,
+  accentColor,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  title: string;
+  accentColor: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      aria-label={title}
+      className={cn(
+        "inline-flex items-center justify-center rounded-lg py-1.5 text-xs font-semibold transition-all",
+        "hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:translate-y-0",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+      )}
+      style={{
+        color: accentColor,
+        background: `color-mix(in oklab, ${accentColor} 8%, transparent)`,
+        // @ts-expect-error CSS var override for ring color
+        "--tw-ring-color": accentColor,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ShortcutsPanel({ id }: { id: string }) {
+  return (
+    <div
+      id={id}
+      className="mb-3 rounded-xl border border-border/70 bg-card/70 p-3 text-xs"
+    >
+      <p className="eyebrow mb-2 text-[9px]">Keyboard shortcuts</p>
+      <ul className="grid grid-cols-1 gap-1.5">
+        <Row k={["↑", "↓"]} v="Move between items" />
+        <Row k={["Enter"]} v="Jump to focused section" />
+        <Row k={["[", "]"]} v="Previous / next section" />
+        <Row k={["g"]} v="Jump to top" />
+        <Row k={["⇧", "G"]} v="Jump to bottom" />
+        <Row k={["Esc"]} v="Close drawer" />
+      </ul>
+    </div>
+  );
+}
+
+function Row({ k, v }: { k: string[]; v: string }) {
+  return (
+    <li className="flex items-center justify-between gap-3">
+      <span className="text-foreground/70">{v}</span>
+      <span className="flex items-center gap-1">
+        {k.map((key) => (
+          <Kbd key={key}>{key}</Kbd>
+        ))}
+      </span>
+    </li>
+  );
+}
+
+function Kbd({ children }: { children: React.ReactNode }) {
+  return (
+    <kbd className="inline-flex min-w-[1.5em] items-center justify-center rounded-md border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-foreground shadow-sm">
+      {children}
+    </kbd>
   );
 }
