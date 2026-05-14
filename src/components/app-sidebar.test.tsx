@@ -1,12 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 
+// Mutable pathname so individual tests can simulate different active routes.
+let currentPathname = "/";
+const setPathname = (p: string) => {
+  currentPathname = p;
+};
+
 // Mock TanStack Router so AppSidebar can render outside a real router tree.
 // `Link` becomes a plain anchor that still fires onClick (which the sidebar
-// uses to close the mobile sheet). `useRouterState` returns the home path so
-// no group is auto-active.
+// uses to close the mobile sheet). `useRouterState` reads from the mutable
+// `currentPathname` so tests can drive the active route.
 vi.mock("@tanstack/react-router", () => {
   return {
     Link: React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }>(
@@ -16,7 +22,10 @@ vi.mock("@tanstack/react-router", () => {
         </a>
       ),
     ),
-    useRouterState: () => "/",
+    useRouterState: (opts?: { select?: (s: { location: { pathname: string } }) => unknown }) => {
+      const state = { location: { pathname: currentPathname } };
+      return opts?.select ? opts.select(state) : currentPathname;
+    },
   };
 });
 
