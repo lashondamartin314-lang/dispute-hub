@@ -670,7 +670,11 @@ function TrackerPage() {
                 <Select
                   value={editing.letterId || "custom"}
                   onValueChange={(v) =>
-                    setEditing({ ...editing, letterId: v === "custom" ? "" : (v as LetterId) })
+                    setEditing(
+                      v === "custom"
+                        ? { ...editing, letterId: "" }
+                        : applyLetterDefaults(editing, v as LetterId),
+                    )
                   }
                 >
                   <SelectTrigger>
