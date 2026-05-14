@@ -5,6 +5,7 @@ import { LetterCard } from "@/components/letter-card";
 import { SectionToc } from "@/components/section-toc";
 import { PhaseChecklist } from "@/components/phase-checklist";
 import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
+import { PhaseReveal, PhaseRevealItem } from "@/components/phase-reveal";
 import { PHASES, PHASES_BY_ID } from "@/data/phases";
 import { lettersForPhase, LETTERS_BY_ID } from "@/data/letters";
 import type { PhaseId } from "@/data/letters";
@@ -216,20 +217,27 @@ function PhasePage() {
           )}
 
           {letters.length > 0 && (
-            <section id="letters" className="scroll-mt-24">
-              <p className="eyebrow">The letters in this phase</p>
-              <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Templates · click to open.</h2>
-              <p className="font-editorial mt-3 max-w-2xl text-lg leading-relaxed text-foreground/85 md:text-xl">
+            <PhaseReveal
+              id="letters"
+              eyebrow="The letters in this phase"
+              title="Templates · click to reveal."
+              count={letters.length}
+              accentColor={`var(${phase.colorVar}-deep)`}
+              defaultOpen={false}
+            >
+              <p className="font-editorial mb-6 max-w-2xl text-lg leading-relaxed text-foreground/85 md:text-xl">
                 Each letter opens the Google Doc template in a new tab. "Use template" forces a copy into your own Drive; "Preview" opens read-only.
               </p>
-              <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 {letters.map((l) => (
-                  <div key={l.id} id={l.id} className="scroll-mt-24">
-                    <LetterCard id={l.id} />
-                  </div>
+                  <PhaseRevealItem key={l.id}>
+                    <div id={l.id} className="scroll-mt-24">
+                      <LetterCard id={l.id} />
+                    </div>
+                  </PhaseRevealItem>
                 ))}
               </div>
-            </section>
+            </PhaseReveal>
           )}
 
           <CreditAcademyUpsell accentColor={`var(${phase.colorVar}-deep)`} />
