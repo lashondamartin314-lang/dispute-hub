@@ -31,12 +31,12 @@ function FoundationPage() {
           { n: "03", t: "They will resist", b: "The credit industry profits from keeping negative data on your file. The bureaus have zero incentive to help you. When they stall or send a generic response, that is the system working as designed. This kit counters their standard tactics with strategy that holds up under that pressure." },
           { n: "04", t: "The timeline reality", b: "Real transformation usually shows between months three and nine. Do not expect linear progress. You might see 40-point jumps followed by plateaus. That is not the kit failing. That is the system working." },
         ].map((s) => (
-          <article key={s.n} className="space-y-3">
+          <article key={s.n} className="space-y-3 border-l-2 border-[color:color-mix(in_oklab,var(--brand-gold)_45%,transparent)] pl-6">
             <div className="flex items-baseline gap-4">
-              <span className="font-display text-5xl text-[color:var(--brand-gold)]">{s.n}</span>
-              <h3 className="font-display text-2xl md:text-3xl">{s.t}</h3>
+              <span className="font-display text-5xl font-bold text-[color:var(--brand-gold-deep)]">{s.n}</span>
+              <h3 className="font-display text-2xl font-bold text-[color:var(--brand-navy-deep)] md:text-3xl">{s.t}</h3>
             </div>
-            <p className="text-foreground/80 leading-relaxed pl-1">{s.b}</p>
+            <p className="text-[15px] text-foreground/90 leading-relaxed pl-1 md:text-base">{s.b}</p>
           </article>
         ))}
 
@@ -46,8 +46,8 @@ function FoundationPage() {
             { n: "5–7", l: "Weeks per round", s: "Mailing time both ways added to the response window." },
             { n: "6–12", l: "Months total", s: "Full damaged-to-stable journey for a typical file." },
           ].map((s) => (
-            <div key={s.n} className="rounded-xl border border-border bg-card p-5">
-              <div className="font-display text-4xl text-[color:var(--brand-magenta)] md:text-5xl">{s.n}</div>
+            <div key={s.n} className="rounded-xl border border-border bg-card p-5 shadow-elegant">
+              <div className="font-display text-4xl font-bold text-[color:var(--brand-magenta)] md:text-5xl">{s.n}</div>
               <p className="eyebrow mt-2">{s.l}</p>
               <p className="mt-1 text-xs text-muted-foreground">{s.s}</p>
             </div>
