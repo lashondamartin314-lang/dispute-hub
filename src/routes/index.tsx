@@ -111,8 +111,8 @@ function HubPage() {
           <div className="space-y-5">
             <div className="flex items-center gap-3">
               <span className="relative flex items-center justify-center">
-                <span className="journey-ripple absolute h-3.5 w-3.5 rounded-full bg-[color:var(--brand-ink)]/30" />
-                <span className="journey-dot relative h-2 w-2 rounded-full bg-[color:var(--brand-ink)]" />
+                <span className="journey-ripple absolute h-3.5 w-3.5 rounded-full" />
+                <span className="journey-dot relative h-2 w-2 rounded-full" />
               </span>
               <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
             </div>
