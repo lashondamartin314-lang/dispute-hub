@@ -313,16 +313,12 @@ export function SectionToc({
                   : "pl-2 text-foreground/60 hover:translate-x-0.5 hover:text-foreground",
               )}
               style={
-                active
-                  ? {
-                      background: `color-mix(in oklab, ${accentColor} 10%, transparent)`,
-                      // @ts-expect-error CSS var override for ring color
-                      "--tw-ring-color": accentColor,
-                    }
-                  : ({
-                      // @ts-expect-error CSS var override for ring color
-                      "--tw-ring-color": accentColor,
-                    } as React.CSSProperties)
+                {
+                  ...(active
+                    ? { background: `color-mix(in oklab, ${accentColor} 10%, transparent)` }
+                    : {}),
+                  "--tw-ring-color": accentColor,
+                } as React.CSSProperties
               }
             >
               <span
