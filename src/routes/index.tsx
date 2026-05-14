@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, FileText, Library, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronsDownUp, ChevronsUpDown, FileText, Library, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -18,7 +19,34 @@ export const Route = createFileRoute("/")({
   component: HubPage,
 });
 
+const ALL_PHASE_IDS = PHASES.map((p) => p.id);
+
 function HubPage() {
+  const [openPhases, setOpenPhases] = useState<string[]>([]);
+  const phaseRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Hash deep-linking: /#validate auto-expands matching phase and scrolls to it
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const syncFromHash = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      if (!id || !ALL_PHASE_IDS.includes(id as (typeof ALL_PHASE_IDS)[number])) return;
+      setOpenPhases((prev) => (prev.includes(id) ? prev : [...prev, id]));
+      // Wait for the accordion to start expanding before scrolling
+      requestAnimationFrame(() => {
+        phaseRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    };
+
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, []);
+
+  const allOpen = openPhases.length === ALL_PHASE_IDS.length;
+  const toggleAll = () => setOpenPhases(allOpen ? [] : [...ALL_PHASE_IDS]);
+
   return (
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
@@ -53,6 +81,10 @@ function HubPage() {
           .journey-ripple { animation: journey-ripple 2.2s cubic-bezier(0,0,.2,1) infinite; }
           .journey-arrow-path { stroke-dasharray: 320; stroke-dashoffset: 0; transition: stroke-dashoffset .8s cubic-bezier(.65,0,.35,1); }
           .group:hover .journey-arrow-path { stroke-dashoffset: 12; }
+          .phase-accordion-content[data-state="open"] { animation: phase-accordion-down 380ms cubic-bezier(0.32,0.72,0,1); }
+          .phase-accordion-content[data-state="closed"] { animation: phase-accordion-up 280ms cubic-bezier(0.32,0.72,0,1); }
+          @keyframes phase-accordion-down { from { height: 0; opacity: 0; } to { height: var(--radix-accordion-content-height); opacity: 1; } }
+          @keyframes phase-accordion-up { from { height: var(--radix-accordion-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
         `}</style>
         <div className="mb-10 flex flex-col gap-10 border-b border-[color:var(--brand-ink)]/10 pb-10 md:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="space-y-5">
@@ -92,23 +124,54 @@ function HubPage() {
           </Link>
         </div>
 
-        <Accordion type="multiple" className="relative z-10 flex flex-col gap-4">
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[color:var(--brand-ink)]/55">
+            {openPhases.length} of {ALL_PHASE_IDS.length} expanded
+          </p>
+          <button
+            type="button"
+            onClick={toggleAll}
+            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-ink)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+          >
+            {allOpen ? <ChevronsDownUp className="size-3.5" /> : <ChevronsUpDown className="size-3.5" />}
+            {allOpen ? "Collapse all" : "Expand all"}
+          </button>
+        </div>
+
+        <Accordion
+          type="multiple"
+          value={openPhases}
+          onValueChange={setOpenPhases}
+          className="relative z-10 flex flex-col gap-4"
+        >
           {PHASES.map((p) => {
             const letters = lettersForPhase(p.id);
             return (
               <AccordionItem
                 key={p.id}
                 value={p.id}
-                className="group relative overflow-hidden rounded-2xl border-2 border-border bg-card transition-all hover:border-[color:var(--brand-gold)] data-[state=open]:border-[color:var(--brand-gold)] data-[state=open]:shadow-elegant"
+                ref={(el) => { phaseRefs.current[p.id] = el; }}
+                id={p.id}
+                style={{
+                  ["--phase-color" as string]: `var(${p.colorVar})`,
+                  ["--phase-deep" as string]: `var(${p.colorVar}-deep)`,
+                  ["--phase-soft" as string]: `var(${p.colorVar}-soft)`,
+                } as React.CSSProperties}
+                className="group relative scroll-mt-24 overflow-hidden rounded-2xl border-2 border-border bg-card transition-[border-color,box-shadow,background-color] duration-300 hover:border-[var(--phase-color)] data-[state=open]:border-[var(--phase-color)] data-[state=open]:bg-[color-mix(in_oklab,var(--phase-soft)_28%,var(--card))] data-[state=open]:shadow-elegant"
               >
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute -top-8 -right-4 font-display font-bold text-[150px] leading-none opacity-55 transition-opacity group-hover:opacity-80"
+                  className="pointer-events-none absolute -top-8 -right-4 font-display font-bold text-[150px] leading-none opacity-55 transition-opacity duration-300 group-hover:opacity-80 group-data-[state=open]:opacity-90"
                   style={{ color: `var(${p.colorVar}-deep)` }}
                 >
                   {p.number}
                 </div>
-                <AccordionTrigger className="relative px-6 py-6 text-left no-underline hover:no-underline [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[color:var(--brand-ink)]/60">
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 left-0 w-1 origin-top scale-y-0 transition-transform duration-300 group-data-[state=open]:scale-y-100"
+                  style={{ background: `var(${p.colorVar})` }}
+                />
+                <AccordionTrigger className="relative px-6 py-6 text-left no-underline hover:no-underline [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[color:var(--brand-ink)]/60 [&>svg]:transition-transform [&>svg]:duration-300">
                   <div className="flex-1 pr-6">
                     <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
                     <h3
@@ -120,7 +183,7 @@ function HubPage() {
                     <p className="font-editorial mt-2 text-foreground/85">{p.lede}</p>
                   </div>
                 </AccordionTrigger>
-                <AccordionContent className="relative px-6 pt-0 pb-6">
+                <AccordionContent className="phase-accordion-content relative px-6 pt-0 pb-6">
                   <div className="grid gap-8 border-t border-[color:var(--brand-ink)]/10 pt-6 md:grid-cols-2">
                     <div>
                       <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
