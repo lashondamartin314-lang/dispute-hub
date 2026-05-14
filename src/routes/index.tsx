@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, ChevronsDownUp, ChevronsUpDown, FileText, Library, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
+import { PhaseGrid } from "@/components/phase-grid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 import { PINNED_RESOURCES } from "@/data/resources";
@@ -20,6 +22,80 @@ export const Route = createFileRoute("/")({
 });
 
 const ALL_PHASE_IDS = PHASES.map((p) => p.id);
+
+/**
+ * Full-bleed parallax hero. Three layers translate at different rates as the
+ * page scrolls: the halo drifts slowest, the headline mid-pace, and the
+ * PhaseGrid + CTAs at the foreground rate. Tile hover paints the hero with
+ * the phase-soft tint via a CSS custom property.
+ */
+function CoverHero() {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const haloY = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["0%", "30%"]);
+  const headlineY = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["0%", "-10%"]);
+  const headlineOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.4]);
+  const gridY = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["0%", "-4%"]);
+
+  const [tintVar, setTintVar] = useState<string | null>(null);
+
+  return (
+    <section
+      ref={ref}
+      className="relative isolate flex min-h-[100svh] w-full flex-col justify-center overflow-hidden transition-[background-color] duration-500 ease-out"
+      style={{
+        backgroundColor: tintVar
+          ? `color-mix(in oklab, var(${tintVar}) 55%, var(--background))`
+          : "var(--background)",
+      }}
+    >
+      {/* Layer 1 — drifting halo (slowest). */}
+      <motion.div
+        aria-hidden
+        style={{ y: haloY }}
+        className="bg-halo animate-halo-drift pointer-events-none absolute inset-0 opacity-90"
+      />
+
+      {/* Layer 2 — editorial headline (mid). */}
+      <motion.div
+        style={{ y: headlineY, opacity: headlineOpacity }}
+        className="relative mx-auto w-full max-w-6xl px-6 pt-20 md:px-10 md:pt-28"
+      >
+        <EditorialHeader
+          eyebrow="Credit Academy · 2026 Edition"
+          numeral="✶"
+          numeralColor="var(--brand-gold)"
+          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-magenta)]">interactive</em>.</>}
+          lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
+        />
+
+        <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
+          <Link to="/playbook" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] transition-all hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]">
+            <BookOpen className="size-4" /> Open the Playbook <ArrowRight className="size-4" />
+          </Link>
+          <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
+            <Library className="size-4" /> All 19 letter templates
+          </Link>
+          <Link to="/resources" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
+            <Sparkles className="size-4" /> Quick resources
+          </Link>
+        </div>
+      </motion.div>
+
+      {/* Layer 3 — PhaseGrid (foreground). Hover paints the hero. */}
+      <motion.div
+        style={{ y: gridY }}
+        className="relative mx-auto mt-12 w-full max-w-6xl px-6 pb-20 md:px-10 md:mt-16 md:pb-28"
+      >
+        <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/55">
+          Choose a phase
+        </p>
+        <PhaseGrid variant="cover" onTintChange={setTintVar} />
+      </motion.div>
+    </section>
+  );
+}
 
 function HubPage() {
   const [openPhases, setOpenPhases] = useState<string[]>([]);
@@ -49,29 +125,7 @@ function HubPage() {
 
   return (
     <div className="relative">
-      <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
-
-      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-16 md:px-10 md:pt-24 md:pb-24">
-        <EditorialHeader
-          eyebrow="Credit Academy · 2026 Edition"
-          numeral="✶"
-          numeralColor="var(--brand-gold)"
-          title={<>Your <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent not-italic">Dispute</em> Playbook, made <em className="font-script text-[color:var(--brand-magenta)] not-italic">interactive</em>.</>}
-          lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
-        />
-
-        <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
-          <Link to="/playbook" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] transition-all hover:bg-[color:var(--brand-violet-deep)]">
-            <BookOpen className="size-4" /> Open the Playbook <ArrowRight className="size-4" />
-          </Link>
-          <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)]">
-            <Library className="size-4" /> All 19 letter templates
-          </Link>
-          <Link to="/resources" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)]">
-            <Sparkles className="size-4" /> Quick resources
-          </Link>
-        </div>
-      </section>
+      <CoverHero />
 
       <section className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
         <style>{`
