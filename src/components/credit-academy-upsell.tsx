@@ -164,7 +164,13 @@ export function CreditAcademyUpsell({
           id="academy-heading"
           className="font-display mt-2 text-3xl leading-tight md:text-5xl"
         >
-          Three lanes. <em className="font-editorial italic">Pick yours.</em>
+          Three lanes.{" "}
+          <em
+            className="font-editorial italic bg-clip-text text-transparent"
+            style={{ backgroundImage: "var(--gradient-brand)" }}
+          >
+            Pick yours.
+          </em>
         </h2>
         <p className="font-editorial mx-auto mt-3 max-w-2xl text-base leading-relaxed text-foreground/80 md:text-lg">
           The Playbook gets you moving. When you want stronger systems, deeper
