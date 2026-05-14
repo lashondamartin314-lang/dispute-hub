@@ -77,9 +77,13 @@ export function SectionToc({
           <li key={item.id} className="relative">
             {active && (
               <span
+                key={`rail-${item.id}`}
                 aria-hidden
-                className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full transition-all"
-                style={{ background: accentColor }}
+                className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full animate-toc-rail"
+                style={{
+                  background: accentColor,
+                  boxShadow: `0 0 0 2px color-mix(in oklab, ${accentColor} 18%, transparent)`,
+                }}
               />
             )}
             <a
@@ -91,9 +95,9 @@ export function SectionToc({
               }}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm transition-all",
+                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm transition-all duration-300",
                 active
-                  ? "pl-3 font-semibold text-[color:var(--brand-ink)]"
+                  ? "pl-3 font-semibold text-[color:var(--brand-ink)] animate-toc-pill"
                   : "pl-2 text-foreground/60 hover:translate-x-0.5 hover:text-foreground",
               )}
               style={
@@ -104,13 +108,20 @@ export function SectionToc({
             >
               <span
                 className={cn(
-                  "font-mono text-[10px] tabular-nums",
+                  "font-mono text-[10px] tabular-nums transition-colors",
                   active ? "text-[color:var(--brand-ink)]/70" : "text-muted-foreground/60",
                 )}
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="flex-1">{item.label}</span>
+              {active && (
+                <span
+                  aria-hidden
+                  className="size-1.5 shrink-0 rounded-full animate-toc-dot"
+                  style={{ background: accentColor }}
+                />
+              )}
             </a>
           </li>
         );

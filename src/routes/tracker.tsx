@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ClipboardList,
   Plus,
   Trash2,
   Download,
+  Upload,
   Mail,
   CheckCircle2,
   Clock,
@@ -12,6 +13,7 @@ import {
   ExternalLink,
   Pencil,
   X,
+  BellRing,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,6 +102,66 @@ const outcomeMeta: Record<Outcome, { label: string; tone: string }> = {
   no_response: { label: "No response", tone: "var(--brand-magenta-deep, #9b1c5b)" },
   other: { label: "Other", tone: "var(--brand-ink)" },
 };
+
+type LetterDefault = {
+  recipient: Recipient;
+  nextAction: string;
+  /** Days from sent date to set Next-Action Due. */
+  dueDays: number;
+};
+
+const LETTER_DEFAULTS: Record<LetterId, LetterDefault> = {
+  L01: { recipient: "Collector", nextAction: "If silent 30+ days, send L02 follow-up", dueDays: 30 },
+  L02: { recipient: "Collector", nextAction: "Escalate to L03 or file CFPB complaint", dueDays: 15 },
+  L03: { recipient: "Collector", nextAction: "If still reporting, send L04 or pivot to dispute", dueDays: 30 },
+  L04: { recipient: "Collector", nextAction: "Begin Phase 4 bureau dispute (L11)", dueDays: 30 },
+  L05: { recipient: "Creditor", nextAction: "Re-pull report and confirm update", dueDays: 30 },
+  L06: { recipient: "Equifax", nextAction: "If unchanged, send L07 follow-up", dueDays: 30 },
+  L07: { recipient: "Equifax", nextAction: "Escalate via L09 MOV demand", dueDays: 30 },
+  L08: { recipient: "Equifax", nextAction: "Send ID + FTC affidavit, follow up in 30 days", dueDays: 30 },
+  L09: { recipient: "Equifax", nextAction: "If no method given, file CFPB complaint", dueDays: 15 },
+  L10: { recipient: "Equifax", nextAction: "Verify SSN/DOB across all 3 bureaus", dueDays: 30 },
+  L11: { recipient: "Equifax", nextAction: "If verified, send L12 MOV demand", dueDays: 30 },
+  L12: { recipient: "Equifax", nextAction: "If no real method, send L13 Notice of Intent", dueDays: 30 },
+  L13: { recipient: "Equifax", nextAction: "File CFPB + state AG complaints, then L14", dueDays: 15 },
+  L14: { recipient: "Equifax", nextAction: "Begin Phase 6 escalation", dueDays: 15 },
+  L15A: { recipient: "Collector", nextAction: "Send L15C bureau companion", dueDays: 30 },
+  L15B: { recipient: "Creditor", nextAction: "Send L15C bureau companion", dueDays: 30 },
+  L15C: { recipient: "Equifax", nextAction: "Compare both responses; escalate inconsistencies", dueDays: 30 },
+  L16: { recipient: "Furnisher", nextAction: "If verified, escalate with L17 or CFPB", dueDays: 30 },
+  L17: { recipient: "Furnisher", nextAction: "Escalate to CFPB; consider counsel", dueDays: 30 },
+  L18: { recipient: "Collector", nextAction: "Get written confirmation BEFORE paying", dueDays: 14 },
+  L19: { recipient: "Equifax", nextAction: "If verified, escalate to creditor + CFPB", dueDays: 30 },
+};
+
+function addDays(iso: string, days: number): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  if (Number.isNaN(d.getTime())) return "";
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function applyLetterDefaults(entry: Entry, letterId: LetterId): Entry {
+  const def = LETTER_DEFAULTS[letterId];
+  if (!def) return { ...entry, letterId };
+  const recipientName = entry.recipientName?.trim() ? entry.recipientName : def.recipient;
+  const nextAction = entry.nextAction?.trim() ? entry.nextAction : def.nextAction;
+  const nextActionDue =
+    entry.nextActionDue?.trim()
+      ? entry.nextActionDue
+      : entry.sentDate
+        ? addDays(entry.sentDate, def.dueDays)
+        : "";
+  return {
+    ...entry,
+    letterId,
+    recipient: def.recipient,
+    recipientName,
+    nextAction,
+    nextActionDue,
+  };
+}
 
 const emptyEntry = (): Entry => ({
   id: crypto.randomUUID(),
@@ -190,31 +252,202 @@ function toCSV(entries: Entry[]): string {
   return [headers.join(","), ...rows].join("\n");
 }
 
+/** Parse a CSV string with quoted fields and embedded newlines. Returns rows of cells. */
+function parseCSVRows(text: string): string[][] {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let field = "";
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(field); field = "";
+        if (row.length > 1 || row[0] !== "") rows.push(row);
+        row = [];
+      } else field += c;
+    }
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+const OUTCOME_BY_LABEL: Record<string, Outcome> = (Object.keys(outcomeMeta) as Outcome[]).reduce(
+  (acc, k) => { acc[outcomeMeta[k].label.toLowerCase()] = k; return acc; },
+  {} as Record<string, Outcome>,
+);
+
+const RECIPIENT_VALUES: Recipient[] = [
+  "Equifax", "Experian", "TransUnion", "Furnisher", "Collector", "Creditor", "Other",
+];
+
+function fromCSV(text: string): { entries: Entry[]; skipped: number } {
+  const rows = parseCSVRows(text);
+  if (rows.length === 0) return { entries: [], skipped: 0 };
+  const header = rows[0].map((h) => h.trim().toLowerCase());
+  const idx = (name: string) => header.indexOf(name.toLowerCase());
+  const cLetter = idx("Letter");
+  const cRecipient = idx("Recipient");
+  const cRecipientName = idx("Recipient Name");
+  const cAccount = idx("Account/Item");
+  const cSent = idx("Sent");
+  const cCert = idx("Certified #");
+  const cDelivered = idx("Delivered");
+  const cResponse = idx("Response Date");
+  const cOutcome = idx("Outcome");
+  const cNext = idx("Next Action");
+  const cNextDue = idx("Next Action Due");
+  const cNotes = idx("Notes");
+
+  const out: Entry[] = [];
+  let skipped = 0;
+  for (let r = 1; r < rows.length; r++) {
+    const cells = rows[r];
+    if (cells.every((v) => !v?.trim())) continue;
+    const get = (i: number) => (i >= 0 ? (cells[i] ?? "").trim() : "");
+
+    const letterRaw = get(cLetter);
+    const letterMatch = letterRaw.match(/^(L\d{1,2}[A-C]?)\b/i);
+    const letterId = (letterMatch?.[1].toUpperCase() as LetterId | undefined) ?? "";
+    const customLabel = letterId ? "" : letterRaw;
+
+    if (!letterId && !customLabel) { skipped++; continue; }
+
+    const recipientRaw = get(cRecipient);
+    const recipient = (RECIPIENT_VALUES.find((v) => v.toLowerCase() === recipientRaw.toLowerCase()) ?? "Other") as Recipient;
+
+    const outcomeRaw = get(cOutcome).toLowerCase();
+    const outcome: Outcome = OUTCOME_BY_LABEL[outcomeRaw] ?? "pending";
+
+    out.push({
+      id: crypto.randomUUID(),
+      letterId: letterId || "",
+      customLabel,
+      recipient,
+      recipientName: get(cRecipientName),
+      accountRef: get(cAccount),
+      sentDate: get(cSent),
+      certifiedNumber: get(cCert),
+      deliveredDate: get(cDelivered),
+      responseDate: get(cResponse),
+      outcome,
+      nextAction: get(cNext),
+      nextActionDue: get(cNextDue),
+      notes: get(cNotes),
+      createdAt: Date.now() + r,
+    });
+  }
+  return { entries: out, skipped };
+}
+
+const NOTIFIED_KEY = "dispute-tracker-notified-v1";
+
+function loadNotified(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  try { return JSON.parse(window.localStorage.getItem(NOTIFIED_KEY) || "{}"); } catch { return {}; }
+}
+function saveNotified(map: Record<string, string>) {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(NOTIFIED_KEY, JSON.stringify(map));
+}
+
+function isOverdueDue(entry: Entry): boolean {
+  if (entry.outcome !== "pending") return false;
+  if (!entry.nextActionDue) return false;
+  const due = new Date(entry.nextActionDue + "T23:59:59").getTime();
+  return !Number.isNaN(due) && Date.now() > due;
+}
+
 function TrackerPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [editing, setEditing] = useState<Entry | null>(null);
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState<"all" | Outcome>("all");
   const [hydrated, setHydrated] = useState(false);
+  const [notifPerm, setNotifPerm] = useState<NotificationPermission | "unsupported">("default");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setEntries(loadEntries());
     setHydrated(true);
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifPerm(Notification.permission);
+    } else {
+      setNotifPerm("unsupported");
+    }
   }, []);
 
   useEffect(() => {
     if (hydrated) saveEntries(entries);
   }, [entries, hydrated]);
 
+  // Overdue scan + browser notifications (one per entry per due date)
+  useEffect(() => {
+    if (!hydrated) return;
+    const overdueEntries = entries.filter(isOverdueDue);
+    if (overdueEntries.length === 0) return;
+
+    const notified = loadNotified();
+    let dirty = false;
+    let toastShown = false;
+
+    for (const e of overdueEntries) {
+      const stamp = `${e.id}:${e.nextActionDue}`;
+      if (notified[e.id] === e.nextActionDue) continue;
+      const letterLabel = e.letterId
+        ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim()
+        : (e.customLabel || "Untitled letter");
+
+      if (!toastShown) {
+        toast.warning(`${overdueEntries.length} overdue ${overdueEntries.length === 1 ? "entry" : "entries"}`, {
+          description: `Earliest: ${letterLabel} — due ${fmtDate(e.nextActionDue)}`,
+          duration: 8000,
+        });
+        toastShown = true;
+      }
+
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+        try {
+          new Notification("Dispute Tracker — response overdue", {
+            body: `${letterLabel}\nNext action was due ${fmtDate(e.nextActionDue)}`,
+            tag: stamp,
+          });
+        } catch {
+          /* noop */
+        }
+      }
+      notified[e.id] = e.nextActionDue;
+      dirty = true;
+    }
+    if (dirty) saveNotified(notified);
+  }, [entries, hydrated]);
+
+  function requestNotifications() {
+    if (typeof window === "undefined" || !("Notification" in window)) {
+      toast.error("Browser notifications aren't supported here");
+      return;
+    }
+    Notification.requestPermission().then((p) => {
+      setNotifPerm(p);
+      if (p === "granted") toast.success("Reminders on — we'll alert you when an entry goes overdue");
+      else if (p === "denied") toast.error("Notifications blocked. Enable in your browser settings.");
+    });
+  }
+
   const stats = useMemo(() => {
     const total = entries.length;
     const pending = entries.filter((e) => e.outcome === "pending").length;
     const delivered = entries.filter((e) => e.deliveredDate).length;
     const wins = entries.filter((e) => e.outcome === "deleted" || e.outcome === "updated").length;
-    const overdue = entries.filter((e) => {
-      const d = daysSince(e.sentDate);
-      return e.outcome === "pending" && d !== null && d > 30;
-    }).length;
+    const overdue = entries.filter(isOverdueDue).length;
     return { total, pending, delivered, wins, overdue };
   }, [entries]);
 
@@ -269,6 +502,30 @@ function TrackerPage() {
     a.click();
     URL.revokeObjectURL(url);
   }
+  function triggerImport() {
+    fileInputRef.current?.click();
+  }
+  async function handleImportFile(ev: React.ChangeEvent<HTMLInputElement>) {
+    const file = ev.target.files?.[0];
+    ev.target.value = "";
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const { entries: imported, skipped } = fromCSV(text);
+      if (imported.length === 0) {
+        toast.error("Couldn't find any rows. Make sure the CSV has the same headers as the export.");
+        return;
+      }
+      setEntries((prev) => [...imported, ...prev]);
+      toast.success(
+        `Imported ${imported.length} ${imported.length === 1 ? "entry" : "entries"}` +
+          (skipped ? ` · ${skipped} skipped` : ""),
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Couldn't read that file");
+    }
+  }
 
   return (
     <div className="relative">
@@ -295,13 +552,38 @@ function TrackerPage() {
             <Button onClick={openAdd} size="lg" className="rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
               <Plus className="size-4" /> Log a letter
             </Button>
+            <Button onClick={triggerImport} variant="outline" size="lg" className="rounded-full">
+              <Upload className="size-4" /> Import CSV
+            </Button>
             <Button onClick={exportCsv} variant="outline" size="lg" className="rounded-full" disabled={entries.length === 0}>
               <Download className="size-4" /> Export CSV
             </Button>
+            {notifPerm !== "granted" && notifPerm !== "unsupported" && (
+              <Button
+                onClick={requestNotifications}
+                variant="outline"
+                size="lg"
+                className="rounded-full border-[color:var(--brand-gold)] text-[color:var(--brand-gold-deep)] hover:bg-[color:var(--brand-gold)]/10"
+              >
+                <BellRing className="size-4" /> Turn on reminders
+              </Button>
+            )}
             <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:border-[color:var(--brand-gold)]">
               Browse letter library <ExternalLink className="size-3.5" />
             </Link>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={handleImportFile}
+            />
           </div>
+          {notifPerm === "granted" && (
+            <p className="mt-3 inline-flex items-center gap-2 text-xs text-[color:var(--brand-emerald,#2f7a4f)]">
+              <BellRing className="size-3.5" /> Reminders are on for this device. We'll alert you the moment a "Next action due" date passes.
+            </p>
+          )}
         </div>
       </section>
 
@@ -312,7 +594,7 @@ function TrackerPage() {
           <StatCard icon={<Clock className="size-4" />} label="Awaiting" value={stats.pending} tint="var(--brand-gold-deep)" />
           <StatCard icon={<Mail className="size-4" />} label="Delivered" value={stats.delivered} tint="var(--brand-violet)" />
           <StatCard icon={<CheckCircle2 className="size-4" />} label="Wins" value={stats.wins} tint="var(--brand-emerald, #2f7a4f)" />
-          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue >30d" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
+          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
         </div>
       </section>
 
@@ -388,7 +670,11 @@ function TrackerPage() {
                 <Select
                   value={editing.letterId || "custom"}
                   onValueChange={(v) =>
-                    setEditing({ ...editing, letterId: v === "custom" ? "" : (v as LetterId) })
+                    setEditing(
+                      v === "custom"
+                        ? { ...editing, letterId: "" }
+                        : applyLetterDefaults(editing, v as LetterId),
+                    )
                   }
                 >
                   <SelectTrigger>
@@ -560,13 +846,22 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
   const phase = letter ? PHASES_BY_ID[letter.phaseId] : null;
   const accent = phase ? `var(${phase.colorVar})` : "var(--brand-navy)";
   const days = daysSince(entry.sentDate);
-  const overdue = entry.outcome === "pending" && days !== null && days > 30;
+  const sentOverdue = entry.outcome === "pending" && days !== null && days > 30;
+  const dueOverdue = isOverdueDue(entry);
+  const dueDays = entry.nextActionDue ? daysSince(entry.nextActionDue) : null;
   const tone = outcomeMeta[entry.outcome].tone;
 
   return (
     <article
       className="relative overflow-hidden rounded-2xl border-2 bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
-      style={{ borderColor: `color-mix(in oklab, ${accent} 35%, transparent)` }}
+      style={{
+        borderColor: dueOverdue
+          ? "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 60%, transparent)"
+          : `color-mix(in oklab, ${accent} 35%, transparent)`,
+        boxShadow: dueOverdue
+          ? "0 0 0 3px color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 12%, transparent)"
+          : undefined,
+      }}
     >
       <div
         aria-hidden
@@ -598,7 +893,7 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="outline"
             className="border-2"
@@ -606,9 +901,15 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
           >
             {outcomeMeta[entry.outcome].label}
           </Badge>
-          {overdue && (
+          {dueOverdue && (
             <Badge className="bg-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-cream)]">
-              {days}d overdue
+              <BellRing className="mr-1 size-3" />
+              {dueDays !== null ? `${dueDays}d past due` : "Past due"}
+            </Badge>
+          )}
+          {!dueOverdue && sentOverdue && (
+            <Badge variant="outline" className="border-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-magenta-deep,#9b1c5b)]">
+              {days}d since sent
             </Badge>
           )}
         </div>
