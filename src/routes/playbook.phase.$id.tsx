@@ -45,6 +45,7 @@ function PhasePage() {
             eyebrow={phase.eyebrow}
             numeral={phase.number}
             numeralColor={`var(${phase.colorVar})`}
+            accentColor={`var(${phase.colorVar}-deep)`}
             title={<>{phase.name}.</>}
             lede={phase.description}
           />
@@ -95,6 +96,7 @@ function PhasePage() {
         <aside className="hidden xl:block">
           <SectionToc
             label="On this page"
+            accentColor={`var(${phase.colorVar}-deep)`}
             items={[
               { id: "the-work", label: "The work" },
               ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
