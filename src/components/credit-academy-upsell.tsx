@@ -1,4 +1,11 @@
-import { ArrowUpRight, Check, Crown, ShieldCheck, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, Check, ChevronDown, Crown, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
 
 interface CreditAcademyUpsellProps {
@@ -238,29 +245,11 @@ export function CreditAcademyUpsell({
                 </span>
               </div>
 
-              <ul className="mt-5 space-y-2.5">
-                {t.bullets.map((b) => (
-                  <li key={b} className="flex gap-2.5 text-sm leading-relaxed">
-                    <Check
-                      className="mt-0.5 size-4 shrink-0"
-                      style={{
-                        color: t.highlight ? "var(--brand-gold)" : t.accent,
-                      }}
-                      strokeWidth={3}
-                      aria-hidden
-                    />
-                    <span
-                      className={cn(
-                        t.highlight
-                          ? "text-[color:var(--brand-cream)]/90"
-                          : "text-foreground/85",
-                      )}
-                    >
-                      {b}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <TierBullets
+                bullets={t.bullets as readonly string[]}
+                accent={t.accent}
+                highlight={t.highlight}
+              />
 
               <a
                 href={withUtm(t.href, t.id, placement)}
@@ -298,6 +287,163 @@ export function CreditAcademyUpsell({
           Be Shonda's guest for 7 days →
         </a>
       </p>
+
+      <UpsellFAQ />
+    </section>
+  );
+}
+
+/**
+ * Per-tier bullet list. On mobile we collapse anything past the first 3
+ * items behind a toggle so the cards stay scannable; on `md+` we always
+ * render the full list because horizontal space is no longer the
+ * bottleneck.
+ */
+const VISIBLE_ON_MOBILE = 3;
+
+function TierBullets({
+  bullets,
+  accent,
+  highlight,
+}: {
+  bullets: readonly string[];
+  accent: string;
+  highlight: boolean;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const hiddenCount = Math.max(0, bullets.length - VISIBLE_ON_MOBILE);
+  const showToggle = hiddenCount > 0;
+
+  return (
+    <div className="mt-5">
+      <ul className="space-y-2.5">
+        {bullets.map((b, i) => {
+          const overflow = i >= VISIBLE_ON_MOBILE;
+          return (
+            <li
+              key={b}
+              className={cn(
+                "flex gap-2.5 text-sm leading-relaxed",
+                // On mobile, hide overflow items unless expanded.
+                // On md+, always show them.
+                overflow && !expanded && "hidden md:flex",
+              )}
+            >
+              <Check
+                className="mt-0.5 size-4 shrink-0"
+                style={{ color: highlight ? "var(--brand-gold)" : accent }}
+                strokeWidth={3}
+                aria-hidden
+              />
+              <span
+                className={cn(
+                  highlight
+                    ? "text-[color:var(--brand-cream)]/90"
+                    : "text-foreground/85",
+                )}
+              >
+                {b}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      {showToggle && (
+        <button
+          type="button"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          className={cn(
+            "mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider md:hidden",
+            "transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:underline",
+          )}
+          style={{
+            color: highlight ? "var(--brand-gold)" : accent,
+          }}
+        >
+          {expanded ? "Show less" : `Show all ${bullets.length} tools`}
+          <ChevronDown
+            className={cn(
+              "size-3.5 transition-transform",
+              expanded && "rotate-180",
+            )}
+            aria-hidden
+          />
+        </button>
+      )}
+    </div>
+  );
+}
+
+const FAQS = [
+  {
+    q: "Who is the Dispute Playbook for?",
+    a: "Cousins ready to clean up their own credit reports — first-time disputers, anyone rebuilding after collections or charge-offs, and homeownership-bound buyers who need their file accurate before applying. If you can read a report and follow a checklist, you're in the right room.",
+  },
+  {
+    q: "What does \u201Cself-paced\u201D actually mean?",
+    a: "The Dispute Playbook + Support Site (Tier 2) gives you every phase, every template letter, the decoder, the tracker, and the resource library — but no scheduled coaching calls or 1:1 guidance. You move at your speed. If you want a guided, systematic approach with a coach, that's Tier 3 (Credit Academy VIP).",
+  },
+  {
+    q: "How are personalized dispute letters delivered in VIP?",
+    a: "Inside Credit Academy VIP, your dispute letters are drafted to match your specific report — the accounts, the bureaus, and the dispute reason that fits your situation. You get them in your member dashboard ready to print, sign, and mail (or send digitally where allowed). VIP also walks you through which round to send what, so the letter and the timing line up.",
+  },
+  {
+    q: "Do I need SmartCredit if I already get free credit reports?",
+    a: "Free reports are great for a yearly check, but disputes need real-time, side-by-side, three-bureau visibility — that's what SmartCredit 3B (Tier 1) gives you. The score simulator and credit-builder tools (ScoreBoost, ScoreBuilder, ScoreMaster) are also part of the system the Playbook references.",
+  },
+  {
+    q: "Can I start with the Playbook and upgrade to VIP later?",
+    a: "Yes. The Playbook is a one-time purchase you keep for life. When you're ready for personalized letters and the full system, upgrade to VIP — your Playbook progress and tracker still apply.",
+  },
+  {
+    q: "Is this credit repair? Are you a law firm?",
+    a: "No. Credit Academy is education. Shonda is a board-certified credit educator, not an attorney or a credit repair organization. The Playbook teaches you how to dispute under FCRA and FDCPA, and you do the work yourself (or with VIP guidance). For legal advice, talk to an attorney.",
+  },
+];
+
+function UpsellFAQ() {
+  return (
+    <section
+      aria-labelledby="upsell-faq-heading"
+      className="mt-14 rounded-3xl border-2 bg-card p-6 md:p-10"
+      style={{
+        borderColor:
+          "color-mix(in oklab, var(--brand-magenta-deep) 18%, transparent)",
+      }}
+    >
+      <div className="text-center">
+        <p
+          className="eyebrow"
+          style={{ color: "var(--brand-magenta-deep)" }}
+        >
+          Questions before you choose?
+        </p>
+        <h3
+          id="upsell-faq-heading"
+          className="font-display mt-2 text-2xl leading-tight md:text-4xl"
+        >
+          Frequently asked.
+        </h3>
+      </div>
+
+      <Accordion
+        type="single"
+        collapsible
+        className="mx-auto mt-6 max-w-3xl"
+      >
+        {FAQS.map((item, i) => (
+          <AccordionItem key={item.q} value={`faq-${i}`}>
+            <AccordionTrigger className="text-left font-display text-base leading-snug md:text-lg">
+              {item.q}
+            </AccordionTrigger>
+            <AccordionContent className="font-editorial text-sm leading-relaxed text-foreground/85 md:text-base">
+              {item.a}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </section>
   );
 }
