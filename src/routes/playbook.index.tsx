@@ -19,7 +19,7 @@ function PlaybookCover() {
       <section className="relative mx-auto flex max-w-5xl flex-col items-center px-6 py-20 text-center md:py-28">
         <p className="eyebrow text-[color:var(--brand-gold-deep)]">Field Manual · Vol. I · Members Edition</p>
         <h1 className="font-display mt-6 text-6xl leading-none text-balance md:text-8xl">
-          The <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent not-italic">Dispute</em>
+          Your <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent not-italic">Dispute</em>
           <br />Playbook.
         </h1>
         <p className="font-editorial mt-8 max-w-2xl text-xl text-foreground/80 text-pretty md:text-2xl">
