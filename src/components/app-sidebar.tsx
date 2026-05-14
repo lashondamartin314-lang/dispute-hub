@@ -387,39 +387,49 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-2 py-3">
-        <p className="eyebrow text-[10px] px-2 mb-1">External resources</p>
-        <SidebarMenu>
-          {PINNED_RESOURCES.map((r) => (
-            <SidebarMenuItem key={r.id}>
-              <SidebarMenuButton asChild>
-                <a
-                  href={r.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={closeMobile}
-                  className="flex items-center gap-2 text-[#1a0dab]"
-                >
-                  <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                  <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                  <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                  <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-        <a
-          href="https://shondamartin.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={closeMobile}
-          className="mt-3 inline-flex items-center gap-1 px-2 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
-        >
-          shondamartin.com
-          <ArrowUpRight className="size-3" aria-hidden="true" />
-          <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-        </a>
+      <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
+        <Collapsible defaultOpen={false}>
+          <CollapsibleTrigger className="group flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent/40">
+            <span className="eyebrow text-[10px]">External resources</span>
+            <ChevronDown
+              className="size-3.5 shrink-0 transition-transform duration-200 group-data-[state=open]:rotate-180"
+              aria-hidden="true"
+            />
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenu className="mt-1">
+              {PINNED_RESOURCES.map((r) => (
+                <SidebarMenuItem key={r.id}>
+                  <SidebarMenuButton asChild tooltip={r.label}>
+                    <a
+                      href={r.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeMobile}
+                      className="flex items-center gap-2 text-[#1a0dab]"
+                    >
+                      <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                      <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
+                      <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
+                      <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+            <a
+              href="https://shondamartin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobile}
+              className="mt-2 inline-flex items-center gap-1 px-2 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
+            >
+              shondamartin.com
+              <ArrowUpRight className="size-3" aria-hidden="true" />
+              <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+            </a>
+          </CollapsibleContent>
+        </Collapsible>
       </SidebarFooter>
     </Sidebar>
   );
