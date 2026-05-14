@@ -370,6 +370,11 @@ export function AppSidebar() {
                             <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild isActive={isActive("/ask")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
+                            <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}><MessageCircleQuestion className="size-4" /> Ask Shonda</Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
                       </SidebarMenu>
                     </SidebarGroupContent>
                   </CollapsibleContent>
