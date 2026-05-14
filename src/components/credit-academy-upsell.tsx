@@ -245,29 +245,11 @@ export function CreditAcademyUpsell({
                 </span>
               </div>
 
-              <ul className="mt-5 space-y-2.5">
-                {t.bullets.map((b) => (
-                  <li key={b} className="flex gap-2.5 text-sm leading-relaxed">
-                    <Check
-                      className="mt-0.5 size-4 shrink-0"
-                      style={{
-                        color: t.highlight ? "var(--brand-gold)" : t.accent,
-                      }}
-                      strokeWidth={3}
-                      aria-hidden
-                    />
-                    <span
-                      className={cn(
-                        t.highlight
-                          ? "text-[color:var(--brand-cream)]/90"
-                          : "text-foreground/85",
-                      )}
-                    >
-                      {b}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <TierBullets
+                bullets={t.bullets as readonly string[]}
+                accent={t.accent}
+                highlight={t.highlight}
+              />
 
               <a
                 href={withUtm(t.href, t.id, placement)}
