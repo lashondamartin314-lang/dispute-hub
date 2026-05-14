@@ -5,6 +5,8 @@ import confetti from "canvas-confetti";
 import { cn } from "@/lib/utils";
 import { PHASES, type Phase } from "@/data/phases";
 import { buildChecklist, CHECKLIST_STORAGE_PREFIX } from "@/lib/checklist";
+import { awardPhaseBadge } from "@/lib/badges.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PhaseChecklistProps {
   phase: Phase;
