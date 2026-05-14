@@ -287,10 +287,15 @@ function DecoderPage() {
           </p>
         </div>
       ) : (
-        <ul className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {filtered.map((r) => (
+        <ul
+          ref={cardsRef}
+          onKeyDown={onListKeyDown}
+          aria-label="Bureau response results"
+          className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2"
+        >
+          {filtered.map((r, i) => (
             <li key={r.id}>
-              <ResponseCard response={r} />
+              <ResponseCard response={r} tabbable={i === focusIdx} onFocus={() => setFocusIdx(i)} />
             </li>
           ))}
         </ul>
