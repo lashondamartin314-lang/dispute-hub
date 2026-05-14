@@ -110,6 +110,7 @@ function RootComponent() {
               </footer>
             </SidebarInset>
           </div>
+          <Toaster />
         </SidebarProvider>
       </ThemeProvider>
     </QueryClientProvider>
