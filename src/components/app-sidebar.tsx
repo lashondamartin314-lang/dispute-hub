@@ -255,6 +255,10 @@ export function AppSidebar() {
     );
   };
 
+  // On mobile, the AppSidebar's built-in Sheet is replaced by <MobileNavDrawer />
+  // (mounted in __root.tsx) for a richer Framer Motion drawer with drag-to-close.
+  if (isMobile) return null;
+
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
       <SidebarHeader className="border-b border-sidebar-border px-4 py-4">
