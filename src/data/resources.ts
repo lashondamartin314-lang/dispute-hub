@@ -198,7 +198,19 @@ export const RESOURCES: Resource[] = [
     description: "Directory to file a parallel complaint with your state AG.",
     url: "https://www.naag.org/find-my-ag/",
     category: "complaint",
+    actionLabel: "File a State Attorney General Complaint",
     rounds: [4, 5],
+    playbookRef: { label: "Phase 6 · Escalate", href: "/playbook/phase/escalate" },
+    steps: [
+      "Open the NAAG directory and click your state to land on the AG's consumer protection page.",
+      "Find the consumer complaint form (sometimes labeled 'File a complaint' or 'Consumer assistance').",
+      "Have your CFPB case number ready — you'll reference it for continuity.",
+      "Reuse the exact same factual summary you submitted to the CFPB.",
+      "Identify whether the violation is FCRA, FDCPA, or your state's consumer protection statute.",
+      "Attach the same evidence PDF: prior dispute letter, certified receipts, company response.",
+      "Submit. Save the AG confirmation number alongside your CFPB case number in your tracker.",
+      "Expect a state response within 30–60 days; it often arrives faster than the CFPB final response.",
+    ],
     usage:
       "Use the directory to find your state's Attorney General consumer protection page, then file the same complaint you sent to the CFPB. State AGs respond to violations of state debt collection and credit reporting law and often get a faster reply from local creditors and collectors than a federal complaint alone. Reference your CFPB case number when you file.",
     checklist: [
