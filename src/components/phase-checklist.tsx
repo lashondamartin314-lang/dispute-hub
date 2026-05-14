@@ -3,54 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, RotateCcw, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PHASES, type Phase } from "@/data/phases";
-import { lettersForPhase } from "@/data/letters";
+import { buildChecklist, CHECKLIST_STORAGE_PREFIX } from "@/lib/checklist";
 
 interface PhaseChecklistProps {
   phase: Phase;
 }
 
-interface ChecklistItem {
-  id: string;
-  label: string;
-  /** Short tag rendered as a chip (e.g. "Step 02", "Module 03", "Send L05"). */
-  group: string;
-}
-
-/** Derive an actionable checklist from a phase's data. */
-function buildChecklist(phase: Phase): ChecklistItem[] {
-  const items: ChecklistItem[] = [];
-
-  // Core "the work" steps
-  phase.steps.forEach((s, i) =>
-    items.push({
-      id: `step-${i + 1}`,
-      label: s.title,
-      group: `Step ${String(i + 1).padStart(2, "0")}`,
-    }),
-  );
-
-  // Teaching modules
-  phase.teaching?.modules.forEach((m, i) =>
-    items.push({
-      id: `module-${i + 1}`,
-      label: `Read · ${m.title}`,
-      group: m.eyebrow,
-    }),
-  );
-
-  // Letters to send
-  lettersForPhase(phase.id).forEach((l) =>
-    items.push({
-      id: `letter-${l.id}`,
-      label: `Send ${l.id} · ${l.title}`,
-      group: "Send letter",
-    }),
-  );
-
-  return items;
-}
-
-const STORAGE_PREFIX = "playbook:checklist:";
+const STORAGE_PREFIX = CHECKLIST_STORAGE_PREFIX;
 
 export function PhaseChecklist({ phase }: PhaseChecklistProps) {
   const items = useMemo(() => buildChecklist(phase), [phase]);

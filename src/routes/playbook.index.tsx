@@ -4,6 +4,7 @@ import { useLastLetter } from "@/hooks/use-last-letter";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
 import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
+import { DownloadProgressPdf } from "@/components/download-progress-pdf";
 
 export const Route = createFileRoute("/playbook/")({
   head: () => ({
@@ -119,6 +120,7 @@ function PlaybookCover() {
           <Link to="/tracker" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-emerald,#2f7a4f)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] hover:opacity-90">
             Open tracker
           </Link>
+          <DownloadProgressPdf variant="ghost" className="px-6 py-3" />
         </div>
 
         <ProgressSummary />
