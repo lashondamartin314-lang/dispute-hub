@@ -272,22 +272,22 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}><BookOpen className="size-4" /> Cover</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/letters")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/letters")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
@@ -297,7 +297,7 @@ export function AppSidebar() {
                           const active = isPhaseActive(p.id);
                           return (
                             <SidebarMenuItem key={p.id}>
-                              <SidebarMenuButton asChild isActive={active} className={ACTIVE_CLS}>
+                              <SidebarMenuButton asChild isActive={active} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                                 <Link to="/playbook/phase/$id" params={{ id: p.id }} onClick={closeMobile} data-active-scroll={active ? "phase" : undefined}>
                                   <Icon className="size-4" style={{ color: `var(${p.colorVar})` }} />
                                   <span className="truncate">
@@ -345,22 +345,22 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/tracker")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/tracker")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/decoder")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/decoder")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/resources")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/resources")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/progress")} className={ACTIVE_CLS}>
+                          <SidebarMenuButton asChild isActive={isActive("/progress")} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
                             <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
