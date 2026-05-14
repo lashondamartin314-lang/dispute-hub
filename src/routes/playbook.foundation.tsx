@@ -54,40 +54,41 @@ function FoundationPage() {
           ))}
         </div>
 
-        <blockquote className="font-editorial border-l-2 border-[color:var(--brand-gold)] pl-6 text-xl text-foreground/85 md:text-2xl">
-          Credit repair is progress through correction, not just removal.
+        <blockquote className="font-editorial relative rounded-2xl bg-[color:color-mix(in_oklab,var(--brand-navy)_94%,var(--brand-violet))] p-8 text-xl leading-snug text-[color:var(--brand-cream)] shadow-elegant md:text-2xl">
+          <span className="absolute -top-3 left-6 font-display text-6xl text-[color:var(--brand-gold)] leading-none">“</span>
+          Credit repair is <span className="text-[color:var(--brand-gold)]">progress through correction</span>, not just removal.
         </blockquote>
       </section>
 
       <section id="phases-rounds" className="space-y-8 scroll-mt-20">
         <EditorialHeader
           eyebrow="Foundation · Read this first"
-          title={<>Phases <em className="font-editorial text-[color:var(--brand-magenta)]">&</em> Rounds.</>}
+          title={<>Phases <em className="font-editorial text-accent-grad">&</em> Rounds.</>}
           lede="Two different units of work. Confuse them and the whole system slows down."
         />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-[color:color-mix(in_oklab,var(--brand-peach)_30%,var(--card))] p-6">
-            <p className="eyebrow">Phases</p>
-            <h3 className="font-display mt-2 text-3xl">Stages of work.</h3>
-            <p className="mt-4 text-foreground/80"><strong>Six stages. Each a different kind of work.</strong> You walk through them in order. Finish one. Start the next. <Ref to="phase-prepare">Phase 1</Ref> reveals which phases your file actually needs.</p>
+          <div className="rounded-2xl border border-[color:color-mix(in_oklab,var(--brand-gold)_30%,transparent)] bg-[color:color-mix(in_oklab,var(--brand-peach)_45%,var(--card))] p-6 shadow-elegant">
+            <p className="eyebrow-pill">Phases</p>
+            <h3 className="font-display mt-3 text-3xl font-bold text-[color:var(--brand-navy-deep)]">Stages of work.</h3>
+            <p className="mt-4 text-foreground/90"><strong className="text-[color:var(--brand-navy-deep)]">Six stages. Each a different kind of work.</strong> You walk through them in order. Finish one. Start the next. <Ref to="phase-prepare">Phase 1</Ref> reveals which phases your file actually needs.</p>
           </div>
-          <div className="rounded-2xl border border-border bg-[color:color-mix(in_oklab,var(--brand-sage-soft)_60%,var(--card))] p-6">
-            <p className="eyebrow">Rounds</p>
-            <h3 className="font-display mt-2 text-3xl">Letters back and forth.</h3>
-            <p className="mt-4 text-foreground/80"><strong>A round is a letter.</strong> You write to a bureau or furnisher. They write back, or stay silent past 30 days. That exchange is one round. Each new round is a stronger letter on the same account.</p>
+          <div className="rounded-2xl border border-[color:color-mix(in_oklab,var(--brand-sage)_30%,transparent)] bg-[color:color-mix(in_oklab,var(--brand-sage-soft)_75%,var(--card))] p-6 shadow-elegant">
+            <p className="eyebrow-pill">Rounds</p>
+            <h3 className="font-display mt-3 text-3xl font-bold text-[color:var(--brand-navy-deep)]">Letters back and forth.</h3>
+            <p className="mt-4 text-foreground/90"><strong className="text-[color:var(--brand-navy-deep)]">A round is a letter.</strong> You write to a bureau or furnisher. They write back, or stay silent past 30 days. That exchange is one round. Each new round is a stronger letter on the same account.</p>
           </div>
         </div>
 
         <div className="mt-6 space-y-3">
-          <p className="eyebrow">How they fit together</p>
+          <p className="eyebrow-pill">How they fit together</p>
           {PHASES.map((p) => (
-            <div key={p.id} className="flex items-center gap-5 rounded-xl border border-border bg-card p-5">
-              <div className="font-display text-4xl w-10 text-center" style={{ color: `var(${p.colorVar}-deep)` }}>{p.number}</div>
+            <div key={p.id} className="group flex items-center gap-5 rounded-xl border border-border bg-card p-5 transition hover:border-[color:var(--brand-gold)] hover:shadow-elegant">
+              <div className="font-display text-5xl font-bold w-12 text-center" style={{ color: `var(${p.colorVar}-deep)` }}>{p.number}</div>
               <div className="flex-1">
-                <h4 className="font-display text-xl" style={{ color: `var(${p.colorVar}-deep)` }}>{p.name.toUpperCase()}</h4>
-                <p className="text-sm text-foreground/75">{p.lede}</p>
+                <h4 className="font-display text-xl font-bold tracking-tight" style={{ color: `var(${p.colorVar}-deep)` }}>{p.name.toUpperCase()}</h4>
+                <p className="text-sm text-foreground/85">{p.lede}</p>
               </div>
-              <div className="text-xs uppercase tracking-wider text-muted-foreground">
+              <div className="rounded-full bg-[color:color-mix(in_oklab,var(--brand-gold-soft)_70%,transparent)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[color:var(--brand-gold-deep)]">
                 {p.rounds === 0 ? "No rounds" : `${p.rounds} round${p.rounds > 1 ? "s" : ""}`}
               </div>
             </div>
