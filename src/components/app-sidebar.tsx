@@ -14,6 +14,7 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
+  Home,
 } from "lucide-react";
 import {
   Sidebar,
