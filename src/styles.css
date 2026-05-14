@@ -158,6 +158,13 @@
   --phase-5: #B97250; --phase-5-soft: #EDD8CC; --phase-5-deep: #7C4A30;
   --phase-6: #8E3D45; --phase-6-soft: #E3CDD0; --phase-6-deep: #62292F;
 
+  /* Accent gradient stops — tweak these to retune every gradient accent across the app */
+  --accent-grad-from: #F5C518;
+  --accent-grad-via: #EC4899;
+  --accent-grad-to: #1B0739;
+  --accent-grad-via-stop: 45%;
+  --accent-grad-angle: 110deg;
+
   --gradient-halo: radial-gradient(1100px 560px at 8% -10%, color-mix(in oklab, var(--brand-pink) 38%, transparent), transparent 60%),
     radial-gradient(900px 480px at 110% 5%, color-mix(in oklab, var(--brand-peach) 50%, transparent), transparent 60%),
     radial-gradient(700px 400px at 50% 110%, color-mix(in oklab, var(--brand-gold) 30%, transparent), transparent 60%);
@@ -165,6 +172,12 @@
   --gradient-magenta: linear-gradient(135deg, #1B0739 0%, #B7045F 100%);
   --gradient-gold: linear-gradient(135deg, var(--brand-gold), var(--brand-gold-soft));
   --gradient-frame: linear-gradient(135deg, var(--brand-magenta), var(--brand-gold), var(--brand-magenta));
+  --gradient-accent: linear-gradient(
+    var(--accent-grad-angle),
+    var(--accent-grad-from) 0%,
+    var(--accent-grad-via) var(--accent-grad-via-stop),
+    var(--accent-grad-to) 100%
+  );
 
   --shadow-elegant: 0 14px 40px -16px color-mix(in oklab, var(--brand-navy) 35%, transparent);
   --shadow-frame: 0 26px 70px -28px color-mix(in oklab, var(--brand-navy) 45%, transparent),
@@ -248,7 +261,7 @@
 }
 
 @utility text-accent-grad {
-  background: linear-gradient(110deg, #F5C518 0%, #EC4899 45%, #1B0739 100%);
+  background: var(--gradient-accent);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
