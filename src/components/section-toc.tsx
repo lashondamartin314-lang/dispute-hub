@@ -472,8 +472,15 @@ export function SectionToc({
     </div>
   );
 
+  const activeLabel = items[activeIdx]?.label ?? "";
+
   return (
     <>
+      {/* SR-only live region: announces the current section as the user scrolls
+          or jumps with the keyboard. polite so it doesn't interrupt typing. */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {activeLabel ? `Current section: ${activeLabel}, ${activeIdx + 1} of ${items.length}` : ""}
+      </div>
       {/* Desktop sticky sidebar */}
       <nav
         aria-label={label}
