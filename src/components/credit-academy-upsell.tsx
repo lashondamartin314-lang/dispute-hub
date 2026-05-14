@@ -124,10 +124,11 @@ export function CreditAcademyUpsell({
             </p>
           </div>
           <a
-            href="https://shondamartincom.netlify.app/credit-academy-memberships"
+            href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip", placement)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-gold)] px-6 py-3 text-sm font-bold text-[color:var(--brand-ink)] shadow-elegant transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-gold-deep)] hover:text-[color:var(--brand-cream)]"
+            aria-label="Join Credit Academy VIP (opens in new tab)"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[color:var(--brand-gold)] px-6 py-3 text-sm font-bold text-[color:var(--brand-ink)] shadow-elegant transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-gold-deep)] hover:text-[color:var(--brand-cream)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Join the Academy <ArrowUpRight className="size-4" aria-hidden />
           </a>
