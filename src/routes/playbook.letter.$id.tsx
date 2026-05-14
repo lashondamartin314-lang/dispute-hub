@@ -46,11 +46,16 @@ function LetterDetail() {
   const { id } = Route.useParams();
   const letter = LETTERS_BY_ID[id as LetterId];
   const phase = PHASES_BY_ID[letter.phaseId];
+  const navigate = useNavigate();
 
   const phaseLetters = LETTERS.filter((l) => l.phaseId === letter.phaseId);
   const idxInPhase = phaseLetters.findIndex((l) => l.id === letter.id);
   const prevLetter = idxInPhase > 0 ? phaseLetters[idxInPhase - 1] : null;
   const nextLetter = idxInPhase < phaseLetters.length - 1 ? phaseLetters[idxInPhase + 1] : null;
+
+  useEffect(() => {
+    rememberLetter(letter.id);
+  }, [letter.id]);
 
   const hero = `radial-gradient(900px 480px at 12% -10%, color-mix(in oklab, var(${phase.colorVar}) 30%, transparent), transparent 60%), var(--brand-cream)`;
 
