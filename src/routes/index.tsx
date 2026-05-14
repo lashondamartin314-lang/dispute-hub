@@ -185,23 +185,23 @@ function HubPage() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="phase-accordion-content relative px-6 pt-0 pb-6">
-                  <div className="grid gap-8 border-t border-[color:var(--brand-ink)]/10 pt-6 md:grid-cols-2">
+                  <div className="grid gap-10 border-t border-[color:var(--brand-ink)]/10 pt-8 md:grid-cols-2">
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                      <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-ink)]/65">
                         The work
                       </p>
-                      <ol className="mt-4 space-y-4">
+                      <ol className="mt-5 space-y-5">
                         {p.steps.map((s, i) => (
-                          <li key={s.title} className="flex gap-3">
+                          <li key={s.title} className="flex gap-4">
                             <span
-                              className="font-display mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold text-[color:var(--brand-cream)]"
+                              className="font-display mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-[color:var(--brand-cream)]"
                               style={{ background: `var(${p.colorVar}-deep)` }}
                             >
                               {i + 1}
                             </span>
                             <div>
-                              <p className="font-display text-sm font-bold text-[color:var(--brand-ink)]">{s.title}</p>
-                              <p className="font-editorial mt-1 text-sm text-foreground/80">{s.description}</p>
+                              <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">{s.title}</p>
+                              <p className="font-editorial mt-1.5 text-base leading-relaxed text-foreground/85 md:text-[17px]">{s.description}</p>
                             </div>
                           </li>
                         ))}
@@ -209,51 +209,51 @@ function HubPage() {
                     </div>
 
                     <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                      <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-ink)]/65">
                         {letters.length > 0 ? `Letter${letters.length === 1 ? "" : "s"} for this phase` : "No letters · strategy phase"}
                       </p>
                       {letters.length > 0 ? (
-                        <ul className="mt-4 space-y-2">
+                        <ul className="mt-5 space-y-3">
                           {letters.map((l) => (
                             <li key={l.id}>
                               <Link
                                 to="/playbook/letter/$id"
                                 params={{ id: l.id }}
-                                className="group/letter flex items-start gap-3 rounded-lg border border-border bg-background/60 p-3 no-underline transition-all hover:-translate-y-px hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+                                className="group/letter flex items-start gap-4 rounded-lg border border-border bg-background/60 p-4 no-underline transition-all hover:-translate-y-px hover:border-[color:var(--brand-gold)] hover:shadow-sm"
                               >
                                 <span
-                                  className="font-display inline-flex h-7 min-w-[2.75rem] shrink-0 items-center justify-center rounded-md px-2 text-xs font-bold text-[color:var(--brand-cream)]"
+                                  className="font-display inline-flex h-9 min-w-[3rem] shrink-0 items-center justify-center rounded-md px-2.5 text-sm font-bold text-[color:var(--brand-cream)]"
                                   style={{ background: `var(${p.colorVar}-deep)` }}
                                 >
                                   {l.id}
                                 </span>
                                 <div className="flex-1">
-                                  <p className="font-display text-sm font-bold text-[color:var(--brand-ink)]">{l.title}</p>
-                                  <p className="font-editorial mt-0.5 text-xs text-foreground/75">{l.lede}</p>
+                                  <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">{l.title}</p>
+                                  <p className="font-editorial mt-1 text-sm leading-relaxed text-foreground/80 md:text-base">{l.lede}</p>
                                 </div>
-                                <FileText className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-ink)]/40 transition-colors group-hover/letter:text-[color:var(--brand-magenta)]" />
+                                <FileText className="mt-1 size-5 shrink-0 text-[color:var(--brand-ink)]/40 transition-colors group-hover/letter:text-[color:var(--brand-magenta)]" />
                               </Link>
                             </li>
                           ))}
                         </ul>
                       ) : (
-                        <p className="font-editorial mt-4 text-sm text-foreground/75">
+                        <p className="font-editorial mt-5 text-base leading-relaxed text-foreground/85 md:text-[17px]">
                           {p.description}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[color:var(--brand-ink)]/10 pt-4">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+                  <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[color:var(--brand-ink)]/10 pt-5">
+                    <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-ink)]/65">
                       {p.rounds > 0 ? `${p.rounds} round${p.rounds === 1 ? "" : "s"}` : "Strategy · no rounds"}
                     </p>
                     <Link
                       to="/playbook/phase/$id"
                       params={{ id: p.id }}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold tracking-wide uppercase text-[color:var(--brand-magenta)] transition-transform hover:translate-x-1"
+                      className="inline-flex items-center gap-1.5 text-sm font-bold tracking-wide uppercase text-[color:var(--brand-magenta)] transition-transform hover:translate-x-1"
                     >
-                      Open full phase <ArrowRight className="size-3" />
+                      Open full phase <ArrowRight className="size-3.5" />
                     </Link>
                   </div>
                 </AccordionContent>
