@@ -374,7 +374,10 @@ export function SectionToc({
               <span
                 key={`rail-${instance}-${item.id}`}
                 aria-hidden
-                className="absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full animate-toc-rail"
+                className={cn(
+                  "absolute -left-[10px] top-1/2 h-7 w-[4px] -translate-y-1/2 rounded-full",
+                  !reducedMotion && "animate-toc-rail",
+                )}
                 style={{
                   background: accentColor,
                   boxShadow: `0 0 0 2px color-mix(in oklab, ${accentColor} 18%, transparent)`,
@@ -395,11 +398,18 @@ export function SectionToc({
               onFocus={() => setFocusIdx(i)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none transition-all duration-300",
+                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none",
+                !reducedMotion && "transition-all duration-300",
                 "focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                 active
-                  ? "pl-3 font-semibold text-[color:var(--brand-ink)] animate-toc-pill"
-                  : "pl-2 text-foreground/60 hover:translate-x-0.5 hover:text-foreground",
+                  ? cn(
+                      "pl-3 font-semibold text-[color:var(--brand-ink)]",
+                      !reducedMotion && "animate-toc-pill",
+                    )
+                  : cn(
+                      "pl-2 text-foreground/60 hover:text-foreground",
+                      !reducedMotion && "hover:translate-x-0.5",
+                    ),
               )}
               style={
                 {
@@ -412,7 +422,8 @@ export function SectionToc({
             >
               <span
                 className={cn(
-                  "font-mono text-[10px] tabular-nums transition-colors",
+                  "font-mono text-[10px] tabular-nums",
+                  !reducedMotion && "transition-colors",
                   active ? "text-[color:var(--brand-ink)]/70" : "text-muted-foreground/60",
                 )}
               >
@@ -422,7 +433,10 @@ export function SectionToc({
               {active && (
                 <span
                   aria-hidden
-                  className="size-1.5 shrink-0 rounded-full animate-toc-dot"
+                  className={cn(
+                    "size-1.5 shrink-0 rounded-full",
+                    !reducedMotion && "animate-toc-dot",
+                  )}
                   style={{ background: accentColor }}
                 />
               )}
