@@ -158,7 +158,7 @@ function LetterDetail() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-base font-semibold text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-elegant"
               >
-                Use template <ArrowUpRight className="size-5" />
+                Use template <ArrowUpRight className="size-5 text-[color:var(--brand-sky)]" />
               </a>
               <a
                 href={letter.viewUrl}
