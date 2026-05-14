@@ -2,18 +2,24 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* ──────────────────────────────────────────────────────────────────────────
+ * TYPOGRAPHY — display + body pair (swap-ready)
+ *
+ * Display: Cormorant Garamond — closest free substitute for ETHIC SERIF.
+ * Body:    Plus Jakarta Sans  — paired per brand directive (400/500).
+ *
+ * To swap to the licensed Ethic Serif / Editor's Note files later:
+ *   1. Drop the .woff2 files into src/assets/fonts/ and @font-face them here.
+ *   2. Update --font-display below to the new family name.
+ *   3. (Optional) point --font-body to Red Hat Display if the Editor's Note
+ *      pairing is preferred.
+ * ────────────────────────────────────────────────────────────────────────── */
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/400-italic.css";
 @import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/500-italic.css";
 @import "@fontsource/cormorant-garamond/600.css";
 @import "@fontsource/cormorant-garamond/700.css";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
-@import "@fontsource/caveat/500.css";
-@import "@fontsource/caveat/700.css";
-@import "@fontsource/fraunces/400-italic.css";
-@import "@fontsource/fraunces/600.css";
-@import "@fontsource/fraunces/700.css";
 
 @import "@fontsource/plus-jakarta-sans/400.css";
 @import "@fontsource/plus-jakarta-sans/500.css";
@@ -91,10 +97,15 @@
   --color-phase-6: var(--phase-6);
   --color-phase-6-soft: var(--phase-6-soft);
   --color-phase-6-deep: var(--phase-6-deep);
+  /* Display + body pair. font-editorial / font-script aliases preserved so
+     existing markup keeps working — they all resolve to the same display face,
+     with -editorial swinging to italic. Swap --font-display to switch the
+     entire display layer when the licensed Ethic Serif lands. */
   --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
-  --font-editorial: "Fraunces", "Cormorant Garamond", Georgia, serif;
-  --font-script: "Caveat", "Brush Script MT", cursive;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-editorial: var(--font-display);
+  --font-script: var(--font-display);
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body);
 }
 
 :root {
