@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, Library, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Library, MapPin, Sparkles } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { Squiggle } from "@/components/squiggle";
