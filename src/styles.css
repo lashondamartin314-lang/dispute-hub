@@ -204,6 +204,14 @@
   --muted: #2E2A38;
   --muted-foreground: #948C99;
   --border: rgba(255, 255, 255, 0.10);
+  --sidebar: #14111A;
+  --sidebar-foreground: #FAF6EE;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  /* Header keeps its branded navy in dark too, but a touch deeper */
+  --header-bg: var(--brand-navy-deep);
+  --header-fg: var(--brand-cream);
+  --header-border: color-mix(in oklab, var(--brand-gold) 28%, transparent);
+  --header-muted-fg: color-mix(in oklab, var(--brand-cream) 70%, transparent);
 }
 
 @layer base {
