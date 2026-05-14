@@ -85,6 +85,9 @@ const SEVERITY_TOKEN: Record<
 function DecoderPage() {
   const [query, setQuery] = useState("");
   const [activeCat, setActiveCat] = useState<ResponseCategory | "all">("all");
+  const [focusIdx, setFocusIdx] = useState(0);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const cardsRef = useRef<HTMLUListElement | null>(null);
 
   const filtered = useMemo(() => {
     let list: BureauResponse[] = searchResponses(query);
@@ -102,6 +105,54 @@ function DecoderPage() {
     BUREAU_RESPONSES.forEach((r) => c[r.severity]++);
     return c;
   }, []);
+
+  // Reset roving focus when results change.
+  useEffect(() => {
+    setFocusIdx(0);
+  }, [query, activeCat]);
+
+  // Global shortcuts: "/" focuses search, Esc clears it (when focused).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      const typing =
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable);
+      if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      } else if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        if (query) {
+          e.preventDefault();
+          setQuery("");
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [query]);
+
+  const focusCard = (idx: number) => {
+    const el = cardsRef.current?.querySelectorAll<HTMLElement>("[data-decoder-card]")[idx];
+    el?.focus();
+  };
+
+  const onListKeyDown = (e: React.KeyboardEvent<HTMLUListElement>) => {
+    if (filtered.length === 0) return;
+    let next: number | null = null;
+    if (e.key === "ArrowDown" || e.key === "j") next = Math.min(filtered.length - 1, focusIdx + 1);
+    else if (e.key === "ArrowUp" || e.key === "k") next = Math.max(0, focusIdx - 1);
+    else if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = filtered.length - 1;
+    else return;
+    e.preventDefault();
+    setFocusIdx(next);
+    focusCard(next);
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
