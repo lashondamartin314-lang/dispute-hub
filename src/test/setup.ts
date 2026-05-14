@@ -6,6 +6,10 @@ afterEach(() => {
   cleanup();
 });
 
+// Force mobile viewport so useIsMobile() reports true.
+Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 375 });
+Object.defineProperty(window, "innerHeight", { writable: true, configurable: true, value: 812 });
+
 // jsdom doesn't implement matchMedia — useSidebar's useIsMobile hook needs it.
 // Default to "mobile" (max-width: 767px) so tests exercise the mobile sheet path.
 if (!window.matchMedia) {
