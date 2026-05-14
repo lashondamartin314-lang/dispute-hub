@@ -2,8 +2,9 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
+import { SectionToc } from "@/components/section-toc";
 import { PHASES, PHASES_BY_ID } from "@/data/phases";
-import { lettersForPhase } from "@/data/letters";
+import { lettersForPhase, LETTERS_BY_ID } from "@/data/letters";
 import type { PhaseId } from "@/data/letters";
 
 const PHASE_IDS: PhaseId[] = ["prepare", "validate", "clean-identity", "dispute-bureaus", "challenge-furnishers", "escalate"];
@@ -50,36 +51,58 @@ function PhasePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 py-16 md:px-10 space-y-12">
-        <div>
-          <p className="eyebrow">The work, step by step</p>
-          <h2 className="font-display mt-2 text-3xl">Inside this phase.</h2>
-          <ol className="mt-6 space-y-4">
-            {phase.steps.map((s, i) => (
-              <li key={i} className="flex gap-5 rounded-xl border border-border bg-card p-5">
-                <span className="font-display text-3xl shrink-0 w-10 text-center" style={{ color: `var(${phase.colorVar}-deep)` }}>
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="font-display text-lg">{s.title}</h3>
-                  <p className="mt-1 text-foreground/75">{s.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-16 md:px-10 xl:grid-cols-[1fr_220px]">
+        <div className="min-w-0 space-y-14">
+          <section id="the-work" className="scroll-mt-24">
+            <p className="eyebrow">The work, step by step</p>
+            <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Inside this phase.</h2>
+            <ol className="mt-6 space-y-4">
+              {phase.steps.map((s, i) => (
+                <li key={i} className="flex gap-5 rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+                  <span
+                    className="font-display inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-2xl font-bold text-[color:var(--brand-cream)]"
+                    style={{ background: `var(${phase.colorVar}-deep)` }}
+                  >
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className="font-display text-xl font-bold leading-snug md:text-2xl">{s.title}</h3>
+                    <p className="font-editorial mt-2 text-base leading-relaxed text-foreground/85 md:text-lg">{s.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {letters.length > 0 && (
+            <section id="letters" className="scroll-mt-24">
+              <p className="eyebrow">The letters in this phase</p>
+              <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Templates · click to open.</h2>
+              <p className="font-editorial mt-3 max-w-2xl text-lg leading-relaxed text-foreground/85 md:text-xl">
+                Each letter opens the Google Doc template in a new tab. "Use template" forces a copy into your own Drive; "Preview" opens read-only.
+              </p>
+              <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
+                {letters.map((l) => (
+                  <div key={l.id} id={l.id} className="scroll-mt-24">
+                    <LetterCard id={l.id} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
-        {letters.length > 0 && (
-          <div>
-            <p className="eyebrow">The letters in this phase</p>
-            <h2 className="font-display mt-2 text-3xl">Templates · click to open.</h2>
-            <p className="mt-2 text-foreground/70 max-w-2xl">Each letter opens the Google Doc template in a new tab. "Use template" forces a copy into your own Drive; "Preview" opens read-only.</p>
-            <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-              {letters.map((l) => (<LetterCard key={l.id} id={l.id} />))}
-            </div>
-          </div>
-        )}
-      </section>
+        <aside className="hidden xl:block">
+          <SectionToc
+            label="On this page"
+            items={[
+              { id: "the-work", label: "The work" },
+              ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
+              ...letters.map((l) => ({ id: l.id, label: `${l.id} · ${LETTERS_BY_ID[l.id].title}` })),
+            ]}
+          />
+        </aside>
+      </div>
 
       <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 border-t border-border px-6 py-10 md:px-10">
         {prev ? (
