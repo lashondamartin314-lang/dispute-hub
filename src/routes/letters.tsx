@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
 import { PHASES } from "@/data/phases";
@@ -31,12 +32,20 @@ function LettersPage() {
           const letters = lettersForPhase(p.id);
           return (
             <section key={p.id} id={p.id} className="scroll-mt-20">
-              <header className="mb-6 flex items-baseline gap-4 border-b border-border pb-4">
+              <header className="mb-6 flex flex-wrap items-baseline gap-4 border-b border-border pb-4">
                 <span className="font-display text-4xl" style={{ color: `var(${p.colorVar}-deep)` }}>P{p.number}</span>
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
                   <h2 className="font-display text-2xl md:text-3xl">{p.name} · {letters.length} letter{letters.length > 1 ? "s" : ""}</h2>
                 </div>
+                <Link
+                  to="/playbook/phase/$id"
+                  params={{ id: p.id }}
+                  className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] transition-all hover:-translate-y-0.5 hover:border-[color:var(${p.colorVar})] hover:shadow-sm"
+                  style={{ color: `var(${p.colorVar}-deep)` }}
+                >
+                  View full phase <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                </Link>
               </header>
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 {letters.map((l) => (<LetterCard key={l.id} id={l.id} />))}
