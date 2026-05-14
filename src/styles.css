@@ -261,19 +261,74 @@
 }
 
 @utility eyebrow-pill {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brand-magenta-deep);
-  background: color-mix(in oklab, var(--brand-pink) 78%, transparent);
-  padding: 0.4rem 0.8rem;
+  color: #3a2a05;
+  background:
+    linear-gradient(100deg,
+      #b8862c 0%,
+      #e8c75a 18%,
+      #fff3b0 32%,
+      #f5d97a 46%,
+      #c9962f 62%,
+      #f0d27a 80%,
+      #a87515 100%);
+  background-size: 220% 100%;
+  padding: 0.45rem 0.95rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in oklab, var(--brand-magenta) 28%, transparent);
+  border: 1px solid color-mix(in oklab, #8a6a00 65%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 245, 200, 0.85),
+    inset 0 -1px 0 rgba(90, 60, 0, 0.35),
+    0 1px 2px rgba(60, 40, 0, 0.25),
+    0 8px 24px -10px rgba(160, 110, 0, 0.45);
+  text-shadow: 0 1px 0 rgba(255, 240, 190, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+  animation: eyebrow-gold-shift 9s ease-in-out infinite;
+}
+
+@utility eyebrow-pill {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      110deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.55) 48%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.55) 52%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    animation: eyebrow-gold-sheen 4.5s ease-in-out infinite;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+}
+
+@keyframes eyebrow-gold-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes eyebrow-gold-sheen {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow-pill { animation: none; }
+  .eyebrow-pill::after { animation: none; opacity: 0; }
 }
 
 @utility highlight {
