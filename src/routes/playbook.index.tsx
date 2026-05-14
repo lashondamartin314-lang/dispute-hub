@@ -4,6 +4,7 @@ import { useLastLetter } from "@/hooks/use-last-letter";
 import { LETTERS, LETTERS_BY_ID, type LetterId } from "@/data/letters";
 import { PHASES_BY_ID } from "@/data/phases";
 import { CreditAcademyUpsell } from "@/components/credit-academy-upsell";
+import { DownloadProgressPdf } from "@/components/download-progress-pdf";
 
 export const Route = createFileRoute("/playbook/")({
   head: () => ({
