@@ -21,7 +21,7 @@ function HubPage() {
     <div className="relative">
       <div aria-hidden className="bg-halo animate-halo-drift pointer-events-none absolute inset-x-0 top-0 h-[600px] opacity-90" />
 
-      <section className="font-display leading-[0.9] tracking-tight md:text-7xl text-6xl">
+      <section className="relative mx-auto max-w-6xl px-6 pt-16 pb-20 md:px-10 md:pt-24">
         <EditorialHeader
           eyebrow="Credit Academy · 2026 Edition"
           numeral="✶"
@@ -62,7 +62,7 @@ function HubPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
             </div>
             <h2
-              className="font-display leading-[0.9] tracking-tight md:text-7xl text-6xl"
+              className="font-display text-[color:var(--brand-ink)] text-4xl font-bold leading-[1.02] tracking-tight md:text-5xl lg:text-6xl"
             >
               <span className="italic font-medium">Where</span> you are in the journey.
             </h2>
