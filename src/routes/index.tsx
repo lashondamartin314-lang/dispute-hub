@@ -75,10 +75,31 @@ function HubPage() {
 
       <section className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
         <style>{`
-          @keyframes journey-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.9)} }
-          @keyframes journey-ripple { 0%{transform:scale(1);opacity:.4} 100%{transform:scale(2.6);opacity:0} }
-          .journey-dot { animation: journey-pulse 1.6s ease-in-out infinite; }
-          .journey-ripple { animation: journey-ripple 2.2s cubic-bezier(0,0,.2,1) infinite; }
+         @keyframes journey-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.55;transform:scale(.9)} }
+         @keyframes journey-ripple { 0%{transform:scale(1);opacity:.5} 100%{transform:scale(2.6);opacity:0} }
+         @keyframes journey-hue {
+           0%   { background-color: var(--phase-1-deep, #c43d6b); box-shadow: 0 0 12px 2px var(--phase-1-deep, #c43d6b); }
+           16%  { background-color: var(--phase-2-deep, #b8782a); box-shadow: 0 0 12px 2px var(--phase-2-deep, #b8782a); }
+           33%  { background-color: var(--phase-3-deep, #4f8a3a); box-shadow: 0 0 12px 2px var(--phase-3-deep, #4f8a3a); }
+           50%  { background-color: var(--phase-4-deep, #2c7a8a); box-shadow: 0 0 12px 2px var(--phase-4-deep, #2c7a8a); }
+           66%  { background-color: var(--phase-5-deep, #5a4ea6); box-shadow: 0 0 12px 2px var(--phase-5-deep, #5a4ea6); }
+           83%  { background-color: var(--phase-6-deep, #8a3a78); box-shadow: 0 0 12px 2px var(--phase-6-deep, #8a3a78); }
+           100% { background-color: var(--phase-1-deep, #c43d6b); box-shadow: 0 0 12px 2px var(--phase-1-deep, #c43d6b); }
+         }
+         @keyframes journey-ripple-hue {
+           0%   { background-color: var(--phase-1-deep, #c43d6b); }
+           16%  { background-color: var(--phase-2-deep, #b8782a); }
+           33%  { background-color: var(--phase-3-deep, #4f8a3a); }
+           50%  { background-color: var(--phase-4-deep, #2c7a8a); }
+           66%  { background-color: var(--phase-5-deep, #5a4ea6); }
+           83%  { background-color: var(--phase-6-deep, #8a3a78); }
+           100% { background-color: var(--phase-1-deep, #c43d6b); }
+         }
+         .journey-dot { animation: journey-pulse 1.4s ease-in-out infinite, journey-hue 9s linear infinite; }
+         .journey-ripple { animation: journey-ripple 1.8s cubic-bezier(0,0,.2,1) infinite, journey-ripple-hue 9s linear infinite; }
+         @media (prefers-reduced-motion: reduce) {
+           .journey-dot, .journey-ripple { animation: none; }
+         }
           .journey-arrow-path { stroke-dasharray: 320; stroke-dashoffset: 0; transition: stroke-dashoffset .8s cubic-bezier(.65,0,.35,1); }
           .group:hover .journey-arrow-path { stroke-dashoffset: 12; }
           .phase-accordion-content[data-state="open"] { animation: phase-accordion-down 380ms cubic-bezier(0.32,0.72,0,1); }
