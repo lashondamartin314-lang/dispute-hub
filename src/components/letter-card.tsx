@@ -58,17 +58,18 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
       <div className="relative flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-4">
           <span
-            aria-hidden
+            role="img"
+            aria-label={`${phase.eyebrow} dispute letter ${letter.id}`}
             className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-card md:h-14 md:w-14"
             style={{
               background: isFrame
-                ? `color-mix(in oklab, var(--brand-cream) 14%, transparent)`
-                : `color-mix(in oklab, ${phaseColor} 16%, var(--brand-paper))`,
-              color: isFrame ? "var(--brand-gold)" : phaseDeep,
-              border: `2px solid color-mix(in oklab, ${phaseColor} 45%, transparent)`,
+                ? `color-mix(in oklab, var(--brand-ink) 78%, ${phaseColor})`
+                : phaseDeep,
+              color: "var(--brand-cream)",
+              border: `2px solid color-mix(in oklab, ${phaseColor} 70%, var(--brand-ink))`,
             }}
           >
-            <Mail className="size-6 md:size-7" strokeWidth={2.25} />
+            <Mail className="size-6 md:size-7" strokeWidth={2.25} aria-hidden />
           </span>
           <div className="min-w-0 space-y-2">
             <p className="eyebrow" style={{ color: isFrame ? "var(--brand-gold)" : phaseDeep }}>
