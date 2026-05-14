@@ -103,6 +103,66 @@ const outcomeMeta: Record<Outcome, { label: string; tone: string }> = {
   other: { label: "Other", tone: "var(--brand-ink)" },
 };
 
+type LetterDefault = {
+  recipient: Recipient;
+  nextAction: string;
+  /** Days from sent date to set Next-Action Due. */
+  dueDays: number;
+};
+
+const LETTER_DEFAULTS: Record<LetterId, LetterDefault> = {
+  L01: { recipient: "Collector", nextAction: "If silent 30+ days, send L02 follow-up", dueDays: 30 },
+  L02: { recipient: "Collector", nextAction: "Escalate to L03 or file CFPB complaint", dueDays: 15 },
+  L03: { recipient: "Collector", nextAction: "If still reporting, send L04 or pivot to dispute", dueDays: 30 },
+  L04: { recipient: "Collector", nextAction: "Begin Phase 4 bureau dispute (L11)", dueDays: 30 },
+  L05: { recipient: "Creditor", nextAction: "Re-pull report and confirm update", dueDays: 30 },
+  L06: { recipient: "Equifax", nextAction: "If unchanged, send L07 follow-up", dueDays: 30 },
+  L07: { recipient: "Equifax", nextAction: "Escalate via L09 MOV demand", dueDays: 30 },
+  L08: { recipient: "Equifax", nextAction: "Send ID + FTC affidavit, follow up in 30 days", dueDays: 30 },
+  L09: { recipient: "Equifax", nextAction: "If no method given, file CFPB complaint", dueDays: 15 },
+  L10: { recipient: "Equifax", nextAction: "Verify SSN/DOB across all 3 bureaus", dueDays: 30 },
+  L11: { recipient: "Equifax", nextAction: "If verified, send L12 MOV demand", dueDays: 30 },
+  L12: { recipient: "Equifax", nextAction: "If no real method, send L13 Notice of Intent", dueDays: 30 },
+  L13: { recipient: "Equifax", nextAction: "File CFPB + state AG complaints, then L14", dueDays: 15 },
+  L14: { recipient: "Equifax", nextAction: "Begin Phase 6 escalation", dueDays: 15 },
+  L15A: { recipient: "Collector", nextAction: "Send L15C bureau companion", dueDays: 30 },
+  L15B: { recipient: "Creditor", nextAction: "Send L15C bureau companion", dueDays: 30 },
+  L15C: { recipient: "Equifax", nextAction: "Compare both responses; escalate inconsistencies", dueDays: 30 },
+  L16: { recipient: "Furnisher", nextAction: "If verified, escalate with L17 or CFPB", dueDays: 30 },
+  L17: { recipient: "Furnisher", nextAction: "Escalate to CFPB; consider counsel", dueDays: 30 },
+  L18: { recipient: "Collector", nextAction: "Get written confirmation BEFORE paying", dueDays: 14 },
+  L19: { recipient: "Equifax", nextAction: "If verified, escalate to creditor + CFPB", dueDays: 30 },
+};
+
+function addDays(iso: string, days: number): string {
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  if (Number.isNaN(d.getTime())) return "";
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function applyLetterDefaults(entry: Entry, letterId: LetterId): Entry {
+  const def = LETTER_DEFAULTS[letterId];
+  if (!def) return { ...entry, letterId };
+  const recipientName = entry.recipientName?.trim() ? entry.recipientName : def.recipient;
+  const nextAction = entry.nextAction?.trim() ? entry.nextAction : def.nextAction;
+  const nextActionDue =
+    entry.nextActionDue?.trim()
+      ? entry.nextActionDue
+      : entry.sentDate
+        ? addDays(entry.sentDate, def.dueDays)
+        : "";
+  return {
+    ...entry,
+    letterId,
+    recipient: def.recipient,
+    recipientName,
+    nextAction,
+    nextActionDue,
+  };
+}
+
 const emptyEntry = (): Entry => ({
   id: crypto.randomUUID(),
   letterId: "",
