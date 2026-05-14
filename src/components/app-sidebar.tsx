@@ -354,26 +354,6 @@ export function AppSidebar() {
                             <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
-
-                        {/* External companion links — same ordered group, tappable, close sheet on tap */}
-                        {PINNED_RESOURCES.map((r) => (
-                          <SidebarMenuItem key={r.id}>
-                            <SidebarMenuButton asChild>
-                              <a
-                                href={r.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={closeMobile}
-                                className="flex items-center gap-2 text-[#1a0dab]"
-                              >
-                                <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
-                                <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                                <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                                <span className="sr-only"> (opens in a new tab — leaves the Playbook)</span>
-                              </a>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        ))}
                       </SidebarMenu>
                     </SidebarGroupContent>
                   </CollapsibleContent>
@@ -385,13 +365,34 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-4 py-3">
+      <SidebarFooter className="border-t border-sidebar-border px-2 py-3">
+        <p className="eyebrow text-[10px] px-2 mb-1">External resources</p>
+        <SidebarMenu>
+          {PINNED_RESOURCES.map((r) => (
+            <SidebarMenuItem key={r.id}>
+              <SidebarMenuButton asChild>
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={closeMobile}
+                  className="flex items-center gap-2 text-[#1a0dab]"
+                >
+                  <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+                  <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
+                  <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
+                  <span className="sr-only"> (opens in a new tab — leaves the Playbook)</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
         <a
           href="https://shondamartin.com"
           target="_blank"
           rel="noopener noreferrer"
           onClick={closeMobile}
-          className="text-xs text-muted-foreground hover:text-foreground"
+          className="mt-3 block px-2 text-xs text-muted-foreground hover:text-foreground"
         >
           shondamartin.com ↗
         </a>
