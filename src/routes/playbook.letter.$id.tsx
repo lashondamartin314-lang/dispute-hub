@@ -1,6 +1,7 @@
 import { createFileRoute, notFound, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library, Mail, MapPin, Clock, ListChecks, ShieldAlert, Inbox, GitBranch, Scale, Check, X } from "lucide-react";
+import { LETTER_GUIDES } from "@/data/letter-guides";
 import {
   Breadcrumb,
   BreadcrumbItem,
