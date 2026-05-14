@@ -124,16 +124,17 @@ function HubPage() {
           </Link>
         </div>
 
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-[color:var(--brand-ink)]/55">
             {openPhases.length} of {ALL_PHASE_IDS.length} expanded
           </p>
           <button
             type="button"
             onClick={toggleAll}
-            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-ink)] transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)] hover:shadow-sm"
+            aria-pressed={allOpen}
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-ink)] transition-all hover:border-[color:var(--brand-gold)] hover:shadow-sm active:scale-[0.98] sm:w-auto sm:py-2 md:hover:-translate-y-0.5"
           >
-            {allOpen ? <ChevronsDownUp className="size-3.5" /> : <ChevronsUpDown className="size-3.5" />}
+            {allOpen ? <ChevronsDownUp className="size-4" /> : <ChevronsUpDown className="size-4" />}
             {allOpen ? "Collapse all" : "Expand all"}
           </button>
         </div>
