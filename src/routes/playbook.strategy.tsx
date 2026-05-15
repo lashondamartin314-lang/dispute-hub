@@ -350,6 +350,7 @@ function StrategyPage() {
           <p className="text-sm opacity-80">An interactive Round Tracker is on the roadmap — for now, print the kit's tracker page or use a spreadsheet.</p>
         </section>
       </div>
+      <SectionToc items={TOC} />
     </div>
   );
 }
