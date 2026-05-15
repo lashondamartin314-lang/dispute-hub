@@ -118,8 +118,19 @@ function RootComponent() {
               </footer>
             </SidebarInset>
           </div>
-          <DisputeHubFab />
+          <CoverOnlyFab />
           <Toaster />
+        </SidebarProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+
+function CoverOnlyFab() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (pathname !== "/") return null;
+  return <DisputeHubFab />;
+}
         </SidebarProvider>
       </ThemeProvider>
     </QueryClientProvider>
