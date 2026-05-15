@@ -24,6 +24,86 @@ export const Route = createFileRoute("/")({
 const ALL_PHASE_IDS = PHASES.map((p) => p.id);
 
 /**
+ * Five-step onboarding strip — gamified first-run guide. Replaces the trio of
+ * marketing buttons in the hero with one clear primary path (Foundation) plus
+ * lower-emphasis shortcuts to Tracker and Letter Library.
+ */
+const ONBOARD_STEPS = [
+  { n: 1, label: "Foundation", to: "/playbook/foundation", Icon: Compass },
+  { n: 2, label: "Choose Your Phase", to: "/playbook", Icon: Layers },
+  { n: 3, label: "Use the Letter Library", to: "/letters", Icon: Library },
+  { n: 4, label: "Track Your Dispute", to: "/tracker", Icon: ClipboardList },
+  { n: 5, label: "Decode Responses", to: "/decoder", Icon: ScanSearch },
+] as const;
+
+function OnboardingStrip() {
+  return (
+    <div className="mt-8 md:mt-10">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+          Member guide · Step 1 of 5
+        </span>
+      </div>
+
+      <ol className="relative grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 md:gap-3">
+        {ONBOARD_STEPS.map((s, i) => {
+          const isFirst = i === 0;
+          return (
+            <li key={s.n}>
+              <Link
+                to={s.to}
+                className={[
+                  "group flex h-full flex-col gap-1.5 rounded-xl border p-3 no-underline transition-all",
+                  isFirst
+                    ? "border-[color:var(--brand-navy)]/30 bg-[color:var(--brand-navy)]/5 hover:-translate-y-0.5 hover:border-[color:var(--brand-navy)] hover:shadow-[0_12px_28px_-12px_rgba(12,19,64,0.35)]"
+                    : "border-border/70 bg-card/80 hover:border-[color:var(--brand-gold)]/60 hover:bg-card",
+                ].join(" ")}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={[
+                      "inline-flex h-6 w-6 items-center justify-center rounded-full font-mono text-[11px] font-bold",
+                      isFirst
+                        ? "bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)]"
+                        : "bg-[color:var(--brand-ink)]/8 text-[color:var(--brand-ink)]/70 ring-1 ring-[color:var(--brand-ink)]/15",
+                    ].join(" ")}
+                    aria-hidden
+                  >
+                    {s.n}
+                  </span>
+                  <s.Icon className={isFirst ? "size-3.5 text-[color:var(--brand-navy)]" : "size-3.5 text-[color:var(--brand-ink)]/55"} />
+                </div>
+                <span className={isFirst
+                  ? "text-[13px] font-semibold leading-tight text-[color:var(--brand-navy)]"
+                  : "text-[12px] font-semibold leading-tight text-[color:var(--brand-ink)]/80"}>
+                  {s.label}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <Link
+          to="/playbook/foundation"
+          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] shadow-[0_10px_24px_-10px_rgba(12,19,64,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]"
+        >
+          <Compass className="size-4" /> Start With Foundation <ArrowRight className="size-4" />
+        </Link>
+        <Link to="/tracker" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+          <ClipboardList className="size-3.5" /> Open tracker
+        </Link>
+        <span aria-hidden className="text-[color:var(--brand-ink)]/30">·</span>
+        <Link to="/letters" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+          <Library className="size-3.5" /> Letter library
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/**
  * Full-bleed parallax hero. Three layers translate at different rates as the
  * page scrolls: the halo drifts slowest, the headline mid-pace, and the
  * PhaseGrid + CTAs at the foreground rate. Tile hover paints the hero with
