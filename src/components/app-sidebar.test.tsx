@@ -45,7 +45,7 @@ async function openSheet(user: ReturnType<typeof userEvent.setup>) {
   const trigger = screen.getByTestId("trigger");
   await user.click(trigger);
   // The mobile sheet is rendered into a Radix portal — wait for any link.
-  await screen.findByRole("link", { name: /cover/i });
+  await screen.findByRole("link", { name: /home/i });
   return trigger;
 }
 
@@ -61,7 +61,7 @@ describe("AppSidebar mobile sheet", () => {
 
     const trigger = await openSheet(user);
 
-    const coverLink = screen.getByRole("link", { name: /cover/i });
+    const coverLink = screen.getByRole("link", { name: /home/i });
     await user.click(coverLink);
 
     await waitFor(() => {
@@ -106,7 +106,7 @@ describe("AppSidebar auto-scroll on open", () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<Harness />);
     await user.click(screen.getByTestId("trigger"));
-    await screen.findByRole("link", { name: /cover/i });
+    await screen.findByRole("link", { name: /home/i });
   }
 
   it("scrolls the active phase link into view when the sheet opens", async () => {
