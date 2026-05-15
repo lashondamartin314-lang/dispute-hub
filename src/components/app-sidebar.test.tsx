@@ -69,13 +69,13 @@ describe("AppSidebar mobile sheet", () => {
     });
   });
 
-  it("closes the sheet and returns focus to the trigger when an external companion link is tapped", async () => {
+  it("closes the sheet and returns focus to the trigger when the external footer link is tapped", async () => {
     const user = userEvent.setup();
     render(<Harness />);
 
     const trigger = await openSheet(user);
 
-    const externalLink = screen.getByRole("link", { name: /annualcreditreport/i });
+    const externalLink = screen.getByRole("link", { name: /shondamartin/i });
     expect(externalLink).toHaveAttribute("target", "_blank");
     expect(externalLink).toHaveAttribute("rel", expect.stringContaining("noopener"));
 
