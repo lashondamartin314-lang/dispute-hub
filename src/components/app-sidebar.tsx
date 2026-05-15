@@ -303,24 +303,7 @@ export function AppSidebar() {
                   {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
-                      <SidebarMenu>
-                        {/* Cover lives at the top of Phase 1 — kept as a single pill above the grid. */}
-                        <SidebarMenuItem>
-                          <SidebarMenuButton
-                            asChild
-                            isActive={isActive("/")}
-                            tooltip="Cover"
-                            className={ACTIVE_CLS}
-                          >
-                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
-                              {isActive("/") && (
-                                <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
-                              )}
-                              <span className="font-semibold">Cover</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      </SidebarMenu>
+                      {/* Home is the only entry to / — the header logo is also Home. No separate "Cover" row. */}
 
                       {/* Square P1–P6 grid replaces the stacked phase rows. */}
                       <div className="px-1 pt-2">
