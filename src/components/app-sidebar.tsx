@@ -420,85 +420,20 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
-        <FooterCollapsible
-          storageKey="sidebar:footer:quick-access"
-          label="Quick access"
-          defaultOpen={false}
+      <SidebarFooter className="border-t border-sidebar-border px-3 py-3">
+        {/* Quick Access and External Resources removed — duplicates of the
+            Companion tools group above and the Companion Hub menu in the header. */}
+        <a
+          href="https://shondamartin.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={closeMobile}
+          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
         >
-          <SidebarMenu className="mt-1">
-            {[
-              { to: "/tracker", label: "Dispute tracker", Icon: ClipboardList },
-              { to: "/decoder", label: "Response decoder", Icon: ScanSearch },
-              { to: "/ask", label: "Ask Shonda", Icon: MessageCircleQuestion },
-              { to: "/progress", label: "Your progress", Icon: Award },
-            ].map(({ to, label, Icon }) => (
-              <SidebarMenuItem key={to}>
-                <SidebarMenuButton asChild isActive={isActive(to)} tooltip={label} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                  <Link to={to} onClick={closeMobile}>
-                    <Icon className="size-4" /> {label}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            {PINNED_RESOURCES.slice(0, 3).map((r) => (
-              <SidebarMenuItem key={`qa-${r.id}`}>
-                <SidebarMenuButton asChild tooltip={r.label}>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMobile}
-                    className="flex items-center gap-2 text-[#1a0dab]"
-                  >
-                    <Folder className="size-4 shrink-0" />
-                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </FooterCollapsible>
-
-        <FooterCollapsible
-          storageKey="sidebar:footer:external-resources"
-          label="External resources"
-          defaultOpen={false}
-        >
-          <SidebarMenu className="mt-1">
-            {PINNED_RESOURCES.map((r) => (
-              <SidebarMenuItem key={r.id}>
-                <SidebarMenuButton asChild tooltip={r.label}>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMobile}
-                    className="flex items-center gap-2 text-[#1a0dab]"
-                  >
-                    <Folder className="size-4 shrink-0" />
-                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            <a
-              href="https://shondamartin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMobile}
-              className="mt-2 inline-flex items-center gap-1 px-2 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
-            >
-              shondamartin.com
-              <ArrowUpRight className="size-3" aria-hidden="true" />
-              <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-            </a>
-          </SidebarMenu>
-        </FooterCollapsible>
+          shondamartin.com
+          <ArrowUpRight className="size-3" aria-hidden="true" />
+          <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+        </a>
       </SidebarFooter>
     </Sidebar>
   );
