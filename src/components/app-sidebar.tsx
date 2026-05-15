@@ -4,7 +4,6 @@ import {
   BookOpen,
   Compass,
   FileText,
-  Folder,
   Library,
   ScrollText,
   Sparkles,
@@ -28,14 +27,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { PHASES } from "@/data/phases";
-import { PINNED_RESOURCES } from "@/data/resources";
 import { lettersForPhase } from "@/data/letters";
 import { PhaseGrid } from "@/components/phase-grid";
 
