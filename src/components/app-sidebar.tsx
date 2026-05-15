@@ -70,7 +70,7 @@ const PHASE_HOVER_CLS = "";
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { setOpenMobile, isMobile, openMobile } = useSidebar();
+  const { setOpenMobile, setOpen, isMobile, openMobile } = useSidebar();
   const wasOpenRef = useRef(false);
 
   // Return focus to the SidebarTrigger after the mobile sheet closes via a tap.
