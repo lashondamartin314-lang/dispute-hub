@@ -297,7 +297,9 @@ export function AppSidebar() {
                             className={ACTIVE_CLS}
                           >
                             <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
-                              <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              {isActive("/") && (
+                                <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
+                              )}
                               <span className="font-semibold">Cover</span>
                             </Link>
                           </SidebarMenuButton>
@@ -402,7 +404,9 @@ export function AppSidebar() {
                           <SidebarMenuButton asChild isActive={isActive("/ask")} tooltip="Ask Shonda" className={ACTIVE_CLS}>
                             <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}>
                               <MessageCircleQuestion className="size-4" /> Ask Shonda
-                              <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]" aria-hidden />
+                              {isActive("/ask") && (
+                                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]" aria-hidden />
+                              )}
                             </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
