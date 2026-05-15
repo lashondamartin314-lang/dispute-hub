@@ -131,8 +131,3 @@ function CoverOnlyFab() {
   if (pathname !== "/") return null;
   return <DisputeHubFab />;
 }
-        </SidebarProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  );
-}
