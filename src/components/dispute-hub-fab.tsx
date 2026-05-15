@@ -12,7 +12,7 @@ export function DisputeHubFab() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="lg:hidden">
+    <div>
       <AnimatePresence>
         {open && (
           <>
@@ -63,7 +63,7 @@ export function DisputeHubFab() {
         aria-expanded={open}
         aria-label={open ? "Close Dispute Hub" : "Open Dispute Hub"}
         whileTap={reduce ? undefined : { scale: 0.94 }}
-        className="fixed right-4 z-50 inline-flex size-14 items-center justify-center rounded-full border-2 border-[color:var(--brand-gold)] text-[color:var(--brand-cream)] shadow-2xl transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="fixed left-4 z-50 inline-flex size-14 items-center justify-center rounded-full border-2 border-[color:var(--brand-gold)] text-[color:var(--brand-cream)] shadow-2xl transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         style={{
           bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)",
           background: "var(--brand-navy-deep, #1a1f3a)",
