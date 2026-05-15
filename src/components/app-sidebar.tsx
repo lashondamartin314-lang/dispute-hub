@@ -118,7 +118,23 @@ export function AppSidebar() {
 
   const closeMobile = () => {
     if (isMobile) setOpenMobile(false);
+    else setOpen(false); // desktop: collapse to icon rail when navigating
   };
+
+  // Auto-collapse the desktop sidebar to its icon rail once the user scrolls
+  // past the cover hero on /. They can re-expand any time via the trigger.
+  useEffect(() => {
+    if (isMobile) return;
+    if (pathname !== "/") return;
+    const onScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.6) {
+        setOpen(false);
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobile, pathname, setOpen]);
   const isActive = (path: string) => pathname === path;
   const isPhaseActive = (id: string) => pathname.startsWith(`/playbook/phase/${id}`);
   const isLetterActive = (id: string) => pathname === `/playbook/letter/${id}`;
