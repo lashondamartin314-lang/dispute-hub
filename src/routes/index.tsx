@@ -63,24 +63,15 @@ function CoverHero() {
         className="relative mx-auto w-full max-w-6xl px-6 pt-20 md:px-10 md:pt-28"
       >
         <EditorialHeader
-          eyebrow="Credit Academy · 2026 Edition"
+          eyebrow="Companion Hub · Shonda Martin"
           numeral="✶"
           numeralColor="var(--brand-gold)"
-          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-magenta)]">interactive</em>.</>}
+          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-navy)]">interactive</em>.</>}
           lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
         />
 
-        <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
-          <Link to="/playbook" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] transition-all hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]">
-            <BookOpen className="size-4" /> Open the Playbook <ArrowRight className="size-4" />
-          </Link>
-          <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
-            <Library className="size-4" /> All 19 letter templates
-          </Link>
-          <Link to="/resources" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
-            <Sparkles className="size-4" /> Quick resources
-          </Link>
-        </div>
+        <OnboardingStrip />
+
       </motion.div>
 
       {/* Layer 3 — PhaseGrid (foreground). Hover paints the hero. */}
