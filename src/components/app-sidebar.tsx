@@ -4,7 +4,6 @@ import {
   BookOpen,
   Compass,
   FileText,
-  Folder,
   Library,
   ScrollText,
   Sparkles,
@@ -28,14 +27,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { PHASES } from "@/data/phases";
-import { PINNED_RESOURCES } from "@/data/resources";
 import { lettersForPhase } from "@/data/letters";
 import { PhaseGrid } from "@/components/phase-grid";
 
@@ -70,7 +65,7 @@ const PHASE_HOVER_CLS = "";
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { setOpenMobile, isMobile, openMobile } = useSidebar();
+  const { setOpenMobile, setOpen, isMobile, openMobile } = useSidebar();
   const wasOpenRef = useRef(false);
 
   // Return focus to the SidebarTrigger after the mobile sheet closes via a tap.
@@ -118,7 +113,23 @@ export function AppSidebar() {
 
   const closeMobile = () => {
     if (isMobile) setOpenMobile(false);
+    else setOpen(false); // desktop: collapse to icon rail when navigating
   };
+
+  // Auto-collapse the desktop sidebar to its icon rail once the user scrolls
+  // past the cover hero on /. They can re-expand any time via the trigger.
+  useEffect(() => {
+    if (isMobile) return;
+    if (pathname !== "/") return;
+    const onScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.6) {
+        setOpen(false);
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobile, pathname, setOpen]);
   const isActive = (path: string) => pathname === path;
   const isPhaseActive = (id: string) => pathname.startsWith(`/playbook/phase/${id}`);
   const isLetterActive = (id: string) => pathname === `/playbook/letter/${id}`;
@@ -287,24 +298,7 @@ export function AppSidebar() {
                   {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
-                      <SidebarMenu>
-                        {/* Cover lives at the top of Phase 1 — kept as a single pill above the grid. */}
-                        <SidebarMenuItem>
-                          <SidebarMenuButton
-                            asChild
-                            isActive={isActive("/")}
-                            tooltip="Cover"
-                            className={ACTIVE_CLS}
-                          >
-                            <Link to="/" onClick={closeMobile} data-active-scroll={isActive("/") ? "link" : undefined}>
-                              {isActive("/") && (
-                                <span className="mr-2 inline-block h-2 w-2 rounded-full bg-[color:var(--brand-magenta)] ring-4 ring-[color:var(--brand-magenta)]/15" aria-hidden />
-                              )}
-                              <span className="font-semibold">Cover</span>
-                            </Link>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      </SidebarMenu>
+                      {/* Home is the only entry to / — the header logo is also Home. No separate "Cover" row. */}
 
                       {/* Square P1–P6 grid replaces the stacked phase rows. */}
                       <div className="px-1 pt-2">
@@ -421,149 +415,22 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-2 py-2">
-        <FooterCollapsible
-          storageKey="sidebar:footer:quick-access"
-          label="Quick access"
-          defaultOpen={false}
+      <SidebarFooter className="border-t border-sidebar-border px-3 py-3">
+        {/* Quick Access and External Resources removed — duplicates of the
+            Companion tools group above and the Companion Hub menu in the header. */}
+        <a
+          href="https://shondamartin.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={closeMobile}
+          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
         >
-          <SidebarMenu className="mt-1">
-            {[
-              { to: "/tracker", label: "Dispute tracker", Icon: ClipboardList },
-              { to: "/decoder", label: "Response decoder", Icon: ScanSearch },
-              { to: "/ask", label: "Ask Shonda", Icon: MessageCircleQuestion },
-              { to: "/progress", label: "Your progress", Icon: Award },
-            ].map(({ to, label, Icon }) => (
-              <SidebarMenuItem key={to}>
-                <SidebarMenuButton asChild isActive={isActive(to)} tooltip={label} className={`${ACTIVE_CLS} ${HOVER_CLS}`}>
-                  <Link to={to} onClick={closeMobile}>
-                    <Icon className="size-4" /> {label}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            {PINNED_RESOURCES.slice(0, 3).map((r) => (
-              <SidebarMenuItem key={`qa-${r.id}`}>
-                <SidebarMenuButton asChild tooltip={r.label}>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMobile}
-                    className="flex items-center gap-2 text-[#1a0dab]"
-                  >
-                    <Folder className="size-4 shrink-0" />
-                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab)</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </FooterCollapsible>
-
-        <FooterCollapsible
-          storageKey="sidebar:footer:external-resources"
-          label="External resources"
-          defaultOpen={false}
-        >
-          <SidebarMenu className="mt-1">
-            {PINNED_RESOURCES.map((r) => (
-              <SidebarMenuItem key={r.id}>
-                <SidebarMenuButton asChild tooltip={r.label}>
-                  <a
-                    href={r.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={closeMobile}
-                    className="flex items-center gap-2 text-[#1a0dab]"
-                  >
-                    <Folder className="size-4 shrink-0" />
-                    <span className="truncate underline underline-offset-2 decoration-[#1a0dab]/40">{r.label}</span>
-                    <ArrowUpRight className="ml-auto size-3 text-[#1a0dab]" aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-            <a
-              href="https://shondamartin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMobile}
-              className="mt-2 inline-flex items-center gap-1 px-2 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
-            >
-              shondamartin.com
-              <ArrowUpRight className="size-3" aria-hidden="true" />
-              <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
-            </a>
-          </SidebarMenu>
-        </FooterCollapsible>
+          shondamartin.com
+          <ArrowUpRight className="size-3" aria-hidden="true" />
+          <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
+        </a>
       </SidebarFooter>
     </Sidebar>
   );
 }
 
-/**
- * Footer collapsible with persisted open/closed state and a chevron + spacing
- * that matches the rest of the sidebar footer controls. On smaller viewports
- * the body is scroll-contained so expanding never pushes the page or overlays
- * surrounding content.
- */
-function FooterCollapsible({
-  storageKey,
-  label,
-  defaultOpen = false,
-  children,
-}: {
-  storageKey: string;
-  label: string;
-  defaultOpen?: boolean;
-  children: React.ReactNode;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem(storageKey);
-      if (raw !== null) setOpen(raw === "1");
-    } catch {
-      /* ignore */
-    }
-    setHydrated(true);
-  }, [storageKey]);
-
-  useEffect(() => {
-    if (!hydrated || typeof window === "undefined") return;
-    try {
-      window.localStorage.setItem(storageKey, open ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
-  }, [hydrated, open, storageKey]);
-
-  return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <CollapsibleTrigger
-        className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
-        aria-expanded={open}
-      >
-        <SidebarGroupLabel className="eyebrow m-0 text-[10px]">{label}</SidebarGroupLabel>
-        <ChevronDown
-          className={`size-3.5 text-muted-foreground transition-transform duration-200 ${open ? "" : "-rotate-90"}`}
-          aria-hidden="true"
-        />
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        {/* Cap height so an expanded section scrolls inside its own container
-            instead of pushing the page or the footer on short viewports. */}
-        <div className="max-h-[min(50vh,18rem)] overflow-y-auto overscroll-contain pr-1">
-          {children}
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
-  );
-}

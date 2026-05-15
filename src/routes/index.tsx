@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, ChevronsDownUp, ChevronsUpDown, FileText, Library, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { EditorialHeader } from "@/components/editorial-header";
@@ -22,6 +22,86 @@ export const Route = createFileRoute("/")({
 });
 
 const ALL_PHASE_IDS = PHASES.map((p) => p.id);
+
+/**
+ * Five-step onboarding strip — gamified first-run guide. Replaces the trio of
+ * marketing buttons in the hero with one clear primary path (Foundation) plus
+ * lower-emphasis shortcuts to Tracker and Letter Library.
+ */
+const ONBOARD_STEPS = [
+  { n: 1, label: "Foundation", to: "/playbook/foundation", Icon: Compass },
+  { n: 2, label: "Choose Your Phase", to: "/playbook", Icon: Layers },
+  { n: 3, label: "Use the Letter Library", to: "/letters", Icon: Library },
+  { n: 4, label: "Track Your Dispute", to: "/tracker", Icon: ClipboardList },
+  { n: 5, label: "Decode Responses", to: "/decoder", Icon: ScanSearch },
+] as const;
+
+function OnboardingStrip() {
+  return (
+    <div className="mt-8 md:mt-10">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[color:var(--brand-ink)]/60">
+          Member guide · Step 1 of 5
+        </span>
+      </div>
+
+      <ol className="relative grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 md:gap-3">
+        {ONBOARD_STEPS.map((s, i) => {
+          const isFirst = i === 0;
+          return (
+            <li key={s.n}>
+              <Link
+                to={s.to}
+                className={[
+                  "group flex h-full flex-col gap-1.5 rounded-xl border p-3 no-underline transition-all",
+                  isFirst
+                    ? "border-[color:var(--brand-navy)]/30 bg-[color:var(--brand-navy)]/5 hover:-translate-y-0.5 hover:border-[color:var(--brand-navy)] hover:shadow-[0_12px_28px_-12px_rgba(12,19,64,0.35)]"
+                    : "border-border/70 bg-card/80 hover:border-[color:var(--brand-gold)]/60 hover:bg-card",
+                ].join(" ")}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={[
+                      "inline-flex h-6 w-6 items-center justify-center rounded-full font-mono text-[11px] font-bold",
+                      isFirst
+                        ? "bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)]"
+                        : "bg-[color:var(--brand-ink)]/8 text-[color:var(--brand-ink)]/70 ring-1 ring-[color:var(--brand-ink)]/15",
+                    ].join(" ")}
+                    aria-hidden
+                  >
+                    {s.n}
+                  </span>
+                  <s.Icon className={isFirst ? "size-3.5 text-[color:var(--brand-navy)]" : "size-3.5 text-[color:var(--brand-ink)]/55"} />
+                </div>
+                <span className={isFirst
+                  ? "text-[13px] font-semibold leading-tight text-[color:var(--brand-navy)]"
+                  : "text-[12px] font-semibold leading-tight text-[color:var(--brand-ink)]/80"}>
+                  {s.label}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <Link
+          to="/playbook/foundation"
+          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] shadow-[0_10px_24px_-10px_rgba(12,19,64,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]"
+        >
+          <Compass className="size-4" /> Start With Foundation <ArrowRight className="size-4" />
+        </Link>
+        <Link to="/tracker" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+          <ClipboardList className="size-3.5" /> Open tracker
+        </Link>
+        <span aria-hidden className="text-[color:var(--brand-ink)]/30">·</span>
+        <Link to="/letters" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+          <Library className="size-3.5" /> Letter library
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 /**
  * Full-bleed parallax hero. Three layers translate at different rates as the
@@ -63,24 +143,15 @@ function CoverHero() {
         className="relative mx-auto w-full max-w-6xl px-6 pt-20 md:px-10 md:pt-28"
       >
         <EditorialHeader
-          eyebrow="Credit Academy · 2026 Edition"
+          eyebrow="Companion Hub · Shonda Martin"
           numeral="✶"
           numeralColor="var(--brand-gold)"
-          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-magenta)]">interactive</em>.</>}
+          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-navy)]">interactive</em>.</>}
           lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
         />
 
-        <div className="mt-8 flex flex-wrap gap-3 md:mt-10">
-          <Link to="/playbook" className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] transition-all hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]">
-            <BookOpen className="size-4" /> Open the Playbook <ArrowRight className="size-4" />
-          </Link>
-          <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
-            <Library className="size-4" /> All 19 letter templates
-          </Link>
-          <Link to="/resources" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:border-[color:var(--brand-gold)] active:scale-[0.98]">
-            <Sparkles className="size-4" /> Quick resources
-          </Link>
-        </div>
+        <OnboardingStrip />
+
       </motion.div>
 
       {/* Layer 3 — PhaseGrid (foreground). Hover paints the hero. */}
