@@ -74,7 +74,7 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
               "group relative flex aspect-square flex-col justify-between overflow-hidden",
               "rounded-2xl border no-underline transition-all duration-300 ease-out",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-              isCompact ? "p-2.5" : "p-4 md:p-5",
+              isRail ? "w-9 p-1 items-center justify-center" : isCompact ? "p-2.5" : "p-4 md:p-5",
               active
                 ? "border-transparent shadow-[0_18px_40px_-18px_rgba(12,19,64,0.45)] ring-1 ring-white/60"
                 : "border-white/70 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-18px_rgba(12,19,64,0.32)]",
@@ -89,12 +89,13 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
               // Focus ring color tracks the phase.
               ["--tw-ring-color" as string]: `var(${p.colorVar}-deep)`,
             }}
+            title={isRail ? `P${p.number} · ${p.name}` : undefined}
           >
             {/* P-number — display serif, dominant. */}
             <span
               className={[
                 "font-display font-bold leading-none tracking-tight transition-colors",
-                isCompact ? "text-2xl" : "text-4xl md:text-5xl",
+                isRail ? "text-sm" : isCompact ? "text-2xl" : "text-4xl md:text-5xl",
                 active ? "text-white/95" : "text-[color:var(--brand-ink)]/85",
               ].join(" ")}
               aria-hidden
@@ -102,24 +103,26 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
               P{p.number}
             </span>
 
-            {/* Phase name + active marker. */}
-            <div className="flex items-end justify-between gap-2">
-              <span
-                className={[
-                  "font-body font-semibold leading-tight",
-                  isCompact ? "text-[10px] uppercase tracking-[0.12em]" : "text-xs uppercase tracking-[0.16em] md:text-[13px]",
-                  active ? "text-white" : "text-[color:var(--brand-ink)]/75",
-                ].join(" ")}
-              >
-                {p.shortName ?? p.name}
-              </span>
-              {active && (
+            {/* Phase name + active marker — hidden in rail mode. */}
+            {!isRail && (
+              <div className="flex items-end justify-between gap-2">
                 <span
-                  aria-hidden
-                  className="h-1.5 w-1.5 shrink-0 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                />
-              )}
-            </div>
+                  className={[
+                    "font-body font-semibold leading-tight",
+                    isCompact ? "text-[10px] uppercase tracking-[0.12em]" : "text-xs uppercase tracking-[0.16em] md:text-[13px]",
+                    active ? "text-white" : "text-[color:var(--brand-ink)]/75",
+                  ].join(" ")}
+                >
+                  {p.shortName ?? p.name}
+                </span>
+                {active && (
+                  <span
+                    aria-hidden
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
+                  />
+                )}
+              </div>
+            )}
 
             {/* Subtle inner highlight to lift the tile off the surface. */}
             <span
