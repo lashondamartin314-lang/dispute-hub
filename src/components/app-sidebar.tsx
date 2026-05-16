@@ -230,7 +230,7 @@ export function AppSidebar() {
     const isFirst = idx === 0;
     const isLast = idx === order.length - 1;
     return (
-      <div className="flex w-full items-center gap-1">
+      <div className="flex w-full items-center gap-1 group-data-[collapsible=icon]:hidden">
         <CollapsibleTrigger asChild>
           <button
             type="button"
