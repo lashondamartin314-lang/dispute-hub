@@ -302,8 +302,8 @@ export function AppSidebar() {
                       {/* Home is the only entry to / — the header logo is also Home. No separate "Cover" row. */}
 
                       {/* Square P1–P6 grid replaces the stacked phase rows. */}
-                      <div className="px-1 pt-2">
-                        <PhaseGrid variant="sidebar" onSelect={closeMobile} />
+                      <div className={isCollapsed ? "py-1" : "px-1 pt-2"}>
+                        <PhaseGrid variant="sidebar" onSelect={closeMobile} collapsed={isCollapsed} />
                       </div>
 
                       {/* Active phase exposes its letters below the grid. */}
