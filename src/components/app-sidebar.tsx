@@ -65,7 +65,8 @@ const PHASE_HOVER_CLS = "";
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { setOpenMobile, setOpen, isMobile, openMobile } = useSidebar();
+  const { setOpenMobile, setOpen, isMobile, openMobile, state } = useSidebar();
+  const isCollapsed = state === "collapsed";
   const wasOpenRef = useRef(false);
 
   // Return focus to the SidebarTrigger after the mobile sheet closes via a tap.
@@ -229,7 +230,7 @@ export function AppSidebar() {
     const isFirst = idx === 0;
     const isLast = idx === order.length - 1;
     return (
-      <div className="flex w-full items-center gap-1">
+      <div className="flex w-full items-center gap-1 group-data-[collapsible=icon]:hidden">
         <CollapsibleTrigger asChild>
           <button
             type="button"
@@ -301,8 +302,8 @@ export function AppSidebar() {
                       {/* Home is the only entry to / — the header logo is also Home. No separate "Cover" row. */}
 
                       {/* Square P1–P6 grid replaces the stacked phase rows. */}
-                      <div className="px-1 pt-2">
-                        <PhaseGrid variant="sidebar" onSelect={closeMobile} />
+                      <div className={isCollapsed ? "py-1" : "px-1 pt-2"}>
+                        <PhaseGrid variant="sidebar" onSelect={closeMobile} collapsed={isCollapsed} />
                       </div>
 
                       {/* Active phase exposes its letters below the grid. */}
