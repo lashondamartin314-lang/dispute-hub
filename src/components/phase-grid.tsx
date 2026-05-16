@@ -23,7 +23,7 @@ interface PhaseGridProps {
  * Square P1–P6 tile grid — the canonical phase navigator.
  * Used in sidebar (compact 2-col), cover (3×2 hero), and /playbook (3×2 page).
  */
-export function PhaseGrid({ variant = "page", onTintChange, onSelect, className = "" }: PhaseGridProps) {
+export function PhaseGrid({ variant = "page", onTintChange, onSelect, className = "", collapsed = false }: PhaseGridProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -41,10 +41,13 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
   }, [onTintChange]);
 
   const isCompact = variant === "sidebar";
+  const isRail = isCompact && collapsed;
 
   // Sidebar uses 2-col stacked-tight; cover/page use a true 3-col grid.
-  const gridCls =
-    variant === "sidebar"
+  // When the sidebar is icon-collapsed, drop to a single vertical column.
+  const gridCls = isRail
+    ? "grid grid-cols-1 gap-1.5 place-items-center"
+    : variant === "sidebar"
       ? "grid grid-cols-2 gap-2"
       : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
 
