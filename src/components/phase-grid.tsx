@@ -15,6 +15,8 @@ interface PhaseGridProps {
   /** Optional click handler (e.g. close mobile drawer). */
   onSelect?: () => void;
   className?: string;
+  /** When true (sidebar variant only), collapse into a 1-col vertical rail of P# tiles. */
+  collapsed?: boolean;
 }
 
 /**
