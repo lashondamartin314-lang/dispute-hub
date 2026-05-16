@@ -62,7 +62,8 @@ function AskPage() {
     if (!topic) next.topic = "Pick a topic so Shonda can route this.";
     const q = question.trim();
     if (q.length < 10) next.question = "Give Shonda a little more detail (10+ characters).";
-    else if (q.length > MAX_LEN) next.question = `Please keep it under ${MAX_LEN.toLocaleString()} characters.`;
+    else if (q.length > MAX_LEN)
+      next.question = `Please keep it under ${MAX_LEN.toLocaleString()} characters.`;
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -115,7 +116,8 @@ function AskPage() {
           </h1>
           <p className="mt-3 max-w-prose text-base leading-relaxed text-foreground/80 md:text-lg">
             Stuck on a letter, a bureau response, or a furnisher tactic? Send the details below.
-            Shonda reviews submissions weekly and answers in the monthly Q&amp;A or directly by email.
+            Shonda reviews submissions weekly and answers in the monthly Q&amp;A or directly by
+            email.
           </p>
         </div>
       </header>
@@ -127,21 +129,21 @@ function AskPage() {
             <div>
               <h2 className="font-display text-2xl font-bold">Question received.</h2>
               <p className="mt-2 text-foreground/80">
-                Shonda reviews questions weekly. Watch your inbox for a reply, and check the
-                monthly Q&amp;A inside Credit Academy.
+                Shonda reviews questions weekly. Watch your inbox for a reply, and check the monthly
+                Q&amp;A inside Credit Academy.
               </p>
-              <Button
-                variant="outline"
-                className="mt-5"
-                onClick={() => setDone(false)}
-              >
+              <Button variant="outline" className="mt-5" onClick={() => setDone(false)}>
                 Submit another question
               </Button>
             </div>
           </div>
         </div>
       ) : (
-        <form onSubmit={onSubmit} noValidate className="space-y-6 rounded-2xl border-2 border-border bg-card p-6 shadow-card md:p-8">
+        <form
+          onSubmit={onSubmit}
+          noValidate
+          className="space-y-6 rounded-2xl border-2 border-border bg-card p-6 shadow-card md:p-8"
+        >
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-1.5">
               <Label htmlFor="ask-name">Your name</Label>
@@ -156,7 +158,9 @@ function AskPage() {
                 aria-describedby={errors.name ? "ask-name-err" : undefined}
               />
               {errors.name && (
-                <p id="ask-name-err" className="text-xs text-destructive">{errors.name}</p>
+                <p id="ask-name-err" className="text-xs text-destructive">
+                  {errors.name}
+                </p>
               )}
             </div>
             <div className="space-y-1.5">
@@ -173,7 +177,9 @@ function AskPage() {
                 aria-describedby={errors.email ? "ask-email-err" : undefined}
               />
               {errors.email && (
-                <p id="ask-email-err" className="text-xs text-destructive">{errors.email}</p>
+                <p id="ask-email-err" className="text-xs text-destructive">
+                  {errors.email}
+                </p>
               )}
             </div>
           </div>
@@ -186,7 +192,9 @@ function AskPage() {
               </SelectTrigger>
               <SelectContent>
                 {TOPICS.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                  <SelectItem key={t} value={t}>
+                    {t}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -210,7 +218,8 @@ function AskPage() {
                 id={errors.question ? "ask-question-err" : "ask-question-help"}
                 className={`text-xs ${errors.question ? "text-destructive" : "text-muted-foreground"}`}
               >
-                {errors.question ?? "Tip: include the bureau, account name, and round number if you can."}
+                {errors.question ??
+                  "Tip: include the bureau, account name, and round number if you can."}
               </p>
               <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
                 {question.length.toLocaleString()} / {MAX_LEN.toLocaleString()}

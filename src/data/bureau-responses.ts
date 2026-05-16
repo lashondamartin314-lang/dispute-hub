@@ -62,8 +62,7 @@ export const BUREAU_RESPONSES: BureauResponse[] = [
     severity: "bad",
     meaning:
       "The bureau says it contacted the data furnisher and the furnisher confirmed the account is being reported correctly. In practice, this is almost always an automated e-OSCAR ping, not a real review of documents.",
-    impact:
-      "The disputed item stays on your report exactly as it was. No correction was made.",
+    impact: "The disputed item stays on your report exactly as it was. No correction was made.",
     nextStep:
       "Send a Method of Verification (MOV) demand. Force the bureau to disclose WHO they spoke to, WHEN, HOW, and what documents were reviewed. If they can't produce it within 15 days, the item must be deleted under FCRA §611(a)(7).",
     suggestedLetters: ["L08", "L09"],
@@ -145,8 +144,7 @@ export const BUREAU_RESPONSES: BureauResponse[] = [
     phrase: "Modified",
     category: "update",
     severity: "neutral",
-    meaning:
-      "Same family as 'updated' — the bureau changed at least one field on the account.",
+    meaning: "Same family as 'updated' — the bureau changed at least one field on the account.",
     impact: "Re-pull and verify which field changed before celebrating.",
     nextStep:
       "If the modification didn't fix the dispute you actually filed, send a follow-up dispute citing the specific field that's still wrong.",
@@ -215,8 +213,7 @@ export const BUREAU_RESPONSES: BureauResponse[] = [
     aliases: ["No response from data furnisher"],
     category: "furnisher",
     severity: "good",
-    meaning:
-      "The bureau forwarded your dispute to the furnisher and got no answer within 30 days.",
+    meaning: "The bureau forwarded your dispute to the furnisher and got no answer within 30 days.",
     impact:
       "By law the item must be deleted or modified to match your dispute. This is an automatic win.",
     nextStep:
@@ -298,14 +295,7 @@ export function searchResponses(query: string): BureauResponse[] {
   const q = query.trim().toLowerCase();
   if (!q) return BUREAU_RESPONSES;
   return BUREAU_RESPONSES.filter((r) => {
-    const haystack = [
-      r.phrase,
-      ...(r.aliases ?? []),
-      r.meaning,
-      r.impact,
-      r.nextStep,
-      r.category,
-    ]
+    const haystack = [r.phrase, ...(r.aliases ?? []), r.meaning, r.impact, r.nextStep, r.category]
       .join(" ")
       .toLowerCase();
     return haystack.includes(q);

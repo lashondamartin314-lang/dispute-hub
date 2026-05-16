@@ -21,7 +21,12 @@ interface PhaseGridProps {
  * Square P1–P6 tile grid — the canonical phase navigator.
  * Used in sidebar (compact 2-col), cover (3×2 hero), and /playbook (3×2 page).
  */
-export function PhaseGrid({ variant = "page", onTintChange, onSelect, className = "" }: PhaseGridProps) {
+export function PhaseGrid({
+  variant = "page",
+  onTintChange,
+  onSelect,
+  className = "",
+}: PhaseGridProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [hovered, setHovered] = useState<string | null>(null);
 
@@ -47,11 +52,7 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
       : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
 
   return (
-    <div
-      className={`${gridCls} ${className}`}
-      onMouseLeave={handleLeave}
-      onBlur={handleLeave}
-    >
+    <div className={`${gridCls} ${className}`} onMouseLeave={handleLeave} onBlur={handleLeave}>
       {PHASES.map((p) => {
         const active = pathname.startsWith(`/playbook/phase/${p.id}`);
         const isHover = hovered === p.id;
@@ -102,7 +103,9 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
               <span
                 className={[
                   "font-body font-semibold leading-tight",
-                  isCompact ? "text-[10px] uppercase tracking-[0.12em]" : "text-xs uppercase tracking-[0.16em] md:text-[13px]",
+                  isCompact
+                    ? "text-[10px] uppercase tracking-[0.12em]"
+                    : "text-xs uppercase tracking-[0.16em] md:text-[13px]",
                   active ? "text-white" : "text-[color:var(--brand-ink)]/75",
                 ].join(" ")}
               >
@@ -121,8 +124,7 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
               aria-hidden
               className="pointer-events-none absolute inset-0 rounded-2xl opacity-60"
               style={{
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(0,0,0,0.06)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(0,0,0,0.06)",
               }}
             />
           </Link>

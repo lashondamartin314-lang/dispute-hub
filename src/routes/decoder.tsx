@@ -44,8 +44,7 @@ export const Route = createFileRoute("/decoder")({
       },
       {
         property: "og:description",
-        content:
-          "Decode what the credit bureaus actually mean — and exactly what to do next.",
+        content: "Decode what the credit bureaus actually mean — and exactly what to do next.",
       },
     ],
   }),
@@ -117,10 +116,7 @@ function DecoderPage() {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       const typing =
-        t &&
-        (t.tagName === "INPUT" ||
-          t.tagName === "TEXTAREA" ||
-          t.isContentEditable);
+        t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
       if (e.key === "/" && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         searchRef.current?.focus();
@@ -192,17 +188,12 @@ function DecoderPage() {
                 <Icon className="size-4" aria-hidden />
               </span>
               <div className="min-w-0">
-                <p
-                  className="eyebrow text-[10px]"
-                  style={{ color: tok.color }}
-                >
+                <p className="eyebrow text-[10px]" style={{ color: tok.color }}>
                   {SEVERITY_LABEL[sev]}
                 </p>
                 <p className="font-display text-lg leading-none">
                   {counts[sev]}{" "}
-                  <span className="text-xs font-sans text-muted-foreground">
-                    phrases
-                  </span>
+                  <span className="text-xs font-sans text-muted-foreground">phrases</span>
                 </p>
               </div>
             </div>
@@ -259,18 +250,11 @@ function DecoderPage() {
 
       {/* Category chips */}
       <div className="mt-5 flex flex-wrap gap-2">
-        <CategoryChip
-          active={activeCat === "all"}
-          onClick={() => setActiveCat("all")}
-        >
+        <CategoryChip active={activeCat === "all"} onClick={() => setActiveCat("all")}>
           All
         </CategoryChip>
         {RESPONSE_CATEGORIES.map((c) => (
-          <CategoryChip
-            key={c.id}
-            active={activeCat === c.id}
-            onClick={() => setActiveCat(c.id)}
-          >
+          <CategoryChip key={c.id} active={activeCat === c.id} onClick={() => setActiveCat(c.id)}>
             {c.label}
           </CategoryChip>
         ))}
@@ -281,9 +265,8 @@ function DecoderPage() {
         <div className="mt-16 rounded-3xl border-2 border-dashed border-border p-12 text-center">
           <p className="font-display text-2xl">No match yet.</p>
           <p className="mt-2 text-muted-foreground">
-            Try a shorter phrase or pick a category. If your letter says
-            something we haven't catalogued, screenshot it and add it to the
-            tracker — Shonda updates this list often.
+            Try a shorter phrase or pick a category. If your letter says something we haven't
+            catalogued, screenshot it and add it to the tracker — Shonda updates this list often.
           </p>
         </div>
       ) : (
@@ -315,9 +298,7 @@ function DecoderPage() {
           </span>
           <div className="flex-1">
             <p className="eyebrow text-[10px]">Log the outcome</p>
-            <p className="font-display text-lg leading-tight">
-              Open the dispute tracker
-            </p>
+            <p className="font-display text-lg leading-tight">Open the dispute tracker</p>
           </div>
           <ArrowUpRight className="size-5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </Link>
@@ -333,9 +314,7 @@ function DecoderPage() {
           </span>
           <div className="flex-1">
             <p className="eyebrow text-[10px]">Send the next letter</p>
-            <p className="font-display text-lg leading-tight">
-              Browse the letter library
-            </p>
+            <p className="font-display text-lg leading-tight">Browse the letter library</p>
           </div>
           <ArrowUpRight className="size-5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </Link>
@@ -450,12 +429,7 @@ function ResponseCard({
 
       <Field label="What it means" body={response.meaning} />
       <Field label="Impact on your file" body={response.impact} />
-      <Field
-        label="Your next move"
-        body={response.nextStep}
-        emphasis
-        accent={tok.color}
-      />
+      <Field label="Your next move" body={response.nextStep} emphasis accent={tok.color} />
 
       <div className="-mt-1">
         <button
@@ -527,10 +501,7 @@ function Field({
 }) {
   return (
     <div>
-      <p
-        className="eyebrow text-[9px]"
-        style={emphasis && accent ? { color: accent } : undefined}
-      >
+      <p className="eyebrow text-[9px]" style={emphasis && accent ? { color: accent } : undefined}>
         {label}
       </p>
       <p

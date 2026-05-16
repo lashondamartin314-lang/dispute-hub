@@ -8,7 +8,11 @@ export const Route = createFileRoute("/resources")({
   head: () => ({
     meta: [
       { title: "Resources · The Dispute Playbook" },
-      { name: "description", content: "External tools, complaint portals, and the parent Google Drive folder containing every letter template." },
+      {
+        name: "description",
+        content:
+          "External tools, complaint portals, and the parent Google Drive folder containing every letter template.",
+      },
     ],
   }),
   component: ResourcesPage,
@@ -26,7 +30,8 @@ const CATEGORIES: CategorySpec[] = [
   {
     id: "report",
     label: "Get your credit reports",
-    blurb: "Two sources, two jobs. Pull from both so you have the official record AND a working day-to-day view of your file.",
+    blurb:
+      "Two sources, two jobs. Pull from both so you have the official record AND a working day-to-day view of your file.",
     quote:
       "I tell every client to use both. AnnualCreditReport.com is the only place to get your free, federally authorized reports with the official report numbers you'll need to dispute. SmartCredit is what I open every single day because the report layout is readable, it monitors all three bureaus, and the credit-building tools actually move scores. One is your record of truth, the other is your dashboard.",
   },
@@ -56,13 +61,12 @@ const CATEGORIES: CategorySpec[] = [
 function ResourcesPage() {
   const [activeRound, setActiveRound] = useState<DisputeRound | null>(null);
 
-  const sections = CATEGORIES
-    .map((c) => ({ ...c, items: RESOURCES.filter((r) => r.category === c.id) }))
-    .filter((c) => c.items.length > 0);
+  const sections = CATEGORIES.map((c) => ({
+    ...c,
+    items: RESOURCES.filter((r) => r.category === c.id),
+  })).filter((c) => c.items.length > 0);
 
-  const activeMeta = activeRound
-    ? DISPUTE_ROUNDS.find((r) => r.round === activeRound)
-    : null;
+  const activeMeta = activeRound ? DISPUTE_ROUNDS.find((r) => r.round === activeRound) : null;
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
@@ -82,7 +86,9 @@ function ResourcesPage() {
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <p className="eyebrow text-[10px]">Which resources, which round</p>
-            <h2 className="font-display text-xl md:text-2xl">Tap a round to spotlight what you need.</h2>
+            <h2 className="font-display text-xl md:text-2xl">
+              Tap a round to spotlight what you need.
+            </h2>
           </div>
           {activeRound && (
             <button
@@ -114,7 +120,9 @@ function ResourcesPage() {
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
                     Round {r.round}
                   </span>
-                  <span className="font-display text-base leading-tight">{r.name.split(" · ")[1]}</span>
+                  <span className="font-display text-base leading-tight">
+                    {r.name.split(" · ")[1]}
+                  </span>
                   <span className="text-xs leading-relaxed text-muted-foreground">{r.focus}</span>
                 </button>
               </li>

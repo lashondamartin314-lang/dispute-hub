@@ -19,8 +19,8 @@ export function PrintChecklistButton({ resource }: PrintChecklistButtonProps) {
     const win = window.open("", "_blank", "noopener,noreferrer,width=820,height=1000");
     if (!win) return;
 
-    const items = resource.checklist!
-      .map(
+    const items = resource
+      .checklist!.map(
         (line) =>
           `<li><span class="box" aria-hidden="true"></span><span>${escapeHtml(line)}</span></li>`,
       )

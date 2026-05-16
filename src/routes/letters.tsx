@@ -9,7 +9,11 @@ export const Route = createFileRoute("/letters")({
   head: () => ({
     meta: [
       { title: "Letter Library · The Dispute Playbook" },
-      { name: "description", content: "All 19 dispute letter templates, grouped by phase. Click to open the Google Doc and force-copy into your Drive." },
+      {
+        name: "description",
+        content:
+          "All 19 dispute letter templates, grouped by phase. Click to open the Google Doc and force-copy into your Drive.",
+      },
     ],
   }),
   component: LettersPage,
@@ -91,7 +95,10 @@ function LettersPage() {
             />
 
             {/* Soft noise/texture overlay */}
-            <div aria-hidden className="bg-noise pointer-events-none absolute inset-0 opacity-[0.4] mix-blend-multiply" />
+            <div
+              aria-hidden
+              className="bg-noise pointer-events-none absolute inset-0 opacity-[0.4] mix-blend-multiply"
+            />
 
             <div className="relative mx-auto max-w-6xl px-6 py-16 md:px-10 md:py-24">
               {/* Phase header — oversized numeral + bold title block */}
@@ -107,10 +114,7 @@ function LettersPage() {
                   {p.number}
                 </div>
                 <div className="min-w-0">
-                  <p
-                    className="eyebrow text-[11px]"
-                    style={{ color: `var(${p.colorVar}-deep)` }}
-                  >
+                  <p className="eyebrow text-[11px]" style={{ color: `var(${p.colorVar}-deep)` }}>
                     {p.eyebrow}
                   </p>
                   <h2

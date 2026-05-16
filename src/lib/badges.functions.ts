@@ -3,7 +3,11 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const AwardSchema = z.object({
-  phaseId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
+  phaseId: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-z0-9-]+$/),
   phaseNumber: z.number().int().min(1).max(20),
   phaseName: z.string().min(1).max(120),
 });

@@ -15,14 +15,7 @@
  *     "lucide-react", then assign it on the matching `PhaseId` key.
  */
 import type { LucideIcon } from "lucide-react";
-import {
-  Compass,
-  ShieldCheck,
-  UserCheck,
-  Building2,
-  Gavel,
-  Megaphone,
-} from "lucide-react";
+import { Compass, ShieldCheck, UserCheck, Building2, Gavel, Megaphone } from "lucide-react";
 import type { PhaseId } from "./letters";
 import shondaPhoto from "@/assets/shonda.png";
 

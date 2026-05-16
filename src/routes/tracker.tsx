@@ -72,7 +72,14 @@ export const Route = createFileRoute("/tracker")({
 });
 
 type Outcome = "pending" | "deleted" | "verified" | "updated" | "no_response" | "other";
-type Recipient = "Equifax" | "Experian" | "TransUnion" | "Furnisher" | "Collector" | "Creditor" | "Other";
+type Recipient =
+  | "Equifax"
+  | "Experian"
+  | "TransUnion"
+  | "Furnisher"
+  | "Collector"
+  | "Creditor"
+  | "Other";
 
 interface Entry {
   id: string;
@@ -111,27 +118,67 @@ type LetterDefault = {
 };
 
 const LETTER_DEFAULTS: Record<LetterId, LetterDefault> = {
-  L01: { recipient: "Collector", nextAction: "If silent 30+ days, send L02 follow-up", dueDays: 30 },
-  L02: { recipient: "Collector", nextAction: "Escalate to L03 or file CFPB complaint", dueDays: 15 },
-  L03: { recipient: "Collector", nextAction: "If still reporting, send L04 or pivot to dispute", dueDays: 30 },
+  L01: {
+    recipient: "Collector",
+    nextAction: "If silent 30+ days, send L02 follow-up",
+    dueDays: 30,
+  },
+  L02: {
+    recipient: "Collector",
+    nextAction: "Escalate to L03 or file CFPB complaint",
+    dueDays: 15,
+  },
+  L03: {
+    recipient: "Collector",
+    nextAction: "If still reporting, send L04 or pivot to dispute",
+    dueDays: 30,
+  },
   L04: { recipient: "Collector", nextAction: "Begin Phase 4 bureau dispute (L11)", dueDays: 30 },
   L05: { recipient: "Creditor", nextAction: "Re-pull report and confirm update", dueDays: 30 },
   L06: { recipient: "Equifax", nextAction: "If unchanged, send L07 follow-up", dueDays: 30 },
   L07: { recipient: "Equifax", nextAction: "Escalate via L09 MOV demand", dueDays: 30 },
-  L08: { recipient: "Equifax", nextAction: "Send ID + FTC affidavit, follow up in 30 days", dueDays: 30 },
+  L08: {
+    recipient: "Equifax",
+    nextAction: "Send ID + FTC affidavit, follow up in 30 days",
+    dueDays: 30,
+  },
   L09: { recipient: "Equifax", nextAction: "If no method given, file CFPB complaint", dueDays: 15 },
   L10: { recipient: "Equifax", nextAction: "Verify SSN/DOB across all 3 bureaus", dueDays: 30 },
   L11: { recipient: "Equifax", nextAction: "If verified, send L12 MOV demand", dueDays: 30 },
-  L12: { recipient: "Equifax", nextAction: "If no real method, send L13 Notice of Intent", dueDays: 30 },
-  L13: { recipient: "Equifax", nextAction: "File CFPB + state AG complaints, then L14", dueDays: 15 },
+  L12: {
+    recipient: "Equifax",
+    nextAction: "If no real method, send L13 Notice of Intent",
+    dueDays: 30,
+  },
+  L13: {
+    recipient: "Equifax",
+    nextAction: "File CFPB + state AG complaints, then L14",
+    dueDays: 15,
+  },
   L14: { recipient: "Equifax", nextAction: "Begin Phase 6 escalation", dueDays: 15 },
   L15A: { recipient: "Collector", nextAction: "Send L15C bureau companion", dueDays: 30 },
   L15B: { recipient: "Creditor", nextAction: "Send L15C bureau companion", dueDays: 30 },
-  L15C: { recipient: "Equifax", nextAction: "Compare both responses; escalate inconsistencies", dueDays: 30 },
-  L16: { recipient: "Furnisher", nextAction: "If verified, escalate with L17 or CFPB", dueDays: 30 },
+  L15C: {
+    recipient: "Equifax",
+    nextAction: "Compare both responses; escalate inconsistencies",
+    dueDays: 30,
+  },
+  L16: {
+    recipient: "Furnisher",
+    nextAction: "If verified, escalate with L17 or CFPB",
+    dueDays: 30,
+  },
   L17: { recipient: "Furnisher", nextAction: "Escalate to CFPB; consider counsel", dueDays: 30 },
-  L18: { recipient: "Collector", nextAction: "Get written confirmation BEFORE paying", dueDays: 14 },
-  L19: { recipient: "Equifax", nextAction: "If verified, escalate to creditor + CFPB", dueDays: 30 },
+  L18: {
+    recipient: "Collector",
+    nextAction: "Get written confirmation BEFORE paying",
+    dueDays: 14,
+  },
+  L19: {
+    recipient: "Equifax",
+    nextAction: "If verified, escalate to creditor + CFPB",
+    dueDays: 30,
+  },
 };
 
 function addDays(iso: string, days: number): string {
@@ -147,12 +194,11 @@ function applyLetterDefaults(entry: Entry, letterId: LetterId): Entry {
   if (!def) return { ...entry, letterId };
   const recipientName = entry.recipientName?.trim() ? entry.recipientName : def.recipient;
   const nextAction = entry.nextAction?.trim() ? entry.nextAction : def.nextAction;
-  const nextActionDue =
-    entry.nextActionDue?.trim()
-      ? entry.nextActionDue
-      : entry.sentDate
-        ? addDays(entry.sentDate, def.dueDays)
-        : "";
+  const nextActionDue = entry.nextActionDue?.trim()
+    ? entry.nextActionDue
+    : entry.sentDate
+      ? addDays(entry.sentDate, def.dueDays)
+      : "";
   return {
     ...entry,
     letterId,
@@ -233,7 +279,9 @@ function toCSV(entries: Entry[]): string {
   ];
   const escape = (s: string) => `"${(s ?? "").replace(/"/g, '""')}"`;
   const rows = entries.map((e) => {
-    const letter = e.letterId ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim() : (e.customLabel ?? "");
+    const letter = e.letterId
+      ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim()
+      : (e.customLabel ?? "");
     return [
       letter,
       e.recipient,
@@ -247,7 +295,9 @@ function toCSV(entries: Entry[]): string {
       e.nextAction,
       e.nextActionDue,
       e.notes,
-    ].map(escape).join(",");
+    ]
+      .map(escape)
+      .join(",");
   });
   return [headers.join(","), ...rows].join("\n");
 }
@@ -262,31 +312,48 @@ function parseCSVRows(text: string): string[][] {
     const c = text[i];
     if (inQuotes) {
       if (c === '"') {
-        if (text[i + 1] === '"') { field += '"'; i++; }
-        else inQuotes = false;
+        if (text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else inQuotes = false;
       } else field += c;
     } else {
       if (c === '"') inQuotes = true;
-      else if (c === ",") { row.push(field); field = ""; }
-      else if (c === "\n" || c === "\r") {
+      else if (c === ",") {
+        row.push(field);
+        field = "";
+      } else if (c === "\n" || c === "\r") {
         if (c === "\r" && text[i + 1] === "\n") i++;
-        row.push(field); field = "";
+        row.push(field);
+        field = "";
         if (row.length > 1 || row[0] !== "") rows.push(row);
         row = [];
       } else field += c;
     }
   }
-  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  if (field !== "" || row.length) {
+    row.push(field);
+    rows.push(row);
+  }
   return rows;
 }
 
 const OUTCOME_BY_LABEL: Record<string, Outcome> = (Object.keys(outcomeMeta) as Outcome[]).reduce(
-  (acc, k) => { acc[outcomeMeta[k].label.toLowerCase()] = k; return acc; },
+  (acc, k) => {
+    acc[outcomeMeta[k].label.toLowerCase()] = k;
+    return acc;
+  },
   {} as Record<string, Outcome>,
 );
 
 const RECIPIENT_VALUES: Recipient[] = [
-  "Equifax", "Experian", "TransUnion", "Furnisher", "Collector", "Creditor", "Other",
+  "Equifax",
+  "Experian",
+  "TransUnion",
+  "Furnisher",
+  "Collector",
+  "Creditor",
+  "Other",
 ];
 
 function fromCSV(text: string): { entries: Entry[]; skipped: number } {
@@ -319,10 +386,15 @@ function fromCSV(text: string): { entries: Entry[]; skipped: number } {
     const letterId = (letterMatch?.[1].toUpperCase() as LetterId | undefined) ?? "";
     const customLabel = letterId ? "" : letterRaw;
 
-    if (!letterId && !customLabel) { skipped++; continue; }
+    if (!letterId && !customLabel) {
+      skipped++;
+      continue;
+    }
 
     const recipientRaw = get(cRecipient);
-    const recipient = (RECIPIENT_VALUES.find((v) => v.toLowerCase() === recipientRaw.toLowerCase()) ?? "Other") as Recipient;
+    const recipient = (RECIPIENT_VALUES.find(
+      (v) => v.toLowerCase() === recipientRaw.toLowerCase(),
+    ) ?? "Other") as Recipient;
 
     const outcomeRaw = get(cOutcome).toLowerCase();
     const outcome: Outcome = OUTCOME_BY_LABEL[outcomeRaw] ?? "pending";
@@ -352,7 +424,11 @@ const NOTIFIED_KEY = "dispute-tracker-notified-v1";
 
 function loadNotified(): Record<string, string> {
   if (typeof window === "undefined") return {};
-  try { return JSON.parse(window.localStorage.getItem(NOTIFIED_KEY) || "{}"); } catch { return {}; }
+  try {
+    return JSON.parse(window.localStorage.getItem(NOTIFIED_KEY) || "{}");
+  } catch {
+    return {};
+  }
 }
 function saveNotified(map: Record<string, string>) {
   if (typeof window === "undefined") return;
@@ -404,17 +480,24 @@ function TrackerPage() {
       if (notified[e.id] === e.nextActionDue) continue;
       const letterLabel = e.letterId
         ? `${e.letterId} ${LETTERS_BY_ID[e.letterId as LetterId]?.title ?? ""}`.trim()
-        : (e.customLabel || "Untitled letter");
+        : e.customLabel || "Untitled letter";
 
       if (!toastShown) {
-        toast.warning(`${overdueEntries.length} overdue ${overdueEntries.length === 1 ? "entry" : "entries"}`, {
-          description: `Earliest: ${letterLabel} — due ${fmtDate(e.nextActionDue)}`,
-          duration: 8000,
-        });
+        toast.warning(
+          `${overdueEntries.length} overdue ${overdueEntries.length === 1 ? "entry" : "entries"}`,
+          {
+            description: `Earliest: ${letterLabel} — due ${fmtDate(e.nextActionDue)}`,
+            duration: 8000,
+          },
+        );
         toastShown = true;
       }
 
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      if (
+        typeof window !== "undefined" &&
+        "Notification" in window &&
+        Notification.permission === "granted"
+      ) {
         try {
           new Notification("Dispute Tracker — response overdue", {
             body: `${letterLabel}\nNext action was due ${fmtDate(e.nextActionDue)}`,
@@ -437,8 +520,10 @@ function TrackerPage() {
     }
     Notification.requestPermission().then((p) => {
       setNotifPerm(p);
-      if (p === "granted") toast.success("Reminders on — we'll alert you when an entry goes overdue");
-      else if (p === "denied") toast.error("Notifications blocked. Enable in your browser settings.");
+      if (p === "granted")
+        toast.success("Reminders on — we'll alert you when an entry goes overdue");
+      else if (p === "denied")
+        toast.error("Notifications blocked. Enable in your browser settings.");
     });
   }
 
@@ -513,7 +598,9 @@ function TrackerPage() {
       const text = await file.text();
       const { entries: imported, skipped } = fromCSV(text);
       if (imported.length === 0) {
-        toast.error("Couldn't find any rows. Make sure the CSV has the same headers as the export.");
+        toast.error(
+          "Couldn't find any rows. Make sure the CSV has the same headers as the export.",
+        );
         return;
       }
       setEntries((prev) => [...imported, ...prev]);
@@ -540,22 +627,39 @@ function TrackerPage() {
           }}
         />
         <div className="relative mx-auto max-w-6xl px-6 py-14 md:py-20">
-          <p className="eyebrow text-[color:var(--brand-gold-deep)]">Companion Tool · Private to your browser</p>
+          <p className="eyebrow text-[color:var(--brand-gold-deep)]">
+            Companion Tool · Private to your browser
+          </p>
           <h1 className="font-display mt-4 text-5xl leading-[0.95] md:text-7xl">
-            Dispute <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-magenta)] via-[color:var(--brand-violet)] to-[color:var(--brand-navy)] bg-clip-text text-transparent not-italic">Tracker</em>
+            Dispute{" "}
+            <em className="font-editorial bg-gradient-to-r from-[color:var(--brand-magenta)] via-[color:var(--brand-violet)] to-[color:var(--brand-navy)] bg-clip-text text-transparent not-italic">
+              Tracker
+            </em>
           </h1>
           <p className="font-editorial mt-5 max-w-2xl text-lg text-foreground/80 md:text-xl">
-            Log every letter you mail. Capture sent dates, certified tracking, delivery, the bureau or furnisher response, and your next move — all in one place. Saved privately on this device.
+            Log every letter you mail. Capture sent dates, certified tracking, delivery, the bureau
+            or furnisher response, and your next move — all in one place. Saved privately on this
+            device.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button onClick={openAdd} size="lg" className="rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
+            <Button
+              onClick={openAdd}
+              size="lg"
+              className="rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]"
+            >
               <Plus className="size-4" /> Log a letter
             </Button>
             <Button onClick={triggerImport} variant="outline" size="lg" className="rounded-full">
               <Upload className="size-4" /> Import CSV
             </Button>
-            <Button onClick={exportCsv} variant="outline" size="lg" className="rounded-full" disabled={entries.length === 0}>
+            <Button
+              onClick={exportCsv}
+              variant="outline"
+              size="lg"
+              className="rounded-full"
+              disabled={entries.length === 0}
+            >
               <Download className="size-4" /> Export CSV
             </Button>
             {notifPerm !== "granted" && notifPerm !== "unsupported" && (
@@ -568,7 +672,10 @@ function TrackerPage() {
                 <BellRing className="size-4" /> Turn on reminders
               </Button>
             )}
-            <Link to="/letters" className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:border-[color:var(--brand-gold)]">
+            <Link
+              to="/letters"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold hover:border-[color:var(--brand-gold)]"
+            >
               Browse letter library <ExternalLink className="size-3.5" />
             </Link>
             <input
@@ -581,7 +688,8 @@ function TrackerPage() {
           </div>
           {notifPerm === "granted" && (
             <p className="mt-3 inline-flex items-center gap-2 text-xs text-[color:var(--brand-emerald,#2f7a4f)]">
-              <BellRing className="size-3.5" /> Reminders are on for this device. We'll alert you the moment a "Next action due" date passes.
+              <BellRing className="size-3.5" /> Reminders are on for this device. We'll alert you
+              the moment a "Next action due" date passes.
             </p>
           )}
         </div>
@@ -590,11 +698,36 @@ function TrackerPage() {
       {/* Stats */}
       <section className="mx-auto max-w-6xl px-6 pt-10">
         <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-          <StatCard icon={<ClipboardList className="size-4" />} label="Logged" value={stats.total} tint="var(--brand-navy)" />
-          <StatCard icon={<Clock className="size-4" />} label="Awaiting" value={stats.pending} tint="var(--brand-gold-deep)" />
-          <StatCard icon={<Mail className="size-4" />} label="Delivered" value={stats.delivered} tint="var(--brand-violet)" />
-          <StatCard icon={<CheckCircle2 className="size-4" />} label="Wins" value={stats.wins} tint="var(--brand-emerald, #2f7a4f)" />
-          <StatCard icon={<AlertCircle className="size-4" />} label="Overdue" value={stats.overdue} tint="var(--brand-magenta-deep, #9b1c5b)" />
+          <StatCard
+            icon={<ClipboardList className="size-4" />}
+            label="Logged"
+            value={stats.total}
+            tint="var(--brand-navy)"
+          />
+          <StatCard
+            icon={<Clock className="size-4" />}
+            label="Awaiting"
+            value={stats.pending}
+            tint="var(--brand-gold-deep)"
+          />
+          <StatCard
+            icon={<Mail className="size-4" />}
+            label="Delivered"
+            value={stats.delivered}
+            tint="var(--brand-violet)"
+          />
+          <StatCard
+            icon={<CheckCircle2 className="size-4" />}
+            label="Wins"
+            value={stats.wins}
+            tint="var(--brand-emerald, #2f7a4f)"
+          />
+          <StatCard
+            icon={<AlertCircle className="size-4" />}
+            label="Overdue"
+            value={stats.overdue}
+            tint="var(--brand-magenta-deep, #9b1c5b)"
+          />
         </div>
       </section>
 
@@ -603,19 +736,21 @@ function TrackerPage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="eyebrow text-[10px]">Filter</span>
-            {(["all", "pending", "deleted", "verified", "updated", "no_response"] as const).map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all ${
-                  filter === f
-                    ? "border-[color:var(--brand-navy)] bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)]"
-                    : "border-border bg-card hover:border-[color:var(--brand-gold)]"
-                }`}
-              >
-                {f === "all" ? "All" : outcomeMeta[f].label}
-              </button>
-            ))}
+            {(["all", "pending", "deleted", "verified", "updated", "no_response"] as const).map(
+              (f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition-all ${
+                    filter === f
+                      ? "border-[color:var(--brand-navy)] bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)]"
+                      : "border-border bg-card hover:border-[color:var(--brand-gold)]"
+                  }`}
+                >
+                  {f === "all" ? "All" : outcomeMeta[f].label}
+                </button>
+              ),
+            )}
           </div>
           {entries.length > 0 && (
             <AlertDialog>
@@ -628,7 +763,9 @@ function TrackerPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Clear the entire tracker?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This permanently removes all {entries.length} entr{entries.length === 1 ? "y" : "ies"} from this device. Export a CSV first if you want a backup.
+                    This permanently removes all {entries.length} entr
+                    {entries.length === 1 ? "y" : "ies"} from this device. Export a CSV first if you
+                    want a backup.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -645,7 +782,12 @@ function TrackerPage() {
         ) : (
           <div className="grid gap-3">
             {sorted.map((e) => (
-              <EntryCard key={e.id} entry={e} onEdit={() => openEdit(e)} onRemove={() => removeEntry(e.id)} />
+              <EntryCard
+                key={e.id}
+                entry={e}
+                onEdit={() => openEdit(e)}
+                onRemove={() => removeEntry(e.id)}
+              />
             ))}
           </div>
         )}
@@ -659,7 +801,8 @@ function TrackerPage() {
               {editing && entries.some((p) => p.id === editing.id) ? "Edit entry" : "Log a letter"}
             </DialogTitle>
             <DialogDescription>
-              Record what you sent, where it went, and what came back. Required: letter and sent date.
+              Record what you sent, where it went, and what came back. Required: letter and sent
+              date.
             </DialogDescription>
           </DialogHeader>
 
@@ -702,8 +845,13 @@ function TrackerPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                   <Label>Recipient type</Label>
-                  <Select value={editing.recipient} onValueChange={(v) => setEditing({ ...editing, recipient: v as Recipient })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={editing.recipient}
+                    onValueChange={(v) => setEditing({ ...editing, recipient: v as Recipient })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Equifax">Equifax</SelectItem>
                       <SelectItem value="Experian">Experian</SelectItem>
@@ -737,15 +885,27 @@ function TrackerPage() {
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="grid gap-2">
                   <Label>Sent date</Label>
-                  <Input type="date" value={editing.sentDate} onChange={(ev) => setEditing({ ...editing, sentDate: ev.target.value })} />
+                  <Input
+                    type="date"
+                    value={editing.sentDate}
+                    onChange={(ev) => setEditing({ ...editing, sentDate: ev.target.value })}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label>Delivered</Label>
-                  <Input type="date" value={editing.deliveredDate} onChange={(ev) => setEditing({ ...editing, deliveredDate: ev.target.value })} />
+                  <Input
+                    type="date"
+                    value={editing.deliveredDate}
+                    onChange={(ev) => setEditing({ ...editing, deliveredDate: ev.target.value })}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label>Response received</Label>
-                  <Input type="date" value={editing.responseDate} onChange={(ev) => setEditing({ ...editing, responseDate: ev.target.value })} />
+                  <Input
+                    type="date"
+                    value={editing.responseDate}
+                    onChange={(ev) => setEditing({ ...editing, responseDate: ev.target.value })}
+                  />
                 </div>
               </div>
 
@@ -760,11 +920,18 @@ function TrackerPage() {
 
               <div className="grid gap-2">
                 <Label>Outcome</Label>
-                <Select value={editing.outcome} onValueChange={(v) => setEditing({ ...editing, outcome: v as Outcome })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={editing.outcome}
+                  onValueChange={(v) => setEditing({ ...editing, outcome: v as Outcome })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     {(Object.keys(outcomeMeta) as Outcome[]).map((k) => (
-                      <SelectItem key={k} value={k}>{outcomeMeta[k].label}</SelectItem>
+                      <SelectItem key={k} value={k}>
+                        {outcomeMeta[k].label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -781,7 +948,11 @@ function TrackerPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label>Due</Label>
-                  <Input type="date" value={editing.nextActionDue} onChange={(ev) => setEditing({ ...editing, nextActionDue: ev.target.value })} />
+                  <Input
+                    type="date"
+                    value={editing.nextActionDue}
+                    onChange={(ev) => setEditing({ ...editing, nextActionDue: ev.target.value })}
+                  />
                 </div>
               </div>
 
@@ -798,8 +969,15 @@ function TrackerPage() {
           )}
 
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={saveDraft} disabled={!editing || (!editing.letterId && !editing.customLabel) || !editing.sentDate}>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={saveDraft}
+              disabled={
+                !editing || (!editing.letterId && !editing.customLabel) || !editing.sentDate
+              }
+            >
               Save entry
             </Button>
           </DialogFooter>
@@ -809,7 +987,17 @@ function TrackerPage() {
   );
 }
 
-function StatCard({ icon, label, value, tint }: { icon: React.ReactNode; label: string; value: number; tint: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  tint,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+  tint: string;
+}) {
   return (
     <div
       className="rounded-2xl border-2 bg-card p-4 shadow-sm"
@@ -818,7 +1006,10 @@ function StatCard({ icon, label, value, tint }: { icon: React.ReactNode; label: 
         background: `color-mix(in oklab, ${tint} 6%, var(--card))`,
       }}
     >
-      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: tint }}>
+      <div
+        className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]"
+        style={{ color: tint }}
+      >
         {icon} {label}
       </div>
       <div className="font-display mt-2 text-3xl text-[color:var(--brand-ink)]">{value}</div>
@@ -832,16 +1023,28 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       <ClipboardList className="mx-auto size-10 text-muted-foreground" />
       <h2 className="font-display mt-4 text-2xl">No entries yet</h2>
       <p className="font-editorial mt-2 text-muted-foreground">
-        Every letter you mail belongs here. Start with the validation letter, the bureau dispute, or whatever round you’re on now.
+        Every letter you mail belongs here. Start with the validation letter, the bureau dispute, or
+        whatever round you’re on now.
       </p>
-      <Button onClick={onAdd} className="mt-5 rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]">
+      <Button
+        onClick={onAdd}
+        className="mt-5 rounded-full bg-[color:var(--brand-navy)] text-[color:var(--brand-cream)] hover:bg-[color:var(--brand-violet-deep)]"
+      >
         <Plus className="size-4" /> Log your first letter
       </Button>
     </div>
   );
 }
 
-function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => void; onRemove: () => void }) {
+function EntryCard({
+  entry,
+  onEdit,
+  onRemove,
+}: {
+  entry: Entry;
+  onEdit: () => void;
+  onRemove: () => void;
+}) {
   const letter = entry.letterId ? LETTERS_BY_ID[entry.letterId as LetterId] : null;
   const phase = letter ? PHASES_BY_ID[letter.phaseId] : null;
   const accent = phase ? `var(${phase.colorVar})` : "var(--brand-navy)";
@@ -883,7 +1086,9 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
                 </Link>
               </>
             ) : (
-              <h3 className="font-display text-lg leading-tight text-[color:var(--brand-ink)]">{entry.customLabel || "Untitled letter"}</h3>
+              <h3 className="font-display text-lg leading-tight text-[color:var(--brand-ink)]">
+                {entry.customLabel || "Untitled letter"}
+              </h3>
             )}
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -897,7 +1102,11 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
           <Badge
             variant="outline"
             className="border-2"
-            style={{ borderColor: `color-mix(in oklab, ${tone} 50%, transparent)`, color: tone, background: `color-mix(in oklab, ${tone} 8%, transparent)` }}
+            style={{
+              borderColor: `color-mix(in oklab, ${tone} 50%, transparent)`,
+              color: tone,
+              background: `color-mix(in oklab, ${tone} 8%, transparent)`,
+            }}
           >
             {outcomeMeta[entry.outcome].label}
           </Badge>
@@ -908,7 +1117,10 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
             </Badge>
           )}
           {!dueOverdue && sentOverdue && (
-            <Badge variant="outline" className="border-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-magenta-deep,#9b1c5b)]">
+            <Badge
+              variant="outline"
+              className="border-[color:var(--brand-magenta-deep,#9b1c5b)] text-[color:var(--brand-magenta-deep,#9b1c5b)]"
+            >
               {days}d since sent
             </Badge>
           )}
@@ -944,10 +1156,16 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
             <p className="text-sm">
               <span className="eyebrow text-[10px] mr-2">Next</span>
               <span className="font-semibold">{entry.nextAction}</span>
-              {entry.nextActionDue && <span className="ml-2 text-muted-foreground">· due {fmtDate(entry.nextActionDue)}</span>}
+              {entry.nextActionDue && (
+                <span className="ml-2 text-muted-foreground">
+                  · due {fmtDate(entry.nextActionDue)}
+                </span>
+              )}
             </p>
           )}
-          {entry.notes && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{entry.notes}</p>}
+          {entry.notes && (
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap">{entry.notes}</p>
+          )}
         </div>
       )}
 
@@ -957,7 +1175,11 @@ function EntryCard({ entry, onEdit, onRemove }: { entry: Entry; onEdit: () => vo
         </Button>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-[color:var(--brand-magenta-deep,#9b1c5b)]">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-[color:var(--brand-magenta-deep,#9b1c5b)]"
+            >
               <X className="size-3.5" /> Remove
             </Button>
           </AlertDialogTrigger>

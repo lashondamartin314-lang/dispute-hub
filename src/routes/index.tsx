@@ -1,11 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  ClipboardList,
+  Compass,
+  FileText,
+  Layers,
+  Library,
+  ScanSearch,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { PhaseGrid } from "@/components/phase-grid";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { PINNED_RESOURCES } from "@/data/resources";
 import { PHASES } from "@/data/phases";
@@ -15,7 +30,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "The Dispute Playbook Hub · Credit Academy" },
-      { name: "description", content: "Your interactive companion to the Credit Academy Dispute Playbook — letter library, phase guides, and quick-access resources." },
+      {
+        name: "description",
+        content:
+          "Your interactive companion to the Credit Academy Dispute Playbook — letter library, phase guides, and quick-access resources.",
+      },
     ],
   }),
   component: HubPage,
@@ -71,11 +90,21 @@ function OnboardingStrip() {
                   >
                     {s.n}
                   </span>
-                  <s.Icon className={isFirst ? "size-3.5 text-[color:var(--brand-navy)]" : "size-3.5 text-[color:var(--brand-ink)]/55"} />
+                  <s.Icon
+                    className={
+                      isFirst
+                        ? "size-3.5 text-[color:var(--brand-navy)]"
+                        : "size-3.5 text-[color:var(--brand-ink)]/55"
+                    }
+                  />
                 </div>
-                <span className={isFirst
-                  ? "text-[13px] font-semibold leading-tight text-[color:var(--brand-navy)]"
-                  : "text-[12px] font-semibold leading-tight text-[color:var(--brand-ink)]/80"}>
+                <span
+                  className={
+                    isFirst
+                      ? "text-[13px] font-semibold leading-tight text-[color:var(--brand-navy)]"
+                      : "text-[12px] font-semibold leading-tight text-[color:var(--brand-ink)]/80"
+                  }
+                >
                   {s.label}
                 </span>
               </Link>
@@ -91,11 +120,19 @@ function OnboardingStrip() {
         >
           <Compass className="size-4" /> Start With Foundation <ArrowRight className="size-4" />
         </Link>
-        <Link to="/tracker" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+        <Link
+          to="/tracker"
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline"
+        >
           <ClipboardList className="size-3.5" /> Open tracker
         </Link>
-        <span aria-hidden className="text-[color:var(--brand-ink)]/30">·</span>
-        <Link to="/letters" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
+        <span aria-hidden className="text-[color:var(--brand-ink)]/30">
+          ·
+        </span>
+        <Link
+          to="/letters"
+          className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline"
+        >
           <Library className="size-3.5" /> Letter library
         </Link>
       </div>
@@ -146,12 +183,26 @@ function CoverHero() {
           eyebrow="Companion Hub · Shonda Martin"
           numeral="✶"
           numeralColor="var(--brand-gold)"
-          title={<>Your <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">Dispute</em> Playbook, made <em className="font-display italic text-[color:var(--brand-navy)]">interactive</em>.</>}
-          lede={<>A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase has a purpose. Every letter has a reason. Walk through the full process with the law behind every move.</>}
+          title={
+            <>
+              Your{" "}
+              <em className="font-display italic bg-gradient-to-r from-[color:var(--brand-gold)] via-[color:var(--brand-magenta)] to-[color:var(--brand-violet)] bg-clip-text text-transparent">
+                Dispute
+              </em>{" "}
+              Playbook, made{" "}
+              <em className="font-display italic text-[color:var(--brand-navy)]">interactive</em>.
+            </>
+          }
+          lede={
+            <>
+              A six-phase, letter-by-letter dispute system built on FCRA and FDCPA law. Every phase
+              has a purpose. Every letter has a reason. Walk through the full process with the law
+              behind every move.
+            </>
+          }
         />
 
         <OnboardingStrip />
-
       </motion.div>
 
       {/* Layer 3 — PhaseGrid (foreground). Hover paints the hero. */}
@@ -239,18 +290,25 @@ function HubPage() {
                 <span className="journey-ripple absolute h-3.5 w-3.5 rounded-full" />
                 <span className="journey-dot relative h-2 w-2 rounded-full" />
               </span>
-              <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">The six phases</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-[color:var(--brand-ink)]/60">
+                The six phases
+              </p>
             </div>
-            <h2
-              className="font-display text-[color:var(--brand-ink)] text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl"
-            >
+            <h2 className="font-display text-[color:var(--brand-ink)] text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl">
               <span className="italic font-medium">Where</span> you are in the journey.
             </h2>
           </div>
 
-          <Link to="/playbook/foundation" className="group hidden shrink-0 flex-col items-start gap-3 no-underline md:flex">
+          <Link
+            to="/playbook/foundation"
+            className="group hidden shrink-0 flex-col items-start gap-3 no-underline md:flex"
+          >
             <div className="relative h-16 w-48 transition-transform duration-700 group-hover:translate-x-2 md:h-20 md:w-60">
-              <svg viewBox="0 0 200 80" fill="none" className="h-full w-full text-[color:var(--brand-ink)]/40 transition-colors duration-500 group-hover:text-[color:var(--brand-ink)]">
+              <svg
+                viewBox="0 0 200 80"
+                fill="none"
+                className="h-full w-full text-[color:var(--brand-ink)]/40 transition-colors duration-500 group-hover:text-[color:var(--brand-ink)]"
+              >
                 <path
                   d="M10 40C30 38 60 35 110 38C140 40 175 45 188 42M188 42C175 35 160 25 155 15M188 42C172 48 158 58 150 70"
                   stroke="currentColor"
@@ -262,7 +320,9 @@ function HubPage() {
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="mb-1 text-[10px] font-bold uppercase tracking-[0.35em] text-[color:var(--brand-ink)]/60">The foundation</span>
+              <span className="mb-1 text-[10px] font-bold uppercase tracking-[0.35em] text-[color:var(--brand-ink)]/60">
+                The foundation
+              </span>
               <span className="font-display border-b border-[color:var(--brand-ink)]/30 pb-1 text-2xl italic text-[color:var(--brand-ink)] transition-all duration-500 group-hover:border-[color:var(--brand-ink)] md:text-3xl">
                 Read the foundation
               </span>
@@ -280,7 +340,11 @@ function HubPage() {
             aria-pressed={allOpen}
             className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-5 py-2.5 text-xs font-bold uppercase tracking-[0.18em] text-[color:var(--brand-ink)] transition-all hover:border-[color:var(--brand-gold)] hover:shadow-sm active:scale-[0.98] sm:w-auto sm:py-2 md:hover:-translate-y-0.5"
           >
-            {allOpen ? <ChevronsDownUp className="size-4" /> : <ChevronsUpDown className="size-4" />}
+            {allOpen ? (
+              <ChevronsDownUp className="size-4" />
+            ) : (
+              <ChevronsUpDown className="size-4" />
+            )}
             {allOpen ? "Collapse all" : "Expand all"}
           </button>
         </div>
@@ -297,13 +361,17 @@ function HubPage() {
               <AccordionItem
                 key={p.id}
                 value={p.id}
-                ref={(el) => { phaseRefs.current[p.id] = el; }}
+                ref={(el) => {
+                  phaseRefs.current[p.id] = el;
+                }}
                 id={p.id}
-                style={{
-                  ["--phase-color" as string]: `var(${p.colorVar})`,
-                  ["--phase-deep" as string]: `var(${p.colorVar}-deep)`,
-                  ["--phase-soft" as string]: `var(${p.colorVar}-soft)`,
-                } as React.CSSProperties}
+                style={
+                  {
+                    ["--phase-color" as string]: `var(${p.colorVar})`,
+                    ["--phase-deep" as string]: `var(${p.colorVar}-deep)`,
+                    ["--phase-soft" as string]: `var(${p.colorVar}-soft)`,
+                  } as React.CSSProperties
+                }
                 className="group relative scroll-mt-24 overflow-hidden rounded-2xl border-2 border-border bg-card transition-[border-color,box-shadow,background-color] duration-300 hover:border-[var(--phase-color)] data-[state=open]:border-[var(--phase-color)] data-[state=open]:bg-[color-mix(in_oklab,var(--phase-soft)_28%,var(--card))] data-[state=open]:shadow-elegant"
               >
                 <div
@@ -320,7 +388,9 @@ function HubPage() {
                 />
                 <AccordionTrigger className="relative px-6 py-6 text-left no-underline hover:no-underline [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[color:var(--brand-ink)]/60 [&>svg]:transition-transform [&>svg]:duration-300">
                   <div className="flex-1 pr-6">
-                    <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>{p.eyebrow}</p>
+                    <p className="eyebrow" style={{ color: `var(${p.colorVar}-deep)` }}>
+                      {p.eyebrow}
+                    </p>
                     <h3
                       className="font-display mt-2 text-xl font-bold leading-[1.15] tracking-tight md:text-2xl"
                       style={{ color: `var(${p.colorVar}-deep)` }}
@@ -346,8 +416,12 @@ function HubPage() {
                               {i + 1}
                             </span>
                             <div>
-                              <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">{s.title}</p>
-                              <p className="font-editorial mt-1.5 text-base leading-relaxed text-foreground/85 md:text-[17px]">{s.description}</p>
+                              <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">
+                                {s.title}
+                              </p>
+                              <p className="font-editorial mt-1.5 text-base leading-relaxed text-foreground/85 md:text-[17px]">
+                                {s.description}
+                              </p>
                             </div>
                           </li>
                         ))}
@@ -356,7 +430,9 @@ function HubPage() {
 
                     <div>
                       <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-ink)]/65">
-                        {letters.length > 0 ? `Letter${letters.length === 1 ? "" : "s"} for this phase` : "No letters · strategy phase"}
+                        {letters.length > 0
+                          ? `Letter${letters.length === 1 ? "" : "s"} for this phase`
+                          : "No letters · strategy phase"}
                       </p>
                       {letters.length > 0 ? (
                         <ul className="mt-5 space-y-3">
@@ -374,8 +450,12 @@ function HubPage() {
                                   {l.id}
                                 </span>
                                 <div className="flex-1">
-                                  <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">{l.title}</p>
-                                  <p className="font-editorial mt-1 text-sm leading-relaxed text-foreground/80 md:text-base">{l.lede}</p>
+                                  <p className="font-display text-base font-bold leading-snug text-[color:var(--brand-ink)] md:text-lg">
+                                    {l.title}
+                                  </p>
+                                  <p className="font-editorial mt-1 text-sm leading-relaxed text-foreground/80 md:text-base">
+                                    {l.lede}
+                                  </p>
                                 </div>
                                 <FileText className="mt-1 size-5 shrink-0 text-[color:var(--brand-ink)]/40 transition-colors group-hover/letter:text-[color:var(--brand-magenta)]" />
                               </Link>
@@ -392,7 +472,9 @@ function HubPage() {
 
                   <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-[color:var(--brand-ink)]/10 pt-5">
                     <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-[color:var(--brand-ink)]/65">
-                      {p.rounds > 0 ? `${p.rounds} round${p.rounds === 1 ? "" : "s"}` : "Strategy · no rounds"}
+                      {p.rounds > 0
+                        ? `${p.rounds} round${p.rounds === 1 ? "" : "s"}`
+                        : "Strategy · no rounds"}
                     </p>
                     <Link
                       to="/playbook/phase/$id"
@@ -412,10 +494,14 @@ function HubPage() {
       <section className="mx-auto max-w-6xl px-6 pb-24 md:px-10 md:pb-32">
         <div className="mb-10 md:mb-14">
           <p className="eyebrow">Quick access</p>
-          <h2 className="font-display mt-2 text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl">External tools you'll need.</h2>
+          <h2 className="font-display mt-2 text-3xl font-bold leading-[1.05] tracking-tight md:text-4xl lg:text-5xl">
+            External tools you'll need.
+          </h2>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {PINNED_RESOURCES.map((r) => (<ResourceTile key={r.id} resource={r} />))}
+          {PINNED_RESOURCES.map((r) => (
+            <ResourceTile key={r.id} resource={r} />
+          ))}
         </div>
       </section>
     </div>

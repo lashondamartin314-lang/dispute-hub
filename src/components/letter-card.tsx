@@ -29,11 +29,7 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
       }
     : {};
 
-  const titleColor = isFrame
-    ? "text-[color:var(--brand-cream)]"
-    : isTinted
-      ? ""
-      : "";
+  const titleColor = isFrame ? "text-[color:var(--brand-cream)]" : isTinted ? "" : "";
 
   return (
     <article
@@ -75,7 +71,12 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
             <p className="eyebrow" style={{ color: isFrame ? "var(--brand-gold)" : phaseDeep }}>
               {phase.eyebrow} · {letter.id}
             </p>
-            <h3 className={cn("font-display text-2xl leading-tight text-balance md:text-[28px]", titleColor)}>
+            <h3
+              className={cn(
+                "font-display text-2xl leading-tight text-balance md:text-[28px]",
+                titleColor,
+              )}
+            >
               {letter.title}
             </h3>
             <p
@@ -160,10 +161,12 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
           params={{ id: letter.id }}
           aria-label={`Open full details for ${letter.title}`}
           className="inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:ml-auto"
-          style={{
-            background: isFrame ? "var(--brand-gold-deep)" : phaseDeep,
-            ["--tw-ring-color" as string]: isFrame ? "var(--brand-gold)" : phaseColor,
-          } as React.CSSProperties}
+          style={
+            {
+              background: isFrame ? "var(--brand-gold-deep)" : phaseDeep,
+              ["--tw-ring-color" as string]: isFrame ? "var(--brand-gold)" : phaseColor,
+            } as React.CSSProperties
+          }
         >
           <BookOpen className="size-4" strokeWidth={2.25} aria-hidden />
           Letter details
@@ -175,12 +178,14 @@ export function LetterCard({ id, className, variant = "editorial" }: LetterCardP
           aria-label={`Open ${letter.title} details`}
           title="Open details"
           className="hidden sm:inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 transition-all hover:-translate-y-0.5 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          style={{
-            background: isFrame ? "var(--brand-gold-deep)" : phaseDeep,
-            color: "var(--brand-cream)",
-            borderColor: `color-mix(in oklab, ${phaseColor} 60%, var(--brand-ink))`,
-            ["--tw-ring-color" as string]: isFrame ? "var(--brand-gold)" : phaseColor,
-          } as React.CSSProperties}
+          style={
+            {
+              background: isFrame ? "var(--brand-gold-deep)" : phaseDeep,
+              color: "var(--brand-cream)",
+              borderColor: `color-mix(in oklab, ${phaseColor} 60%, var(--brand-ink))`,
+              ["--tw-ring-color" as string]: isFrame ? "var(--brand-gold)" : phaseColor,
+            } as React.CSSProperties
+          }
         >
           <ArrowUpRight className="size-5" strokeWidth={2.5} aria-hidden />
         </Link>

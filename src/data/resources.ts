@@ -31,7 +31,8 @@ export const RESOURCES: Resource[] = [
   {
     id: "annualcreditreport",
     label: "Official Credit Reports",
-    description: "AnnualCreditReport.com, the only federally authorized source for your free Equifax, Experian, and TransUnion reports.",
+    description:
+      "AnnualCreditReport.com, the only federally authorized source for your free Equifax, Experian, and TransUnion reports.",
     url: "https://www.annualcreditreport.com",
     category: "report",
     actionLabel: "Pull Your Official Credit Reports",
@@ -64,13 +65,17 @@ export const RESOURCES: Resource[] = [
   {
     id: "smartcredit",
     label: "Credit Report, Monitoring and Building Tools",
-    description: "SmartCredit gives you daily 3-bureau monitoring, the easier-to-read report format we use throughout the Playbook, plus credit-building tools.",
+    description:
+      "SmartCredit gives you daily 3-bureau monitoring, the easier-to-read report format we use throughout the Playbook, plus credit-building tools.",
     url: "https://www.smartcredit.com",
     category: "report",
     actionLabel: "Set Up Daily Monitoring & Best Pay Date",
     pinned: true,
     rounds: [1, 2, 3, 4, 5],
-    playbookRef: { label: "Phase 2 · Clean identity & Best Pay Date", href: "/playbook/phase/clean-identity" },
+    playbookRef: {
+      label: "Phase 2 · Clean identity & Best Pay Date",
+      href: "/playbook/phase/clean-identity",
+    },
     steps: [
       "Sign up at SmartCredit.com (use the same legal name and address as your AnnualCreditReport pull).",
       "Open Settings → Alerts. Turn on daily 3-bureau alerts via email AND SMS for new accounts, inquiries, and status changes.",
@@ -275,7 +280,8 @@ export const DISPUTE_ROUNDS: { round: DisputeRound; name: string; focus: string 
   {
     round: 1,
     name: "Round 1 · Open the dispute",
-    focus: "Pull official reports, lock in your baseline, and mail the first dispute by certified mail.",
+    focus:
+      "Pull official reports, lock in your baseline, and mail the first dispute by certified mail.",
   },
   {
     round: 2,

@@ -86,7 +86,9 @@ export function AppSidebar() {
     if (!isMobile || !openMobile) return;
     // Wait for sheet content to mount and animate in.
     const t = window.setTimeout(() => {
-    const sheet = document.querySelector<HTMLElement>('[data-mobile="true"][data-sidebar="sidebar"]');
+      const sheet = document.querySelector<HTMLElement>(
+        '[data-mobile="true"][data-sidebar="sidebar"]',
+      );
       const target =
         sheet?.querySelector<HTMLElement>('[data-active-scroll="letter"]') ??
         sheet?.querySelector<HTMLElement>('[data-active-scroll="phase"]') ??
@@ -336,7 +338,9 @@ export function AppSidebar() {
                                         onClick={closeMobile}
                                         data-active-scroll={lActive ? "letter" : undefined}
                                       >
-                                        <span className="font-mono text-[10px] opacity-60">{l.id}</span>
+                                        <span className="font-mono text-[10px] opacity-60">
+                                          {l.id}
+                                        </span>
                                         <span className="truncate">{l.title}</span>
                                       </Link>
                                     </SidebarMenuButton>
@@ -360,46 +364,139 @@ export function AppSidebar() {
                     <SidebarGroupContent className="mt-1">
                       <SidebarMenu>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/foundation")} tooltip="Foundation" className={ACTIVE_CLS}>
-                            <Link to="/playbook/foundation" onClick={closeMobile} data-active-scroll={isActive("/playbook/foundation") ? "link" : undefined}><Compass className="size-4" /> Foundation</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/playbook/foundation")}
+                            tooltip="Foundation"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/playbook/foundation"
+                              onClick={closeMobile}
+                              data-active-scroll={
+                                isActive("/playbook/foundation") ? "link" : undefined
+                              }
+                            >
+                              <Compass className="size-4" /> Foundation
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/playbook/strategy")} tooltip="Strategy overview" className={ACTIVE_CLS}>
-                            <Link to="/playbook/strategy" onClick={closeMobile} data-active-scroll={isActive("/playbook/strategy") ? "link" : undefined}><ScrollText className="size-4" /> Strategy overview</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/playbook/strategy")}
+                            tooltip="Strategy overview"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/playbook/strategy"
+                              onClick={closeMobile}
+                              data-active-scroll={
+                                isActive("/playbook/strategy") ? "link" : undefined
+                              }
+                            >
+                              <ScrollText className="size-4" /> Strategy overview
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/letters")} tooltip="Letter library" className={ACTIVE_CLS}>
-                            <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/letters")}
+                            tooltip="Letter library"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/letters"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/letters") ? "link" : undefined}
+                            >
+                              <Library className="size-4" /> Letter library
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/tracker")} tooltip="Dispute tracker" className={ACTIVE_CLS}>
-                            <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/tracker")}
+                            tooltip="Dispute tracker"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/tracker"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/tracker") ? "link" : undefined}
+                            >
+                              <ClipboardList className="size-4" /> Dispute tracker
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/decoder")} tooltip="Response decoder" className={ACTIVE_CLS}>
-                            <Link to="/decoder" onClick={closeMobile} data-active-scroll={isActive("/decoder") ? "link" : undefined}><ScanSearch className="size-4" /> Response decoder</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/decoder")}
+                            tooltip="Response decoder"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/decoder"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/decoder") ? "link" : undefined}
+                            >
+                              <ScanSearch className="size-4" /> Response decoder
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/resources")} tooltip="Resources" className={ACTIVE_CLS}>
-                            <Link to="/resources" onClick={closeMobile} data-active-scroll={isActive("/resources") ? "link" : undefined}><Sparkles className="size-4" /> Resources</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/resources")}
+                            tooltip="Resources"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/resources"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/resources") ? "link" : undefined}
+                            >
+                              <Sparkles className="size-4" /> Resources
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/progress")} tooltip="Your progress" className={ACTIVE_CLS}>
-                            <Link to="/progress" onClick={closeMobile} data-active-scroll={isActive("/progress") ? "link" : undefined}><Award className="size-4" /> Your progress</Link>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/progress")}
+                            tooltip="Your progress"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/progress"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/progress") ? "link" : undefined}
+                            >
+                              <Award className="size-4" /> Your progress
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         <SidebarMenuItem>
-                          <SidebarMenuButton asChild isActive={isActive("/ask")} tooltip="Ask Shonda" className={ACTIVE_CLS}>
-                            <Link to="/ask" onClick={closeMobile} data-active-scroll={isActive("/ask") ? "link" : undefined}>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={isActive("/ask")}
+                            tooltip="Ask Shonda"
+                            className={ACTIVE_CLS}
+                          >
+                            <Link
+                              to="/ask"
+                              onClick={closeMobile}
+                              data-active-scroll={isActive("/ask") ? "link" : undefined}
+                            >
                               <MessageCircleQuestion className="size-4" /> Ask Shonda
                               {isActive("/ask") && (
-                                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]" aria-hidden />
+                                <span
+                                  className="ml-auto h-1.5 w-1.5 rounded-full bg-[color:var(--brand-magenta)] shadow-[0_0_8px_var(--brand-magenta)]"
+                                  aria-hidden
+                                />
                               )}
                             </Link>
                           </SidebarMenuButton>
@@ -433,4 +530,3 @@ export function AppSidebar() {
     </Sidebar>
   );
 }
-

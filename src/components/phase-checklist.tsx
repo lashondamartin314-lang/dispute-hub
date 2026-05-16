@@ -101,9 +101,7 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
       // Open the milestone prompt unless the user already dismissed it for
       // this phase on this device.
       try {
-        const dismissed = window.localStorage.getItem(
-          `milestone-prompt-shown:${phase.id}`,
-        );
+        const dismissed = window.localStorage.getItem(`milestone-prompt-shown:${phase.id}`);
         if (!dismissed) setMilestoneOpen(true);
       } catch {
         setMilestoneOpen(true);
@@ -112,8 +110,7 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
     prevPctRef.current = pct;
   }, [pct, hydrated, phase.colorVar, phase.id, phase.number, phase.name]);
 
-  const toggle = (id: string) =>
-    setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggle = (id: string) => setChecked((prev) => ({ ...prev, [id]: !prev[id] }));
 
   const reset = () => setChecked({});
 
@@ -170,16 +167,9 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               {pct === 100 ? (
-                <Trophy
-                  className="size-7"
-                  style={{ color: phaseDeep }}
-                  aria-hidden
-                />
+                <Trophy className="size-7" style={{ color: phaseDeep }} aria-hidden />
               ) : (
-                <p
-                  className="font-display text-3xl leading-none"
-                  style={{ color: phaseDeep }}
-                >
+                <p className="font-display text-3xl leading-none" style={{ color: phaseDeep }}>
                   {pct}%
                 </p>
               )}
@@ -203,8 +193,8 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
                 : `${phase.name} in progress.`}
           </h2>
           <p className="font-editorial mt-2 text-base leading-relaxed text-foreground/80 md:text-lg">
-            Check each task as you finish it. Your progress saves on this device
-            so you can leave and come back without losing your place.
+            Check each task as you finish it. Your progress saves on this device so you can leave
+            and come back without losing your place.
           </p>
           {done > 0 && (
             <button
@@ -280,72 +270,73 @@ export function PhaseChecklist({ phase }: PhaseChecklistProps) {
       </ul>
 
       {/* Continue to next phase — appears once the checklist is fully complete */}
-      {pct === 100 && (() => {
-        const nextPhase = PHASES.find((p) => p.number === phase.number + 1);
-        if (!nextPhase) {
+      {pct === 100 &&
+        (() => {
+          const nextPhase = PHASES.find((p) => p.number === phase.number + 1);
+          if (!nextPhase) {
+            return (
+              <div
+                className="mt-8 flex flex-col items-start gap-3 rounded-2xl border-2 p-5 sm:flex-row sm:items-center sm:justify-between"
+                style={{
+                  borderColor: phaseDeep,
+                  background: `color-mix(in oklab, ${phaseColor} 10%, var(--card))`,
+                }}
+              >
+                <p className="font-display text-lg leading-tight">
+                  You've finished the final phase. The system is yours.
+                </p>
+                <Link
+                  to="/playbook"
+                  className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  style={
+                    {
+                      background: phaseDeep,
+                      ["--tw-ring-color" as string]: phaseDeep,
+                    } as React.CSSProperties
+                  }
+                >
+                  Back to playbook cover
+                  <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              </div>
+            );
+          }
+          const nextDeep = `var(${nextPhase.colorVar}-deep)`;
+          const nextColor = `var(${nextPhase.colorVar})`;
           return (
             <div
               className="mt-8 flex flex-col items-start gap-3 rounded-2xl border-2 p-5 sm:flex-row sm:items-center sm:justify-between"
               style={{
-                borderColor: phaseDeep,
-                background: `color-mix(in oklab, ${phaseColor} 10%, var(--card))`,
+                borderColor: nextDeep,
+                background: `color-mix(in oklab, ${nextColor} 10%, var(--card))`,
               }}
             >
-              <p className="font-display text-lg leading-tight">
-                You've finished the final phase. The system is yours.
-              </p>
+              <div className="min-w-0">
+                <p className="eyebrow text-[10px]" style={{ color: nextDeep }}>
+                  Phase {nextPhase.number} · {nextPhase.eyebrow}
+                </p>
+                <p className="font-display mt-0.5 text-lg leading-tight md:text-xl">
+                  Ready for {nextPhase.name}?
+                </p>
+              </div>
               <Link
-                to="/playbook"
+                to="/playbook/phase/$id"
+                params={{ id: nextPhase.id }}
+                aria-label={`Continue to Phase ${nextPhase.number}: ${nextPhase.name}`}
                 className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 style={
                   {
-                    background: phaseDeep,
-                    ["--tw-ring-color" as string]: phaseDeep,
+                    background: nextDeep,
+                    ["--tw-ring-color" as string]: nextDeep,
                   } as React.CSSProperties
                 }
               >
-                Back to playbook cover
+                Continue to next phase
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
             </div>
           );
-        }
-        const nextDeep = `var(${nextPhase.colorVar}-deep)`;
-        const nextColor = `var(${nextPhase.colorVar})`;
-        return (
-          <div
-            className="mt-8 flex flex-col items-start gap-3 rounded-2xl border-2 p-5 sm:flex-row sm:items-center sm:justify-between"
-            style={{
-              borderColor: nextDeep,
-              background: `color-mix(in oklab, ${nextColor} 10%, var(--card))`,
-            }}
-          >
-            <div className="min-w-0">
-              <p className="eyebrow text-[10px]" style={{ color: nextDeep }}>
-                Phase {nextPhase.number} · {nextPhase.eyebrow}
-              </p>
-              <p className="font-display mt-0.5 text-lg leading-tight md:text-xl">
-                Ready for {nextPhase.name}?
-              </p>
-            </div>
-            <Link
-              to="/playbook/phase/$id"
-              params={{ id: nextPhase.id }}
-              aria-label={`Continue to Phase ${nextPhase.number}: ${nextPhase.name}`}
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[color:var(--brand-cream)] shadow-card transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              style={
-                {
-                  background: nextDeep,
-                  ["--tw-ring-color" as string]: nextDeep,
-                } as React.CSSProperties
-              }
-            >
-              Continue to next phase
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </div>
-        );
-      })()}
+        })()}
 
       {/* Re-open the milestone prompt anytime once the phase is complete. */}
       {pct === 100 && (

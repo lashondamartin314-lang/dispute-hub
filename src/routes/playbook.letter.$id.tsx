@@ -1,6 +1,22 @@
 import { createFileRoute, notFound, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, FileText, Library, Mail, MapPin, Clock, ListChecks, ShieldAlert, Inbox, GitBranch, Scale, Check, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  FileText,
+  Library,
+  Mail,
+  MapPin,
+  Clock,
+  ListChecks,
+  ShieldAlert,
+  Inbox,
+  GitBranch,
+  Scale,
+  Check,
+  X,
+} from "lucide-react";
 import { LETTER_GUIDES } from "@/data/letter-guides";
 import {
   Breadcrumb,
@@ -100,13 +116,14 @@ function LetterDetail() {
           </Breadcrumb>
 
           <div className="mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs font-bold uppercase tracking-[0.22em]" style={{ color: `var(${phase.colorVar}-deep)` }}>
-              Letter <span className="text-[color:var(--brand-ink)]">{idxInPhase + 1}</span> of {phaseLetters.length} · {phase.name}
-            </p>
-            <nav
-              aria-label={`Letters in ${phase.name}`}
-              className="flex items-center gap-1.5"
+            <p
+              className="text-xs font-bold uppercase tracking-[0.22em]"
+              style={{ color: `var(${phase.colorVar}-deep)` }}
             >
+              Letter <span className="text-[color:var(--brand-ink)]">{idxInPhase + 1}</span> of{" "}
+              {phaseLetters.length} · {phase.name}
+            </p>
+            <nav aria-label={`Letters in ${phase.name}`} className="flex items-center gap-1.5">
               <ol className="flex flex-1 items-center gap-1.5 sm:flex-none">
                 {phaseLetters.map((l, i) => {
                   const isCurrent = l.id === letter.id;
@@ -122,9 +139,10 @@ function LetterDetail() {
                         title={`${l.id} · ${l.title}`}
                         className="group/dot relative block h-3 w-full sm:w-10 rounded-full transition-all hover:scale-y-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         style={{
-                          background: isCurrent || isPast
-                            ? `var(${phase.colorVar}${isCurrent ? "-deep" : ""})`
-                            : `color-mix(in oklab, var(${phase.colorVar}) 18%, var(--muted))`,
+                          background:
+                            isCurrent || isPast
+                              ? `var(${phase.colorVar}${isCurrent ? "-deep" : ""})`
+                              : `color-mix(in oklab, var(${phase.colorVar}) 18%, var(--muted))`,
                           ["--tw-ring-color" as string]: `var(${phase.colorVar}-deep)`,
                         }}
                       >
@@ -184,7 +202,9 @@ function LetterDetail() {
                   <SelectItem key={l.id} value={l.id} className="cursor-pointer">
                     <span className="mr-2 font-mono text-xs text-muted-foreground">{l.id}</span>
                     <span className="font-medium">{l.title}</span>
-                    <span className="ml-2 text-xs text-muted-foreground">({i + 1}/{phaseLetters.length})</span>
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      ({i + 1}/{phaseLetters.length})
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -219,15 +239,20 @@ function LetterDetail() {
               className="absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-50 blur-2xl"
               style={{ background: "var(--brand-sky)" }}
             />
-            <p className="eyebrow relative" style={{ color: "color-mix(in oklab, var(--brand-sky) 30%, var(--brand-ink))" }}>
+            <p
+              className="eyebrow relative"
+              style={{ color: "color-mix(in oklab, var(--brand-sky) 30%, var(--brand-ink))" }}
+            >
               01 · Open the template
             </p>
             <h2 className="font-display relative mt-3 text-3xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-4xl">
               Two ways in.
             </h2>
             <p className="font-editorial relative mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">
-              <strong className="font-semibold">"Use template"</strong> creates your own copy in Google Drive — that's the working version you edit and send.{" "}
-              <strong className="font-semibold">"Preview"</strong> opens read-only so you can read it before committing.
+              <strong className="font-semibold">"Use template"</strong> creates your own copy in
+              Google Drive — that's the working version you edit and send.{" "}
+              <strong className="font-semibold">"Preview"</strong> opens read-only so you can read
+              it before committing.
             </p>
             <div className="relative mt-7 flex flex-wrap gap-3">
               <a
@@ -277,7 +302,10 @@ function LetterDetail() {
                 "Send by USPS Certified Mail · Return Receipt Requested.",
                 "Log the date sent + tracking number on your Round Tracker.",
               ].map((s, i) => (
-                <li key={s} className="flex items-baseline gap-3 text-base leading-relaxed md:text-lg">
+                <li
+                  key={s}
+                  className="flex items-baseline gap-3 text-base leading-relaxed md:text-lg"
+                >
                   <span
                     className="font-display inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-bold text-[color:var(--brand-cream)]"
                     style={{ background: "var(--brand-gold-deep)" }}
@@ -299,7 +327,9 @@ function LetterDetail() {
                 "linear-gradient(180deg, color-mix(in oklab, var(--brand-navy-soft) 55%, var(--card)), var(--card))",
             }}
           >
-            <p className="eyebrow text-[color:var(--brand-navy-deep)]">03 · Who this letter is for</p>
+            <p className="eyebrow text-[color:var(--brand-navy-deep)]">
+              03 · Who this letter is for
+            </p>
             <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
               Address it correctly or it doesn't count.
             </h3>
@@ -309,14 +339,18 @@ function LetterDetail() {
                   <Mail className="size-5" />
                   <p className="eyebrow !mb-0">Recipient</p>
                 </div>
-                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">{guide.recipient}</p>
+                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">
+                  {guide.recipient}
+                </p>
               </div>
               <div className="rounded-xl border border-border bg-card p-5">
                 <div className="flex items-center gap-2 text-[color:var(--brand-navy-deep)]">
                   <MapPin className="size-5" />
                   <p className="eyebrow !mb-0">Where to find their address</p>
                 </div>
-                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">{guide.findAddress}</p>
+                <p className="mt-2.5 text-base leading-relaxed text-foreground/90">
+                  {guide.findAddress}
+                </p>
               </div>
             </div>
           </section>
@@ -339,10 +373,15 @@ function LetterDetail() {
               <p className="text-base leading-relaxed text-foreground/90">{guide.whenToSend}</p>
             </div>
             <div className="mt-6">
-              <p className="eyebrow text-[color:var(--brand-ink)]/70">Before you mail this, ALL of the following must be true</p>
+              <p className="eyebrow text-[color:var(--brand-ink)]/70">
+                Before you mail this, ALL of the following must be true
+              </p>
               <ul className="mt-3 space-y-2.5">
                 {guide.prerequisites.map((p) => (
-                  <li key={p} className="flex items-start gap-3 text-base leading-relaxed text-foreground/90">
+                  <li
+                    key={p}
+                    className="flex items-start gap-3 text-base leading-relaxed text-foreground/90"
+                  >
                     <Check className="mt-1 size-4 shrink-0 text-[color:var(--brand-magenta-deep)]" />
                     <span>{p}</span>
                   </li>
@@ -367,7 +406,9 @@ function LetterDetail() {
             >
               Hard rules
             </span>
-            <p className="eyebrow text-[color:var(--brand-gold-deep)]">05 · Rules &amp; watch-outs</p>
+            <p className="eyebrow text-[color:var(--brand-gold-deep)]">
+              05 · Rules &amp; watch-outs
+            </p>
             <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
               Skip any of these and the letter loses its teeth.
             </h3>
@@ -381,7 +422,10 @@ function LetterDetail() {
                 </div>
                 <ul className="mt-3 space-y-2.5">
                   {guide.mustInclude.map((m) => (
-                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                    <li
+                      key={m}
+                      className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90"
+                    >
                       <Check className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-navy-deep)]" />
                       <span>{m}</span>
                     </li>
@@ -403,7 +447,10 @@ function LetterDetail() {
                 </div>
                 <ul className="mt-3 space-y-2.5">
                   {guide.mustDo.map((m) => (
-                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                    <li
+                      key={m}
+                      className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90"
+                    >
                       <Check className="mt-0.5 size-4 shrink-0 text-[color:var(--brand-magenta-deep)]" />
                       <span>{m}</span>
                     </li>
@@ -425,7 +472,10 @@ function LetterDetail() {
                 </div>
                 <ul className="mt-3 space-y-2.5">
                   {guide.doNot.map((m) => (
-                    <li key={m} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90">
+                    <li
+                      key={m}
+                      className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/90"
+                    >
                       <X className="mt-0.5 size-4 shrink-0 text-[color:#991b1b]" />
                       <span>{m}</span>
                     </li>
@@ -444,15 +494,22 @@ function LetterDetail() {
               background: `linear-gradient(180deg, color-mix(in oklab, var(${phase.colorVar}-soft) 55%, var(--card)), var(--card))`,
             }}
           >
-            <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>06 · What happens next</p>
+            <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>
+              06 · What happens next
+            </p>
             <h3 className="font-display mt-3 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-3xl">
               Decision tree — exactly which letter follows.
             </h3>
 
             <div className="mt-5 flex items-start gap-3 rounded-xl border border-border bg-card p-5">
-              <Inbox className="mt-0.5 size-5 shrink-0" style={{ color: `var(${phase.colorVar}-deep)` }} />
+              <Inbox
+                className="mt-0.5 size-5 shrink-0"
+                style={{ color: `var(${phase.colorVar}-deep)` }}
+              />
               <div>
-                <p className="eyebrow !mb-1.5 text-[color:var(--brand-ink)]/70">What to expect back</p>
+                <p className="eyebrow !mb-1.5 text-[color:var(--brand-ink)]/70">
+                  What to expect back
+                </p>
                 <p className="text-base leading-relaxed text-foreground/90">{guide.expect}</p>
               </div>
             </div>
@@ -461,10 +518,7 @@ function LetterDetail() {
               {guide.nextStep.map((n, i) => {
                 const linked = n.letterId ? LETTERS_BY_ID[n.letterId] : null;
                 return (
-                  <li
-                    key={i}
-                    className="rounded-xl border border-border bg-card p-5"
-                  >
+                  <li key={i} className="rounded-xl border border-border bg-card p-5">
                     <div className="flex items-start gap-3">
                       <span
                         className="font-display mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-[color:var(--brand-cream)]"
@@ -529,10 +583,15 @@ function LetterDetail() {
             <p className="eyebrow ml-12" style={{ color: `var(${phase.colorVar}-deep)` }}>
               07 · {phase.eyebrow}
             </p>
-            <h2 className="font-display mt-3 text-3xl font-bold leading-tight md:text-4xl" style={{ color: `var(${phase.colorVar}-deep)` }}>
+            <h2
+              className="font-display mt-3 text-3xl font-bold leading-tight md:text-4xl"
+              style={{ color: `var(${phase.colorVar}-deep)` }}
+            >
               This letter belongs to {phase.name}.
             </h2>
-            <p className="font-editorial mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">{phase.lede}</p>
+            <p className="font-editorial mt-4 text-lg leading-relaxed text-foreground/85 md:text-xl">
+              {phase.lede}
+            </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 to="/playbook/phase/$id"
@@ -540,7 +599,8 @@ function LetterDetail() {
                 className="group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold uppercase tracking-[0.16em] text-[color:var(--brand-cream)] transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                 style={{ background: `var(${phase.colorVar}-deep)` }}
               >
-                Open the {phase.shortName} phase <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                Open the {phase.shortName} phase{" "}
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 to="/letters"
@@ -579,7 +639,9 @@ function LetterDetail() {
                       </p>
                     </div>
                   </Link>
-                ) : <span />}
+                ) : (
+                  <span />
+                )}
                 {nextLetter && (
                   <Link
                     to="/playbook/letter/$id"

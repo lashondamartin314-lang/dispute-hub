@@ -32,9 +32,7 @@ test.describe("mobile sidebar auto-scroll", () => {
     await expect(activeLink).toBeInViewport();
   });
 
-  test("falls back to the top-level active link on the cover route", async ({
-    page,
-  }) => {
+  test("falls back to the top-level active link on the cover route", async ({ page }) => {
     await page.goto("/playbook");
 
     const trigger = page.getByRole("button", { name: /open navigation|toggle sidebar|menu/i });

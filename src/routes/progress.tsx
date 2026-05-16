@@ -9,7 +9,11 @@ export const Route = createFileRoute("/progress")({
   head: () => ({
     meta: [
       { title: "Your Progress · The Dispute Playbook" },
-      { name: "description", content: "Your earned milestone badges and phase-by-phase progress through the Dispute Playbook." },
+      {
+        name: "description",
+        content:
+          "Your earned milestone badges and phase-by-phase progress through the Dispute Playbook.",
+      },
     ],
   }),
   component: ProgressPage,
@@ -110,8 +114,8 @@ function ProgressPage() {
                 : `${completed} of ${total} phases complete.`}
           </h1>
           <p className="font-editorial mt-2 max-w-2xl text-base text-foreground/75 md:text-lg">
-            Finish a phase checklist and the badge automatically lands here. Saved
-            to your profile, available on every device you sign in from.
+            Finish a phase checklist and the badge automatically lands here. Saved to your profile,
+            available on every device you sign in from.
           </p>
         </div>
         <button
@@ -133,7 +137,11 @@ function ProgressPage() {
         }}
       >
         <div className="flex items-center gap-4">
-          <Trophy className="size-9 shrink-0" style={{ color: "var(--brand-gold-deep)" }} aria-hidden />
+          <Trophy
+            className="size-9 shrink-0"
+            style={{ color: "var(--brand-gold-deep)" }}
+            aria-hidden
+          />
           <div className="min-w-0 flex-1">
             <div className="flex items-baseline justify-between gap-3">
               <p className="font-display text-xl md:text-2xl">{pct}% of the playbook</p>
@@ -149,8 +157,7 @@ function ProgressPage() {
                 className="h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${pct}%`,
-                  background:
-                    "linear-gradient(90deg, var(--brand-magenta), var(--brand-gold))",
+                  background: "linear-gradient(90deg, var(--brand-magenta), var(--brand-gold))",
                 }}
               />
             </div>
@@ -195,12 +202,13 @@ function ProgressPage() {
                     <Award className="size-6" />
                   </span>
                   <div className="min-w-0">
-                    <p className="font-mono text-[10px] uppercase tracking-wider" style={{ color: phaseDeep }}>
+                    <p
+                      className="font-mono text-[10px] uppercase tracking-wider"
+                      style={{ color: phaseDeep }}
+                    >
                       Phase {phase.number}
                     </p>
-                    <p className="font-display mt-0.5 text-lg leading-tight">
-                      {phase.name}
-                    </p>
+                    <p className="font-display mt-0.5 text-lg leading-tight">{phase.name}</p>
                   </div>
                 </div>
                 <p className="mt-3 text-xs text-muted-foreground">
@@ -214,9 +222,7 @@ function ProgressPage() {
         })}
       </ul>
 
-      {loading && (
-        <p className="mt-6 text-center text-xs text-muted-foreground">Refreshing…</p>
-      )}
+      {loading && <p className="mt-6 text-center text-xs text-muted-foreground">Refreshing…</p>}
     </div>
   );
 }

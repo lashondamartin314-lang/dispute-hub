@@ -108,10 +108,7 @@ export function CreditAcademyUpsell({
   if (variant === "compact") {
     return (
       <aside
-        className={cn(
-          "relative overflow-hidden rounded-3xl border-2 p-6 md:p-8",
-          className,
-        )}
+        className={cn("relative overflow-hidden rounded-3xl border-2 p-6 md:p-8", className)}
         style={{
           borderColor: "color-mix(in oklab, var(--brand-gold) 55%, transparent)",
           background: "var(--gradient-brand)",
@@ -119,22 +116,23 @@ export function CreditAcademyUpsell({
       >
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
           <div className="text-[color:var(--brand-cream)]">
-            <p
-              className="eyebrow"
-              style={{ color: "var(--brand-gold)" }}
-            >
+            <p className="eyebrow" style={{ color: "var(--brand-gold)" }}>
               Want more than DIY?
             </p>
             <h3 className="font-display mt-1 text-2xl leading-tight md:text-3xl">
               Step into Credit Academy.
             </h3>
             <p className="font-editorial mt-2 max-w-xl text-base leading-relaxed text-[color:var(--brand-cream)]/85 md:text-lg">
-              Patent-pending Dispute Engine, member-only library, monthly cohorts,
-              and SmartCredit 3B included. For Cousins ready for the full system.
+              Patent-pending Dispute Engine, member-only library, monthly cohorts, and SmartCredit
+              3B included. For Cousins ready for the full system.
             </p>
           </div>
           <a
-            href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip", placement)}
+            href={withUtm(
+              "https://shondamartincom.netlify.app/credit-academy-memberships",
+              "vip",
+              placement,
+            )}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Join Credit Academy VIP (opens in new tab)"
@@ -154,16 +152,10 @@ export function CreditAcademyUpsell({
       aria-labelledby="academy-heading"
     >
       <div className="text-center">
-        <p
-          className="eyebrow"
-          style={{ color: accentColor ?? "var(--brand-gold-deep)" }}
-        >
+        <p className="eyebrow" style={{ color: accentColor ?? "var(--brand-gold-deep)" }}>
           Need more guidance?
         </p>
-        <h2
-          id="academy-heading"
-          className="font-display mt-2 text-3xl leading-tight md:text-5xl"
-        >
+        <h2 id="academy-heading" className="font-display mt-2 text-3xl leading-tight md:text-5xl">
           Three lanes.{" "}
           <em
             className="font-editorial italic bg-clip-text text-transparent"
@@ -173,8 +165,8 @@ export function CreditAcademyUpsell({
           </em>
         </h2>
         <p className="font-editorial mx-auto mt-3 max-w-2xl text-base leading-relaxed text-foreground/80 md:text-lg">
-          The Playbook gets you moving. When you want stronger systems, deeper
-          support, or full visibility — Shonda built the lane for that too.
+          The Playbook gets you moving. When you want stronger systems, deeper support, or full
+          visibility — Shonda built the lane for that too.
         </p>
       </div>
 
@@ -192,16 +184,12 @@ export function CreditAcademyUpsell({
                 borderColor: t.highlight
                   ? "var(--brand-gold)"
                   : `color-mix(in oklab, ${t.accent} 28%, transparent)`,
-                background: t.highlight
-                  ? "var(--gradient-brand)"
-                  : "var(--card)",
+                background: t.highlight ? "var(--gradient-brand)" : "var(--card)",
                 color: t.highlight ? "var(--brand-cream)" : undefined,
               }}
             >
               {t.highlight && (
-                <span
-                  className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-[color:var(--brand-gold)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[color:var(--brand-ink)] shadow-card"
-                >
+                <span className="absolute -top-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-[color:var(--brand-gold)] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[color:var(--brand-ink)] shadow-card">
                   ★ Most loved
                 </span>
               )}
@@ -242,9 +230,7 @@ export function CreditAcademyUpsell({
                 <span
                   className={cn(
                     "text-sm font-medium",
-                    t.highlight
-                      ? "text-[color:var(--brand-cream)]/70"
-                      : "text-muted-foreground",
+                    t.highlight ? "text-[color:var(--brand-cream)]/70" : "text-muted-foreground",
                   )}
                 >
                   {t.cadence}
@@ -285,7 +271,11 @@ export function CreditAcademyUpsell({
       <p className="mt-6 text-center text-xs text-muted-foreground">
         Still undecided?{" "}
         <a
-          href={withUtm("https://shondamartincom.netlify.app/credit-academy-memberships", "vip_trial", placement)}
+          href={withUtm(
+            "https://shondamartincom.netlify.app/credit-academy-memberships",
+            "vip_trial",
+            placement,
+          )}
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
@@ -343,9 +333,7 @@ function TierBullets({
               />
               <span
                 className={cn(
-                  highlight
-                    ? "text-[color:var(--brand-cream)]/90"
-                    : "text-foreground/85",
+                  highlight ? "text-[color:var(--brand-cream)]/90" : "text-foreground/85",
                 )}
               >
                 {b}
@@ -370,10 +358,7 @@ function TierBullets({
         >
           {expanded ? "Show less" : `Show all ${bullets.length} tools`}
           <ChevronDown
-            className={cn(
-              "size-3.5 transition-transform",
-              expanded && "rotate-180",
-            )}
+            className={cn("size-3.5 transition-transform", expanded && "rotate-180")}
             aria-hidden
           />
         </button>
@@ -415,15 +400,11 @@ function UpsellFAQ() {
       aria-labelledby="upsell-faq-heading"
       className="mt-14 rounded-3xl border-2 bg-card p-6 md:p-10"
       style={{
-        borderColor:
-          "color-mix(in oklab, var(--brand-magenta-deep) 18%, transparent)",
+        borderColor: "color-mix(in oklab, var(--brand-magenta-deep) 18%, transparent)",
       }}
     >
       <div className="text-center">
-        <p
-          className="eyebrow"
-          style={{ color: "var(--brand-magenta-deep)" }}
-        >
+        <p className="eyebrow" style={{ color: "var(--brand-magenta-deep)" }}>
           Questions before you choose?
         </p>
         <h3
@@ -434,11 +415,7 @@ function UpsellFAQ() {
         </h3>
       </div>
 
-      <Accordion
-        type="single"
-        collapsible
-        className="mx-auto mt-6 max-w-3xl"
-      >
+      <Accordion type="single" collapsible className="mx-auto mt-6 max-w-3xl">
         {FAQS.map((item, i) => (
           <AccordionItem key={item.q} value={`faq-${i}`}>
             <AccordionTrigger className="text-left font-display text-base leading-snug md:text-lg">

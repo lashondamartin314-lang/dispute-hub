@@ -1,5 +1,13 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, XCircle, Lightbulb, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  XCircle,
+  Lightbulb,
+  Sparkles,
+} from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
 import { SectionToc } from "@/components/section-toc";
@@ -10,7 +18,14 @@ import { PHASES, PHASES_BY_ID } from "@/data/phases";
 import { lettersForPhase, LETTERS_BY_ID } from "@/data/letters";
 import type { PhaseId } from "@/data/letters";
 
-const PHASE_IDS: PhaseId[] = ["prepare", "validate", "clean-identity", "dispute-bureaus", "challenge-furnishers", "escalate"];
+const PHASE_IDS: PhaseId[] = [
+  "prepare",
+  "validate",
+  "clean-identity",
+  "dispute-bureaus",
+  "challenge-furnishers",
+  "escalate",
+];
 
 export const Route = createFileRoute("/playbook/phase/$id")({
   head: ({ params }) => {
@@ -42,7 +57,10 @@ function PhasePage() {
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-border" style={{ background: hero }}>
+      <section
+        className="relative overflow-hidden border-b border-border"
+        style={{ background: hero }}
+      >
         <div className="mx-auto max-w-5xl px-6 py-16 md:px-10 md:py-24">
           <EditorialHeader
             eyebrow={phase.eyebrow}
@@ -59,7 +77,9 @@ function PhasePage() {
         <div className="min-w-0 space-y-14">
           <section id="the-work" className="scroll-mt-24">
             <p className="eyebrow">The work, step by step</p>
-            <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Inside this phase.</h2>
+            <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">
+              Inside this phase.
+            </h2>
             <ol className="mt-6 space-y-6 md:space-y-7">
               {phase.steps.map((s, i) => (
                 <li key={i} className="flex gap-4 md:gap-5">
@@ -75,7 +95,9 @@ function PhasePage() {
                     </h3>
                     <p
                       className="font-editorial italic mt-3 text-[17px] md:text-lg leading-relaxed text-foreground/80 border-l pl-4"
-                      style={{ borderColor: `color-mix(in oklab, var(${phase.colorVar}-deep) 35%, transparent)` }}
+                      style={{
+                        borderColor: `color-mix(in oklab, var(${phase.colorVar}-deep) 35%, transparent)`,
+                      }}
                     >
                       {s.description}
                     </p>
@@ -89,8 +111,12 @@ function PhasePage() {
 
           {phase.teaching && (
             <section id="teach" className="scroll-mt-24">
-              <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>Teach me — full walkthrough</p>
-              <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">Learn this phase, end to end.</h2>
+              <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>
+                Teach me — full walkthrough
+              </p>
+              <h2 className="font-display mt-2 text-3xl font-bold leading-tight md:text-4xl">
+                Learn this phase, end to end.
+              </h2>
               <p className="font-editorial mt-3 max-w-2xl text-lg leading-relaxed text-foreground/85 md:text-xl">
                 {phase.teaching.overview}
               </p>
@@ -115,19 +141,28 @@ function PhasePage() {
                         <BookOpen className="size-5 md:size-6" />
                       </span>
                       <div>
-                        <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>{m.eyebrow}</p>
-                        <h3 className="font-display mt-1 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-[28px]">{m.title}</h3>
+                        <p className="eyebrow" style={{ color: `var(${phase.colorVar}-deep)` }}>
+                          {m.eyebrow}
+                        </p>
+                        <h3 className="font-display mt-1 text-2xl font-bold leading-tight text-[color:var(--brand-ink)] md:text-[28px]">
+                          {m.title}
+                        </h3>
                       </div>
                     </header>
 
                     {m.intro && (
-                      <p className="font-editorial mt-5 text-lg leading-relaxed text-foreground/90">{m.intro}</p>
+                      <p className="font-editorial mt-5 text-lg leading-relaxed text-foreground/90">
+                        {m.intro}
+                      </p>
                     )}
 
                     {m.walkthrough && m.walkthrough.length > 0 && (
                       <ol className="mt-6 space-y-3">
                         {m.walkthrough.map((w, j) => (
-                          <li key={j} className="flex gap-4 rounded-xl border border-border/60 bg-card p-4">
+                          <li
+                            key={j}
+                            className="flex gap-4 rounded-xl border border-border/60 bg-card p-4"
+                          >
                             <span
                               className="font-mono inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-[color:var(--brand-cream)]"
                               style={{ background: `var(${phase.colorVar})` }}
@@ -149,17 +184,25 @@ function PhasePage() {
                           <div
                             className="rounded-xl border-2 p-5"
                             style={{
-                              borderColor: "color-mix(in oklab, var(--brand-emerald, #2f7a4f) 40%, transparent)",
-                              background: "color-mix(in oklab, var(--brand-emerald, #2f7a4f) 6%, var(--card))",
+                              borderColor:
+                                "color-mix(in oklab, var(--brand-emerald, #2f7a4f) 40%, transparent)",
+                              background:
+                                "color-mix(in oklab, var(--brand-emerald, #2f7a4f) 6%, var(--card))",
                             }}
                           >
-                            <p className="eyebrow flex items-center gap-2" style={{ color: "var(--brand-emerald, #2f7a4f)" }}>
+                            <p
+                              className="eyebrow flex items-center gap-2"
+                              style={{ color: "var(--brand-emerald, #2f7a4f)" }}
+                            >
                               <CheckCircle2 className="size-4" /> Include / Do
                             </p>
                             <ul className="mt-3 space-y-2 text-sm">
                               {m.include.map((it, k) => (
                                 <li key={k} className="flex gap-2">
-                                  <CheckCircle2 className="mt-0.5 size-4 shrink-0" style={{ color: "var(--brand-emerald, #2f7a4f)" }} />
+                                  <CheckCircle2
+                                    className="mt-0.5 size-4 shrink-0"
+                                    style={{ color: "var(--brand-emerald, #2f7a4f)" }}
+                                  />
                                   <span className="text-foreground/85">{it}</span>
                                 </li>
                               ))}
@@ -170,17 +213,25 @@ function PhasePage() {
                           <div
                             className="rounded-xl border-2 p-5"
                             style={{
-                              borderColor: "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 40%, transparent)",
-                              background: "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 6%, var(--card))",
+                              borderColor:
+                                "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 40%, transparent)",
+                              background:
+                                "color-mix(in oklab, var(--brand-magenta-deep, #9b1c5b) 6%, var(--card))",
                             }}
                           >
-                            <p className="eyebrow flex items-center gap-2" style={{ color: "var(--brand-magenta-deep, #9b1c5b)" }}>
+                            <p
+                              className="eyebrow flex items-center gap-2"
+                              style={{ color: "var(--brand-magenta-deep, #9b1c5b)" }}
+                            >
                               <XCircle className="size-4" /> Exclude / Avoid
                             </p>
                             <ul className="mt-3 space-y-2 text-sm">
                               {m.exclude.map((it, k) => (
                                 <li key={k} className="flex gap-2">
-                                  <XCircle className="mt-0.5 size-4 shrink-0" style={{ color: "var(--brand-magenta-deep, #9b1c5b)" }} />
+                                  <XCircle
+                                    className="mt-0.5 size-4 shrink-0"
+                                    style={{ color: "var(--brand-magenta-deep, #9b1c5b)" }}
+                                  />
                                   <span className="text-foreground/85">{it}</span>
                                 </li>
                               ))}
@@ -191,22 +242,35 @@ function PhasePage() {
                     )}
 
                     {m.example && (
-                      <div className="mt-5 rounded-xl border-l-4 bg-muted/40 p-4" style={{ borderColor: `var(${phase.colorVar}-deep)` }}>
-                        <p className="eyebrow flex items-center gap-2" style={{ color: `var(${phase.colorVar}-deep)` }}>
+                      <div
+                        className="mt-5 rounded-xl border-l-4 bg-muted/40 p-4"
+                        style={{ borderColor: `var(${phase.colorVar}-deep)` }}
+                      >
+                        <p
+                          className="eyebrow flex items-center gap-2"
+                          style={{ color: `var(${phase.colorVar}-deep)` }}
+                        >
                           <Sparkles className="size-3.5" /> Example
                         </p>
-                        <p className="font-editorial mt-1.5 text-foreground/90 leading-relaxed">{m.example}</p>
+                        <p className="font-editorial mt-1.5 text-foreground/90 leading-relaxed">
+                          {m.example}
+                        </p>
                       </div>
                     )}
 
                     {m.tip && (
                       <div
                         className="mt-5 flex gap-3 rounded-xl p-4"
-                        style={{ background: "color-mix(in oklab, var(--brand-gold) 16%, transparent)" }}
+                        style={{
+                          background: "color-mix(in oklab, var(--brand-gold) 16%, transparent)",
+                        }}
                       >
                         <Lightbulb className="mt-0.5 size-5 shrink-0 text-[color:var(--brand-gold-deep)]" />
                         <p className="text-sm leading-relaxed text-[color:var(--brand-ink)]">
-                          <strong className="text-[color:var(--brand-gold-deep)]">Pro tip · </strong>{m.tip}
+                          <strong className="text-[color:var(--brand-gold-deep)]">
+                            Pro tip ·{" "}
+                          </strong>
+                          {m.tip}
                         </p>
                       </div>
                     )}
@@ -226,7 +290,8 @@ function PhasePage() {
               defaultOpen={false}
             >
               <p className="font-editorial mb-6 max-w-2xl text-lg leading-relaxed text-foreground/85 md:text-xl">
-                Each letter opens the Google Doc template in a new tab. "Use template" forces a copy into your own Drive; "Preview" opens read-only.
+                Each letter opens the Google Doc template in a new tab. "Use template" forces a copy
+                into your own Drive; "Preview" opens read-only.
               </p>
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 {letters.map((l) => (
@@ -251,9 +316,15 @@ function PhasePage() {
               { id: "the-work", label: "The work" },
               { id: "checklist", label: "Phase checklist" },
               ...(phase.teaching ? [{ id: "teach", label: "Teach me" }] : []),
-              ...(phase.teaching?.modules.map((m, i) => ({ id: `module-${i + 1}`, label: m.title })) ?? []),
+              ...(phase.teaching?.modules.map((m, i) => ({
+                id: `module-${i + 1}`,
+                label: m.title,
+              })) ?? []),
               ...(letters.length > 0 ? [{ id: "letters", label: "Letters" }] : []),
-              ...letters.map((l) => ({ id: l.id, label: `${l.id} · ${LETTERS_BY_ID[l.id].title}` })),
+              ...letters.map((l) => ({
+                id: l.id,
+                label: `${l.id} · ${LETTERS_BY_ID[l.id].title}`,
+              })),
               { id: "academy", label: "Credit Academy" },
             ]}
           />
@@ -262,23 +333,39 @@ function PhasePage() {
 
       <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 border-t border-border px-6 py-10 md:px-10">
         {prev ? (
-          <Link to="/playbook/phase/$id" params={{ id: prev.id }} className="group flex items-center gap-3 text-sm">
+          <Link
+            to="/playbook/phase/$id"
+            params={{ id: prev.id }}
+            className="group flex items-center gap-3 text-sm"
+          >
             <ArrowLeft className="size-4" />
             <div>
               <p className="eyebrow">Previous</p>
-              <p className="font-display text-lg group-hover:text-[color:var(--brand-magenta)]">P{prev.number} · {prev.name}</p>
+              <p className="font-display text-lg group-hover:text-[color:var(--brand-magenta)]">
+                P{prev.number} · {prev.name}
+              </p>
             </div>
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
         {next ? (
-          <Link to="/playbook/phase/$id" params={{ id: next.id }} className="group flex items-center gap-3 text-right text-sm">
+          <Link
+            to="/playbook/phase/$id"
+            params={{ id: next.id }}
+            className="group flex items-center gap-3 text-right text-sm"
+          >
             <div>
               <p className="eyebrow">Next</p>
-              <p className="font-display text-lg group-hover:text-[color:var(--brand-magenta)]">P{next.number} · {next.name}</p>
+              <p className="font-display text-lg group-hover:text-[color:var(--brand-magenta)]">
+                P{next.number} · {next.name}
+              </p>
             </div>
             <ArrowRight className="size-4" />
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
       </nav>
     </div>
   );

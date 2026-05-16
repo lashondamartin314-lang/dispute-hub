@@ -43,11 +43,7 @@ export function DownloadProgressPdf({ className, variant = "primary" }: Download
       doc.setTextColor(100);
       doc.text("Phase checklist progress export", margin, y);
       y += 14;
-      doc.text(
-        `Generated ${new Date().toLocaleString()}`,
-        margin,
-        y,
-      );
+      doc.text(`Generated ${new Date().toLocaleString()}`, margin, y);
       y += 10;
       doc.setDrawColor(200);
       doc.line(margin, y + 6, pageW - margin, y + 6);

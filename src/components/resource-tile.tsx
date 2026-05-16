@@ -22,8 +22,7 @@ interface ResourceTileProps {
 
 /** Pronounced white card with thicker border and elevation. */
 export function ResourceTile({ resource, className, activeRound }: ResourceTileProps) {
-  const isInActiveRound =
-    activeRound != null && resource.rounds?.includes(activeRound);
+  const isInActiveRound = activeRound != null && resource.rounds?.includes(activeRound);
   const isDimmed = activeRound != null && !isInActiveRound;
   const [stepsOpen, setStepsOpen] = useState(false);
 
@@ -103,7 +102,10 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
                   <span className="underline decoration-dotted underline-offset-4 decoration-[color:var(--brand-gold-deep)]/60 group-hover/eyebrow:decoration-[color:var(--brand-gold-deep)]">
                     {resource.actionLabel}
                   </span>
-                  <ArrowRight className="size-3 opacity-70 transition-transform group-hover/eyebrow:translate-x-0.5" aria-hidden />
+                  <ArrowRight
+                    className="size-3 opacity-70 transition-transform group-hover/eyebrow:translate-x-0.5"
+                    aria-hidden
+                  />
                 </button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">

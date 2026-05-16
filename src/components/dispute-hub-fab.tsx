@@ -69,7 +69,11 @@ export function DisputeHubFab() {
           background: "var(--brand-navy-deep, #1a1f3a)",
         }}
       >
-        {open ? <X className="size-5" aria-hidden /> : <LayoutGrid className="size-5" aria-hidden />}
+        {open ? (
+          <X className="size-5" aria-hidden />
+        ) : (
+          <LayoutGrid className="size-5" aria-hidden />
+        )}
         <span className="sr-only">Quick access menu</span>
       </motion.button>
     </div>

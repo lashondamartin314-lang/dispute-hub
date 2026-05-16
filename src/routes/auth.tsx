@@ -7,7 +7,11 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in · The Dispute Playbook" },
-      { name: "description", content: "Sign in or create your account to save your phase progress and earn milestone badges." },
+      {
+        name: "description",
+        content:
+          "Sign in or create your account to save your phase progress and earn milestone badges.",
+      },
     ],
   }),
   component: AuthPage,

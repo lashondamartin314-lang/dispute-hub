@@ -15,13 +15,14 @@ const setPathname = (p: string) => {
 // `currentPathname` so tests can drive the active route.
 vi.mock("@tanstack/react-router", () => {
   return {
-    Link: React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }>(
-      ({ to, children, onClick, ...rest }, ref) => (
-        <a ref={ref} href={typeof to === "string" ? to : "#"} onClick={onClick} {...rest}>
-          {children}
-        </a>
-      ),
-    ),
+    Link: React.forwardRef<
+      HTMLAnchorElement,
+      React.AnchorHTMLAttributes<HTMLAnchorElement> & { to?: string }
+    >(({ to, children, onClick, ...rest }, ref) => (
+      <a ref={ref} href={typeof to === "string" ? to : "#"} onClick={onClick} {...rest}>
+        {children}
+      </a>
+    )),
     useRouterState: (opts?: { select?: (s: { location: { pathname: string } }) => unknown }) => {
       const state = { location: { pathname: currentPathname } };
       return opts?.select ? opts.select(state) : currentPathname;
@@ -158,9 +159,7 @@ describe("AppSidebar auto-scroll on open", () => {
     const sheet = document.querySelector<HTMLElement>(
       '[data-mobile="true"][data-sidebar="sidebar"]',
     );
-    const firstMenuItem = sheet?.querySelector<HTMLElement>(
-      '[data-sidebar="menu-button"]',
-    );
+    const firstMenuItem = sheet?.querySelector<HTMLElement>('[data-sidebar="menu-button"]');
     expect(firstMenuItem).toBeTruthy();
     expect(scrollSpy.mock.instances).toContain(firstMenuItem);
   });

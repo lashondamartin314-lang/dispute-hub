@@ -136,16 +136,16 @@ export function MilestonePrompt({ phase, open, onClose, defaultEmail }: Props) {
             Lock {phase.name} into your tracker.
           </DialogTitle>
           <DialogDescription className="font-editorial text-base text-foreground/75">
-            Fill in the dates and certified-mail numbers for the letters you
-            sent in this phase. Save it to your tracker, and email yourself a
-            copy so you have a paper trail with response deadlines.
+            Fill in the dates and certified-mail numbers for the letters you sent in this phase.
+            Save it to your tracker, and email yourself a copy so you have a paper trail with
+            response deadlines.
           </DialogDescription>
         </DialogHeader>
 
         {rows.length === 0 ? (
           <p className="rounded-md bg-muted/40 px-3 py-3 text-sm text-muted-foreground">
-            This phase doesn't have letter-based steps to log. You can still
-            close this and the badge stays on your profile.
+            This phase doesn't have letter-based steps to log. You can still close this and the
+            badge stays on your profile.
           </p>
         ) : (
           <ul
@@ -179,9 +179,7 @@ export function MilestonePrompt({ phase, open, onClose, defaultEmail }: Props) {
                     >
                       {r.letterId}
                     </p>
-                    <p className="text-sm font-semibold leading-snug">
-                      {r.title}
-                    </p>
+                    <p className="text-sm font-semibold leading-snug">{r.title}</p>
                     <div className="mt-2 grid gap-2 sm:grid-cols-2">
                       <Field label="Sent date">
                         <input
@@ -230,7 +228,10 @@ export function MilestonePrompt({ phase, open, onClose, defaultEmail }: Props) {
 
         {/* Email row */}
         {rows.length > 0 && (
-          <div className="mt-4 rounded-xl border-2 border-dashed p-3" style={{ borderColor: "var(--border)" }}>
+          <div
+            className="mt-4 rounded-xl border-2 border-dashed p-3"
+            style={{ borderColor: "var(--border)" }}
+          >
             <Field label="Email a copy to">
               <input
                 type="email"
@@ -242,8 +243,8 @@ export function MilestonePrompt({ phase, open, onClose, defaultEmail }: Props) {
               />
             </Field>
             <p className="mt-2 text-[11px] text-muted-foreground">
-              Opens your mail app with the summary pre-filled — works on every
-              device, nothing to set up.
+              Opens your mail app with the summary pre-filled — works on every device, nothing to
+              set up.
             </p>
           </div>
         )}

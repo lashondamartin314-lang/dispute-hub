@@ -1,14 +1,6 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronsDown,
-  ChevronsUp,
-  Keyboard,
-  List,
-  X,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsDown, ChevronsUp, Keyboard, List, X } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -174,7 +166,11 @@ export function SectionToc({
   }, []);
 
   const activeIdx = useMemo(
-    () => Math.max(0, items.findIndex((i) => i.id === activeId)),
+    () =>
+      Math.max(
+        0,
+        items.findIndex((i) => i.id === activeId),
+      ),
     [items, activeId],
   );
 
@@ -201,8 +197,7 @@ export function SectionToc({
       // Move keyboard focus to the section heading when requested
       // so screen-reader / keyboard users land in the new context.
       if (opts?.focusHeading) {
-        const heading =
-          target.querySelector<HTMLElement>("h1, h2, h3, [data-toc-focus]") ?? target;
+        const heading = target.querySelector<HTMLElement>("h1, h2, h3, [data-toc-focus]") ?? target;
         const prevTabIndex = heading.getAttribute("tabindex");
         if (prevTabIndex === null) heading.setAttribute("tabindex", "-1");
         heading.focus({ preventScroll: true });
@@ -265,10 +260,7 @@ export function SectionToc({
   }, [items, jumpByDelta, jumpTo, drawerOpen, showShortcuts]);
 
   // Focus the anchor at focusIdx within the given list ref.
-  const focusAnchor = (
-    listRef: React.RefObject<HTMLUListElement | null>,
-    idx: number,
-  ) => {
+  const focusAnchor = (listRef: React.RefObject<HTMLUListElement | null>, idx: number) => {
     const root = listRef.current;
     if (!root) return;
     const anchors = root.querySelectorAll<HTMLAnchorElement>("a[data-toc-item]");
@@ -473,7 +465,10 @@ export function SectionToc({
         style={{ background: `color-mix(in oklab, ${accentColor} 12%, transparent)` }}
       >
         <div
-          className={cn("h-full rounded-full", !reducedMotion && "transition-[width] duration-200 ease-out")}
+          className={cn(
+            "h-full rounded-full",
+            !reducedMotion && "transition-[width] duration-200 ease-out",
+          )}
           style={{ width: `${progress * 100}%`, background: accentColor }}
         />
       </div>
@@ -490,12 +485,11 @@ export function SectionToc({
         {activeLabel ? `Current section: ${activeLabel}, ${activeIdx + 1} of ${items.length}` : ""}
       </div>
       {/* Desktop sticky sidebar */}
-      <nav
-        aria-label={label}
-        className={cn("sticky top-24 hidden xl:block", className)}
-      >
+      <nav aria-label={label} className={cn("sticky top-24 hidden xl:block", className)}>
         <div className="mb-3 flex items-center justify-between">
-          <p className="eyebrow" style={{ color: accentColor }}>{label}</p>
+          <p className="eyebrow" style={{ color: accentColor }}>
+            {label}
+          </p>
           <button
             type="button"
             onClick={() => setShowShortcuts((v) => !v)}
@@ -512,8 +506,7 @@ export function SectionToc({
         {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
         {renderList(desktopListRef, "desktop")}
         <p className="mt-3 text-[10px] leading-snug text-muted-foreground/80">
-          Tip: press <Kbd>[</Kbd> / <Kbd>]</Kbd> anywhere on the page to move
-          between sections.
+          Tip: press <Kbd>[</Kbd> / <Kbd>]</Kbd> anywhere on the page to move between sections.
         </p>
       </nav>
 
@@ -529,7 +522,9 @@ export function SectionToc({
             <List className="size-4" aria-hidden />
             <span>
               {items[activeIdx]?.label ?? label}
-              <span className="ml-2 opacity-70">{activeIdx + 1}/{items.length}</span>
+              <span className="ml-2 opacity-70">
+                {activeIdx + 1}/{items.length}
+              </span>
             </span>
           </button>
         </DrawerTrigger>
@@ -537,8 +532,8 @@ export function SectionToc({
           <DrawerHeader className="px-0 text-left">
             <DrawerTitle className="font-display text-xl">{label}</DrawerTitle>
             <DrawerDescription>
-              Jump to any section. Use <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move,{" "}
-              <Kbd>Enter</Kbd> to go, <Kbd>Esc</Kbd> to close.
+              Jump to any section. Use <Kbd>↑</Kbd> <Kbd>↓</Kbd> to move, <Kbd>Enter</Kbd> to go,{" "}
+              <Kbd>Esc</Kbd> to close.
             </DrawerDescription>
           </DrawerHeader>
           {ProgressBar}
@@ -597,10 +592,7 @@ function SkipBtn({
 
 function ShortcutsPanel({ id }: { id: string }) {
   return (
-    <div
-      id={id}
-      className="mb-3 rounded-xl border border-border/70 bg-card/70 p-3 text-xs"
-    >
+    <div id={id} className="mb-3 rounded-xl border border-border/70 bg-card/70 p-3 text-xs">
       <p className="eyebrow mb-2 text-[9px]">Keyboard shortcuts</p>
       <ul className="grid grid-cols-1 gap-1.5">
         <Row k={["↑", "↓"]} v="Move between items" />

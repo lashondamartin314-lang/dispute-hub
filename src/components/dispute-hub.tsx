@@ -11,11 +11,7 @@ import {
   LayoutGrid,
   ChevronDown,
 } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
 

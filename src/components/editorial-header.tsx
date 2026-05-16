@@ -31,13 +31,7 @@ export function EditorialHeader({
     : undefined;
 
   return (
-    <header
-      className={cn(
-        "relative",
-        align === "center" ? "text-center" : "",
-        className,
-      )}
-    >
+    <header className={cn("relative", align === "center" ? "text-center" : "", className)}>
       {numeral != null && (
         <div
           aria-hidden
