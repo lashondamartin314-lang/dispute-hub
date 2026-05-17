@@ -247,14 +247,15 @@ export function MobileNavDrawer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={close}
-                    className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-[#c9e6ff] hover:bg-sidebar-accent/30 active:bg-sidebar-accent/50"
+                    title={`${r.label} — opens in a new tab`}
+                    aria-label={`${r.label} (opens in a new tab)`}
+                    className="flex min-h-[52px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] text-[#c9e6ff] hover:bg-sidebar-accent/30 active:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)]"
                   >
-                    <Folder className="size-5 shrink-0 text-[color:var(--brand-gold)]" />
+                    <Folder className="size-5 shrink-0 text-[color:var(--brand-gold)]" aria-hidden />
                     <span className="flex-1 truncate underline underline-offset-2 decoration-[#c9e6ff]/40">
                       {r.label}
                     </span>
                     <ArrowUpRight className="size-4 shrink-0 opacity-70" aria-hidden />
-                    <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
                   </a>
                 ))}
               </DrawerGroup>
