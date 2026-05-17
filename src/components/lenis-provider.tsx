@@ -32,6 +32,7 @@ export function LenisProvider() {
     return () => {
       cancelAnimationFrame(raf);
       lenis.destroy();
+      document.documentElement.classList.remove("lenis");
     };
   }, []);
 
