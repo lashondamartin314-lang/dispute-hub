@@ -24,7 +24,7 @@ function safeRedirect(target: string | undefined): string {
   return "/progress";
 }
 
-type Mode = "signin" | "signup";
+type Mode = "signin" | "signup" | "forgot";
 
 function AuthPage() {
   const router = useRouter();
