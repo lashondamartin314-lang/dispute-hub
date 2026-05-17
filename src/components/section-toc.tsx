@@ -5,6 +5,8 @@ import {
   ArrowUp,
   ChevronsDown,
   ChevronsUp,
+  ChevronsLeft,
+  ChevronsRight,
   Keyboard,
   List,
   X,
