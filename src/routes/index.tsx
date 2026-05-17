@@ -83,22 +83,6 @@ function OnboardingStrip() {
           );
         })}
       </ol>
-
-      <div className="mt-5 flex flex-wrap items-center gap-3">
-        <Link
-          to="/playbook/foundation"
-          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brand-navy)] px-6 py-3 text-sm font-semibold text-[color:var(--brand-cream)] shadow-[0_10px_24px_-10px_rgba(12,19,64,0.55)] transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-violet-deep)] active:scale-[0.98]"
-        >
-          <Compass className="size-4" /> Start With Foundation <ArrowRight className="size-4" />
-        </Link>
-        <Link to="/tracker" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
-          <ClipboardList className="size-3.5" /> Open tracker
-        </Link>
-        <span aria-hidden className="text-[color:var(--brand-ink)]/30">·</span>
-        <Link to="/letters" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-ink)]/65 underline-offset-4 hover:text-[color:var(--brand-ink)] hover:underline">
-          <Library className="size-3.5" /> Letter library
-        </Link>
-      </div>
     </div>
   );
 }

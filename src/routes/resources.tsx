@@ -70,8 +70,8 @@ function ResourcesPage() {
         eyebrow="Quick access · External tools"
         numeral="✶"
         numeralColor="var(--brand-gold)"
-        title="Everything you'll reach for."
-        lede="Trusted external sites, official complaint portals, and the Drive folder with every letter template. All links open in a new tab and leave the Playbook portal."
+        title={<>Everything you'll <em className="font-display italic text-[color:var(--brand-gold-deep)]">reach for.</em></>}
+        lede="Trusted external sites, official complaint portals, and the Drive folder with every letter template. Tap any tile to see what it is, when you'd use it, and the exact steps — including a full screen-by-screen CFPB walkthrough — before you leave the Playbook."
       />
 
       {/* Round timeline: tap a round to highlight which resources to use at that stage */}
