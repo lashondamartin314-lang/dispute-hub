@@ -79,6 +79,7 @@ const PHASE_HOVER_CLS = "";
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { setOpenMobile, setOpen, isMobile, openMobile, state } = useSidebar();
+  const { user } = useAuth();
   const isCollapsed = state === "collapsed";
   const wasOpenRef = useRef(false);
 
