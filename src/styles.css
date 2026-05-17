@@ -214,22 +214,113 @@
 .dark {
   --background: #1B0739;
   --foreground: #FAF6EE;
-  --card: #14111A;
+  --card: #221536;
   --card-foreground: #FAF6EE;
+  --popover: #221536;
+  --popover-foreground: #FAF6EE;
   --primary: #F10085;
   --primary-foreground: #FAF6EE;
+  --secondary: #2E1D4A;
+  --secondary-foreground: #FAF6EE;
+  --accent: #F10085;
+  --accent-foreground: #FAF6EE;
   --muted: #2E2A38;
-  --muted-foreground: #948C99;
-  --border: rgba(255, 255, 255, 0.10);
+  --muted-foreground: #B8B1C2;
+  --destructive-foreground: #FAF6EE;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.18);
+  --ring: #F10085;
+
   --sidebar: #14111A;
   --sidebar-foreground: #FAF6EE;
+  --sidebar-primary: #F10085;
+  --sidebar-primary-foreground: #FAF6EE;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #FAF6EE;
   --sidebar-border: rgba(255, 255, 255, 0.08);
-  /* Header keeps its branded navy in dark too, but a touch deeper */
-  --header-bg: var(--brand-navy-deep);
-  --header-fg: var(--brand-cream);
-  --header-border: color-mix(in oklab, var(--brand-gold) 28%, transparent);
-  --header-muted-fg: color-mix(in oklab, var(--brand-cream) 70%, transparent);
+  --sidebar-ring: #F10085;
+
+  /* Header keeps its branded navy in dark too, but a touch deeper.
+   * Use a literal cream here because --brand-cream is flipped to dark below. */
+  --header-bg: #000538;
+  --header-fg: #FAF6EE;
+  --header-border: color-mix(in oklab, #C9A24E 28%, transparent);
+  --header-muted-fg: color-mix(in oklab, #FAF6EE 70%, transparent);
+
+  /* Brand token remap: lighten text-oriented tokens so all the
+   * text-[color:var(--brand-ink)] / --brand-navy / --brand-stone usages
+   * sprinkled through the app remain legible on the dark background.
+   * "Cream" and "paper" tokens used as soft surfaces flip to dark surfaces
+   * so their wells don't punch a light hole through dark pages. The
+   * 18 button surfaces that read bg-brand-navy + text-brand-cream invert
+   * cleanly (light bg + dark text) and stay AA-legible. */
+  --brand-ink: #FAF6EE;
+  --brand-stone: #C9C2D2;
+  --brand-cream: #14111A;
+  --brand-paper: #1B1626;
+  --brand-navy: #B8C4FF;
+  --brand-navy-deep: #DDE5FF;
+  --brand-violet: #C8B5FF;
+  --brand-violet-deep: #E4D8FF;
+  --brand-magenta-deep: #FF6CB5;
+  --brand-gold: #E8C97A;
+  --brand-gold-deep: #F0DDA5;
+  --brand-gold-soft: #3A2F12;
+  --brand-pink: #3A0F24;
+  --brand-sky-soft: #0F2A3A;
+  --brand-sage-soft: #1A241A;
+  --brand-peach: #4A2A1A;
+
+  /* Phase soft surfaces: in light mode these are pastel washes; in dark
+   * mode they need to be dark-tinted so light text on top stays legible.
+   * Keeping the same hue family per phase preserves the color-coded UX. */
+  --phase-1-soft: #3A2A0A;
+  --phase-2-soft: #0F2E2C;
+  --phase-3-soft: #0F1F4A;
+  --phase-4-soft: #3A0F24;
+  --phase-5-soft: #1F0F3A;
+  --phase-6-soft: #3A1A0A;
 }
+
+.dark strong, .dark b { color: var(--foreground); }
+
+/* Dark-mode rescue: the sidebar uses many bg-white / border-white pearl pills
+ * that look correct on the light pearl rail but become bright white slabs on
+ * the dark sidebar. Remap them to translucent dark surfaces so the cream
+ * sidebar-foreground text stays legible. */
+.dark [data-sidebar="sidebar"] .bg-white,
+.dark [data-sidebar="sidebar"] .bg-white\/40,
+.dark [data-sidebar="sidebar"] .bg-white\/50,
+.dark [data-sidebar="sidebar"] .bg-white\/60,
+.dark [data-sidebar="sidebar"] .bg-white\/70,
+.dark [data-sidebar="sidebar"] .hover\:bg-white:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+.dark [data-sidebar="sidebar"] .border-white,
+.dark [data-sidebar="sidebar"] .border-white\/60,
+.dark [data-sidebar="sidebar"] .border-white\/70,
+.dark [data-sidebar="sidebar"] .hover\:border-white:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.dark [data-sidebar="sidebar"] [data-active="true"].bg-white,
+.dark [data-sidebar="sidebar"] [data-active="true"] {
+  background-color: rgba(241, 0, 133, 0.18);
+}
+
+/* CFPB walkthrough mimics the federal portal's brand palette (#1E4A73 on
+ * #F0F6FB). In dark mode the cream/light backgrounds inside the walkthrough
+ * card flip to dark surfaces; the federal navy is lightened for contrast. */
+.dark .bg-\[\#F0F6FB\],
+.dark .bg-\[\#F5F9FC\] { background-color: rgba(184, 196, 255, 0.08); }
+.dark .text-\[\#14111A\] { color: var(--foreground); }
+.dark .border-\[\#1E4A73\] { border-color: #B8C4FF; }
+.dark .bg-\[\#1E4A73\] { background-color: #4F73A8; }
+.dark .text-\[\#1E4A73\] { color: #B8C4FF; }
+
+/* Stand-alone link blue in resource tiles → use accent in dark */
+.dark .text-\[\#1a0dab\] { color: #B8C4FF; }
+.dark .decoration-\[\#1a0dab\]\/40 { text-decoration-color: rgba(184, 196, 255, 0.4); }
+.dark .hover\:decoration-\[\#1a0dab\]:hover { text-decoration-color: #B8C4FF; }
 
 @layer base {
   * { border-color: var(--color-border); }
