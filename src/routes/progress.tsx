@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import {
   Award,
   ArrowRight,
@@ -23,6 +23,13 @@ export const Route = createFileRoute("/progress")({
       { name: "description", content: "Your full credit-repair dashboard: scores, accounts, dispute pipeline, letters, responses, and XP." },
     ],
   }),
+  beforeLoad: async () => {
+    if (typeof window === "undefined") return;
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      throw redirect({ to: "/auth" });
+    }
+  },
   component: ProgressPage,
 });
 
