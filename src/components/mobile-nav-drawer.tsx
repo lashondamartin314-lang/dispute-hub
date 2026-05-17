@@ -20,8 +20,9 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { PHASES } from "@/data/phases";
 import { PINNED_RESOURCES } from "@/data/resources";
 
+// Note: no "Cover" entry — the Home icon in the drawer header already returns
+// to / on tap, so a duplicate row would be redundant.
 const NAV_PRIMARY = [
-  { to: "/", label: "Cover", icon: BookOpen },
   { to: "/playbook/foundation", label: "Foundation", icon: Compass },
   { to: "/playbook/strategy", label: "Strategy overview", icon: ScrollText },
   { to: "/letters", label: "Letter library", icon: Library },
