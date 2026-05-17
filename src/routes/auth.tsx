@@ -60,10 +60,10 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await router.invalidate();
-        await navigate({ to: "/progress", replace: true });
+        await navigate({ to: target, replace: true });
         // Hard fallback in case client-side navigation is intercepted
-        if (typeof window !== "undefined" && window.location.pathname !== "/progress") {
-          window.location.assign("/progress");
+        if (typeof window !== "undefined" && window.location.pathname !== target) {
+          window.location.assign(target);
         }
       }
     } catch (err) {
