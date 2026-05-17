@@ -162,6 +162,7 @@ export function AppSidebar() {
     pathname.startsWith("/decoder") ||
     pathname.startsWith("/resources") ||
     pathname.startsWith("/progress") ||
+    pathname.startsWith("/my-letters") ||
     pathname.startsWith("/ask");
 
   // Persist expanded/collapsed state across sessions so the user's preferred
