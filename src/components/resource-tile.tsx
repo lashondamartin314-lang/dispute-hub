@@ -205,7 +205,7 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
       </div>
 
       {/* Explainer dialog — every external link opens here first. */}
-      <DialogContent className={cn(isCfpb ? "max-w-3xl" : "max-w-2xl", "max-h-[90vh] overflow-y-auto bg-white text-neutral-900 [&_*]:border-neutral-200")}>
+      <DialogContent className={cn(isCfpb ? "max-w-3xl" : "max-w-2xl", "max-h-[90vh] overflow-y-auto bg-white text-neutral-900")}>
         <DialogHeader>
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
             {isCfpb ? "CFPB Filing · Step by step" : hasSteps ? "Step by step · From the Playbook" : "About this resource"}
