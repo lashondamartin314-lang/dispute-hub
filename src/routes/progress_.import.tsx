@@ -4,7 +4,7 @@ import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { parseCreditReport, saveCreditReport } from "@/lib/credit-import.functions";
 
-export const Route = createFileRoute("/progress/import")({
+export const Route = createFileRoute("/progress_/import")({
   head: () => ({
     meta: [
       { title: "Import Credit Report · The Dispute Playbook" },
