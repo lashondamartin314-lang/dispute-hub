@@ -485,10 +485,11 @@ export function AppSidebar() {
           onClick={closeMobile}
           title="Opens shondamartin.com in a new tab"
           aria-label="shondamartin.com (opens in a new tab)"
-          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:border group-data-[collapsible=icon]:border-sidebar-border group-data-[collapsible=icon]:bg-white/60 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:no-underline group-data-[collapsible=icon]:mx-auto"
+          className="group/extlink inline-flex items-center gap-2 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-medium text-sidebar-foreground/80 transition-colors hover:border-[color:var(--brand-gold)]/60 hover:bg-[color:var(--brand-gold-soft)] hover:text-[color:var(--brand-gold-deep)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
         >
-          <span className="group-data-[collapsible=icon]:hidden">shondamartin.com</span>
-          <ArrowUpRight className="size-3 group-data-[collapsible=icon]:size-4" aria-hidden="true" />
+          <Globe className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" aria-hidden="true" />
+          <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">shondamartin.com</span>
+          <ArrowUpRight className="size-3 opacity-60 group-data-[collapsible=icon]:hidden" aria-hidden="true" />
         </a>
       </SidebarFooter>
     </Sidebar>
