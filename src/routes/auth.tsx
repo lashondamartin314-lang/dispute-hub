@@ -28,6 +28,8 @@ type Mode = "signin" | "signup";
 function AuthPage() {
   const router = useRouter();
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const target = safeRedirect(search.redirect);
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +43,7 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const redirectTo = `${window.location.origin}/progress`;
+        const redirectTo = `${window.location.origin}${target}`;
         const { error } = await supabase.auth.signUp({
           email,
           password,
