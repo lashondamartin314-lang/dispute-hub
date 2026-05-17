@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
+import "lenis/dist/lenis.css";
 
 /**
  * Mounts a global Lenis smooth-scroll instance on the document.
