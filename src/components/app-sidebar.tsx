@@ -19,6 +19,7 @@ import {
   MessageCircleQuestion,
   Home,
   Users,
+  Mail,
   LogIn,
   UserPlus,
   LogOut,
