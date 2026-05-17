@@ -49,7 +49,9 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
     ? "grid grid-cols-1 gap-1.5 place-items-center"
     : variant === "sidebar"
       ? "grid grid-cols-2 gap-2"
-      : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
+      : variant === "cover"
+        ? "grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4"
+        : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
 
   return (
     <div
