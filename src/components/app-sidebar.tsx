@@ -12,6 +12,7 @@ import {
   ScanSearch,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
   Award,
   MessageCircleQuestion,
   Home,
@@ -280,14 +281,25 @@ export function AppSidebar() {
       data-lenis-prevent
     >
       <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
-        <Link
-          to="/"
-          onClick={closeMobile}
-          aria-label="Home"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:mx-auto"
-        >
-          <Home className="size-5" aria-hidden="true" />
-        </Link>
+        <div className="flex items-center justify-between w-full">
+          <Link
+            to="/"
+            onClick={closeMobile}
+            aria-label="Home"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:mx-auto"
+          >
+            <Home className="size-5" aria-hidden="true" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/60 bg-white/50 text-muted-foreground shadow-sm transition-all hover:bg-white hover:text-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:hidden"
+          >
+            <ChevronLeft className="size-4" aria-hidden="true" />
+          </button>
+        </div>
       </SidebarHeader>
 
       <SidebarContent className="gap-0 px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
