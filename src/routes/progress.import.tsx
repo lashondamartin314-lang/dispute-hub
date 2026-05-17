@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { parseCreditReport, saveCreditReport } from "@/lib/credit-import.functions";
 
 export const Route = createFileRoute("/progress/import")({
@@ -10,6 +11,13 @@ export const Route = createFileRoute("/progress/import")({
       { name: "description", content: "Upload your SmartCredit 3-bureau PDF or CSV — AI extracts scores, accounts, and routes negatives into dispute lanes." },
     ],
   }),
+  beforeLoad: async () => {
+    if (typeof window === "undefined") return;
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      throw redirect({ to: "/auth" });
+    }
+  },
   component: ImportPage,
 });
 
