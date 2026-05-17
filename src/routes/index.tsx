@@ -100,6 +100,7 @@ function VisitorCta() {
       <div className="flex items-center gap-2">
         <Link
           to="/auth"
+          search={{ redirect: "/" }}
           className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-4 py-2 text-sm font-semibold text-[color:var(--brand-ink)] transition-all hover:border-[color:var(--brand-gold)]/60 hover:shadow-sm"
         >
           <LogIn className="size-4" aria-hidden="true" />
@@ -107,7 +108,7 @@ function VisitorCta() {
         </Link>
         <Link
           to="/auth"
-          search={{ mode: "signup" }}
+          search={{ mode: "signup", redirect: "/" }}
                    className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brand-magenta)]/25 bg-[color:var(--brand-magenta-soft)] px-4 py-2 text-sm font-semibold text-[color:var(--brand-magenta-deep)] transition-all hover:border-[color:var(--brand-magenta)]/50 hover:bg-[color:var(--brand-magenta)]/10"
         >
           <UserPlus className="size-4" aria-hidden="true" />
