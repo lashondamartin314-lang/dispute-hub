@@ -73,10 +73,10 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
             aria-label={`Phase ${p.number}: ${p.name}`}
             data-active-scroll={active ? "phase" : undefined}
             className={[
-              "group relative flex aspect-square flex-col justify-between overflow-hidden",
+              "group relative flex flex-col justify-between overflow-hidden",
               "rounded-2xl border no-underline transition-all duration-300 ease-out",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-              isRail ? "w-9 p-1 items-center justify-center" : isCompact ? "p-2.5" : "p-4 md:p-5",
+              isRail ? "w-9 p-1 items-center justify-center" : isCompact ? "aspect-square p-2.5" : variant === "cover" ? "aspect-[4/3] p-3 md:p-4" : "aspect-square p-4 md:p-5",
               active
                 ? "border-transparent shadow-[0_18px_40px_-18px_rgba(12,19,64,0.45)] ring-1 ring-white/60"
                 : "border-white/70 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-18px_rgba(12,19,64,0.32)]",
