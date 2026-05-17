@@ -54,15 +54,20 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        // Email confirm is on by default — surface that.
         setError("Check your email to confirm your account, then sign in.");
+        setMode("signin");
+      } else if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setError("Check your email for a link to reset your password.");
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await router.invalidate();
         await navigate({ to: target as string, replace: true } as Parameters<typeof navigate>[0]);
-        // Hard fallback in case client-side navigation is intercepted
         if (typeof window !== "undefined" && window.location.pathname !== target) {
           window.location.assign(target);
         }
