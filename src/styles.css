@@ -270,6 +270,16 @@
   --brand-sky-soft: #0F2A3A;
   --brand-sage-soft: #1A241A;
   --brand-peach: #4A2A1A;
+
+  /* Phase soft surfaces: in light mode these are pastel washes; in dark
+   * mode they need to be dark-tinted so light text on top stays legible.
+   * Keeping the same hue family per phase preserves the color-coded UX. */
+  --phase-1-soft: #3A2A0A;
+  --phase-2-soft: #0F2E2C;
+  --phase-3-soft: #0F1F4A;
+  --phase-4-soft: #3A0F24;
+  --phase-5-soft: #1F0F3A;
+  --phase-6-soft: #3A1A0A;
 }
 
 .dark strong, .dark b { color: var(--foreground); }
