@@ -19,6 +19,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AskRouteImport } from './routes/ask'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlaybookIndexRouteImport } from './routes/playbook.index'
+import { Route as ProgressImportRouteImport } from './routes/progress.import'
 import { Route as PlaybookStrategyRouteImport } from './routes/playbook.strategy'
 import { Route as PlaybookFoundationRouteImport } from './routes/playbook.foundation'
 import { Route as PlaybookPhaseIdRouteImport } from './routes/playbook.phase.$id'
@@ -74,6 +75,11 @@ const PlaybookIndexRoute = PlaybookIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PlaybookRoute,
 } as any)
+const ProgressImportRoute = ProgressImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => ProgressRoute,
+} as any)
 const PlaybookStrategyRoute = PlaybookStrategyRouteImport.update({
   id: '/strategy',
   path: '/strategy',
@@ -102,11 +108,12 @@ export interface FileRoutesByFullPath {
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
-  '/progress': typeof ProgressRoute
+  '/progress': typeof ProgressRouteWithChildren
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/progress/import': typeof ProgressImportRoute
   '/playbook/': typeof PlaybookIndexRoute
   '/playbook/letter/$id': typeof PlaybookLetterIdRoute
   '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
@@ -117,11 +124,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
-  '/progress': typeof ProgressRoute
+  '/progress': typeof ProgressRouteWithChildren
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/progress/import': typeof ProgressImportRoute
   '/playbook': typeof PlaybookIndexRoute
   '/playbook/letter/$id': typeof PlaybookLetterIdRoute
   '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
@@ -134,11 +142,12 @@ export interface FileRoutesById {
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
-  '/progress': typeof ProgressRoute
+  '/progress': typeof ProgressRouteWithChildren
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
   '/playbook/strategy': typeof PlaybookStrategyRoute
+  '/progress/import': typeof ProgressImportRoute
   '/playbook/': typeof PlaybookIndexRoute
   '/playbook/letter/$id': typeof PlaybookLetterIdRoute
   '/playbook/phase/$id': typeof PlaybookPhaseIdRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
+    | '/progress/import'
     | '/playbook/'
     | '/playbook/letter/$id'
     | '/playbook/phase/$id'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
+    | '/progress/import'
     | '/playbook'
     | '/playbook/letter/$id'
     | '/playbook/phase/$id'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/tracker'
     | '/playbook/foundation'
     | '/playbook/strategy'
+    | '/progress/import'
     | '/playbook/'
     | '/playbook/letter/$id'
     | '/playbook/phase/$id'
@@ -200,7 +212,7 @@ export interface RootRouteChildren {
   DecoderRoute: typeof DecoderRoute
   LettersRoute: typeof LettersRoute
   PlaybookRoute: typeof PlaybookRouteWithChildren
-  ProgressRoute: typeof ProgressRoute
+  ProgressRoute: typeof ProgressRouteWithChildren
   ResourcesRoute: typeof ResourcesRoute
   TrackerRoute: typeof TrackerRoute
 }
@@ -277,6 +289,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaybookIndexRouteImport
       parentRoute: typeof PlaybookRoute
     }
+    '/progress/import': {
+      id: '/progress/import'
+      path: '/import'
+      fullPath: '/progress/import'
+      preLoaderRoute: typeof ProgressImportRouteImport
+      parentRoute: typeof ProgressRoute
+    }
     '/playbook/strategy': {
       id: '/playbook/strategy'
       path: '/strategy'
@@ -328,6 +347,18 @@ const PlaybookRouteWithChildren = PlaybookRoute._addFileChildren(
   PlaybookRouteChildren,
 )
 
+interface ProgressRouteChildren {
+  ProgressImportRoute: typeof ProgressImportRoute
+}
+
+const ProgressRouteChildren: ProgressRouteChildren = {
+  ProgressImportRoute: ProgressImportRoute,
+}
+
+const ProgressRouteWithChildren = ProgressRoute._addFileChildren(
+  ProgressRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AskRoute: AskRoute,
@@ -335,10 +366,20 @@ const rootRouteChildren: RootRouteChildren = {
   DecoderRoute: DecoderRoute,
   LettersRoute: LettersRoute,
   PlaybookRoute: PlaybookRouteWithChildren,
-  ProgressRoute: ProgressRoute,
+  ProgressRoute: ProgressRouteWithChildren,
   ResourcesRoute: ResourcesRoute,
   TrackerRoute: TrackerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
