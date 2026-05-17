@@ -26,7 +26,7 @@ export function PhaseCard({ phase, href = true, rightSlot, className }: PhaseCar
         borderLeftColor: color,
       }}
       className={cn(
-        "card-tinted group relative flex items-center gap-5 p-5 md:p-6 transition hover:-translate-y-0.5 hover:shadow-elegant",
+        "card-tinted group relative flex items-center gap-5 p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25),0_2px_6px_-2px_rgba(15,23,42,0.12)] ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_45px_-15px_rgba(15,23,42,0.35),0_6px_14px_-6px_rgba(15,23,42,0.18)]",
         className,
       )}
     >
