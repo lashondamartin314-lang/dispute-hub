@@ -423,9 +423,7 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-3 py-3">
-        {/* Quick Access and External Resources removed — duplicates of the
-            Companion tools group above and the Companion Hub menu in the header. */}
+      <SidebarFooter className="border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <a
           href="https://shondamartin.com"
           target="_blank"
@@ -433,10 +431,10 @@ export function AppSidebar() {
           onClick={closeMobile}
           title="Opens shondamartin.com in a new tab"
           aria-label="shondamartin.com (opens in a new tab)"
-          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
+          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:border group-data-[collapsible=icon]:border-sidebar-border group-data-[collapsible=icon]:bg-white/60 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:no-underline group-data-[collapsible=icon]:mx-auto"
         >
-          shondamartin.com
-          <ArrowUpRight className="size-3" aria-hidden="true" />
+          <span className="group-data-[collapsible=icon]:hidden">shondamartin.com</span>
+          <ArrowUpRight className="size-3 group-data-[collapsible=icon]:size-4" aria-hidden="true" />
         </a>
       </SidebarFooter>
     </Sidebar>
