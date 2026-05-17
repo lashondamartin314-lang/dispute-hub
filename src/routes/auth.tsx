@@ -31,7 +31,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const target = safeRedirect(search.redirect);
-  const [mode, setMode] = useState<Mode>("signin");
+  const [mode, setMode] = useState<Mode>(search.mode ?? "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
