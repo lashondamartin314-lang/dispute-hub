@@ -130,17 +130,29 @@ function AuthPage() {
             className={inputCls}
           />
         </Field>
-        <Field label="Password">
-          <input
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputCls}
-          />
-        </Field>
+        {mode !== "forgot" && (
+          <Field label="Password">
+            <input
+              type="password"
+              required
+              minLength={8}
+              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+        )}
+
+        {mode === "signin" && (
+          <button
+            type="button"
+            onClick={() => { setError(null); setMode("forgot"); }}
+            className="-mt-1 block text-xs font-semibold text-[color:var(--brand-magenta-deep)] hover:underline"
+          >
+            Forgot password?
+          </button>
+        )}
 
         {error && (
           <p
