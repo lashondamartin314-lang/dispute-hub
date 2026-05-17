@@ -49,7 +49,9 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
     ? "grid grid-cols-1 gap-1.5 place-items-center"
     : variant === "sidebar"
       ? "grid grid-cols-2 gap-2"
-      : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
+      : variant === "cover"
+        ? "grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:gap-4"
+        : "grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-5";
 
   return (
     <div
@@ -71,10 +73,10 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
             aria-label={`Phase ${p.number}: ${p.name}`}
             data-active-scroll={active ? "phase" : undefined}
             className={[
-              "group relative flex aspect-square flex-col justify-between overflow-hidden",
+              "group relative flex flex-col justify-between overflow-hidden",
               "rounded-2xl border no-underline transition-all duration-300 ease-out",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-              isRail ? "w-9 p-1 items-center justify-center" : isCompact ? "p-2.5" : "p-4 md:p-5",
+              isRail ? "w-9 p-1 items-center justify-center" : isCompact ? "aspect-square p-2.5" : variant === "cover" ? "aspect-[4/3] p-3 md:p-4" : "aspect-square p-4 md:p-5",
               active
                 ? "border-transparent shadow-[0_18px_40px_-18px_rgba(12,19,64,0.45)] ring-1 ring-white/60"
                 : "border-white/70 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-18px_rgba(12,19,64,0.32)]",
@@ -91,37 +93,78 @@ export function PhaseGrid({ variant = "page", onTintChange, onSelect, className 
             }}
             title={isRail ? `P${p.number} · ${p.name}` : undefined}
           >
-            {/* P-number — display serif, dominant. */}
-            <span
-              className={[
-                "font-display font-bold leading-none tracking-tight transition-colors",
-                isRail ? "text-sm" : isCompact ? "text-2xl" : "text-4xl md:text-5xl",
-                active ? "text-white/95" : "text-[color:var(--brand-ink)]/85",
-              ].join(" ")}
-              aria-hidden
-            >
-              P{p.number}
-            </span>
-
-            {/* Phase name + active marker — hidden in rail mode. */}
-            {!isRail && (
-              <div className="flex items-end justify-between gap-2">
+            {/* Phase label — small uppercase label at top; phase name prominent below. */}
+            {isRail ? (
+              <span
+                className={[
+                  "font-display font-bold leading-none tracking-tight transition-colors",
+                  "text-sm",
+                  active ? "text-white/95" : "text-[color:var(--brand-ink)]/85",
+                ].join(" ")}
+                aria-hidden
+              >
+                P{p.number}
+              </span>
+            ) : isCompact ? (
+              <>
                 <span
                   className={[
-                    "font-body font-semibold leading-tight",
-                    isCompact ? "text-[10px] uppercase tracking-[0.12em]" : "text-xs uppercase tracking-[0.16em] md:text-[13px]",
-                    active ? "text-white" : "text-[color:var(--brand-ink)]/75",
+                    "font-display font-bold leading-none tracking-tight transition-colors",
+                    "text-2xl",
+                    active ? "text-white/95" : "text-[color:var(--brand-ink)]/85",
                   ].join(" ")}
+                  aria-hidden
                 >
-                  {p.shortName ?? p.name}
+                  P{p.number}
                 </span>
-                {active && (
+                <div className="flex items-end justify-between gap-2">
                   <span
-                    aria-hidden
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
-                  />
-                )}
-              </div>
+                    className={[
+                      "font-body font-semibold leading-tight",
+                      "text-[10px] uppercase tracking-[0.12em]",
+                      active ? "text-white" : "text-[color:var(--brand-ink)]/75",
+                    ].join(" ")}
+                  >
+                    {p.shortName ?? p.name}
+                  </span>
+                  {active && (
+                    <span
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
+                    />
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <span
+                  className={[
+                    "font-body font-semibold leading-none uppercase tracking-[0.2em] transition-colors",
+                    variant === "cover" ? "text-[9px] md:text-[10px]" : "text-[10px] md:text-[11px]",
+                    active ? "text-white/90" : "text-[color:var(--brand-ink)]/60",
+                  ].join(" ")}
+                  aria-hidden
+                >
+                  PHASE {p.number}
+                </span>
+                <div className="flex items-end justify-between gap-2">
+                  <span
+                    className={[
+                      "font-display font-bold leading-[1.05] tracking-tight",
+                      variant === "cover" ? "text-lg md:text-xl" : "text-xl md:text-2xl",
+                      active ? "text-white" : "text-[color:var(--brand-ink)]/90",
+                    ].join(" ")}
+                  >
+                    {p.shortName ?? p.name}
+                  </span>
+                  {active && (
+                    <span
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
+                    />
+                  )}
+                </div>
+              </>
             )}
 
             {/* Subtle inner highlight to lift the tile off the surface. */}
