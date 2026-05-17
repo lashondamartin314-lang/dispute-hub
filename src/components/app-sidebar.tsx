@@ -306,15 +306,15 @@ export function AppSidebar() {
                   href="https://creditacademy.circle.so/c/start-here/welcome-to-the-pilot-program"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Community (opens in a new tab)"
+                  aria-label="Group (opens in a new tab)"
                   className="inline-flex items-center gap-2 rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white hover:text-[color:var(--brand-magenta)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] h-10 px-3 group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:justify-center shrink-0"
                 >
                   <Users className="size-5 shrink-0" aria-hidden="true" />
-                  <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">Community</span>
+                  <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">Group</span>
                   <ArrowUpRight className="size-3.5 opacity-60 group-data-[collapsible=icon]:hidden" aria-hidden="true" />
                 </a>
               </TooltipTrigger>
-              <TooltipContent side="right">Open Cohort Community</TooltipContent>
+              <TooltipContent side="right">Open Cohort Group</TooltipContent>
             </Tooltip>
           </div>
           <button
