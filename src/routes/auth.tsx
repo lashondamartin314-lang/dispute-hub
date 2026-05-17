@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Sign in · The Dispute Playbook" },
@@ -13,11 +16,20 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+function safeRedirect(target: string | undefined): string {
+  if (!target) return "/progress";
+  // Only allow same-origin internal paths
+  if (target.startsWith("/") && !target.startsWith("//")) return target;
+  return "/progress";
+}
+
 type Mode = "signin" | "signup";
 
 function AuthPage() {
   const router = useRouter();
   const navigate = useNavigate();
+  const search = Route.useSearch();
+  const target = safeRedirect(search.redirect);
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +43,7 @@ function AuthPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const redirectTo = `${window.location.origin}/progress`;
+        const redirectTo = `${window.location.origin}${target}`;
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -48,10 +60,10 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await router.invalidate();
-        await navigate({ to: "/progress", replace: true });
+        await navigate({ to: target as string, replace: true } as Parameters<typeof navigate>[0]);
         // Hard fallback in case client-side navigation is intercepted
-        if (typeof window !== "undefined" && window.location.pathname !== "/progress") {
-          window.location.assign("/progress");
+        if (typeof window !== "undefined" && window.location.pathname !== target) {
+          window.location.assign(target);
         }
       }
     } catch (err) {

@@ -11,11 +11,11 @@ export const Route = createFileRoute("/progress/import")({
       { name: "description", content: "Upload your SmartCredit 3-bureau PDF or CSV — AI extracts scores, accounts, and routes negatives into dispute lanes." },
     ],
   }),
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     if (typeof window === "undefined") return;
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
-      throw redirect({ to: "/auth" });
+      throw redirect({ to: "/auth", search: { redirect: location.href } });
     }
   },
   component: ImportPage,
