@@ -240,11 +240,12 @@
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #F10085;
 
-  /* Header keeps its branded navy in dark too, but a touch deeper */
-  --header-bg: var(--brand-navy-deep);
-  --header-fg: var(--brand-cream);
-  --header-border: color-mix(in oklab, var(--brand-gold) 28%, transparent);
-  --header-muted-fg: color-mix(in oklab, var(--brand-cream) 70%, transparent);
+  /* Header keeps its branded navy in dark too, but a touch deeper.
+   * Use a literal cream here because --brand-cream is flipped to dark below. */
+  --header-bg: #000538;
+  --header-fg: #FAF6EE;
+  --header-border: color-mix(in oklab, #C9A24E 28%, transparent);
+  --header-muted-fg: color-mix(in oklab, #FAF6EE 70%, transparent);
 
   /* Brand token remap: lighten text-oriented tokens so all the
    * text-[color:var(--brand-ink)] / --brand-navy / --brand-stone usages
