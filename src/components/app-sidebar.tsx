@@ -295,7 +295,7 @@ export function AppSidebar() {
             onClick={() => setOpen(false)}
             aria-label="Collapse sidebar"
             title="Collapse sidebar"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/60 bg-white/50 text-muted-foreground shadow-sm transition-all hover:bg-white hover:text-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:hidden"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-xl border border-white/60 bg-red-500 text-white shadow-sm transition-all hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)]"
           >
             <ChevronLeft className="size-4" aria-hidden="true" />
           </button>
