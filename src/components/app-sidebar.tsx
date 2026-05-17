@@ -302,7 +302,7 @@ export function AppSidebar() {
                 open={isCollapsed ? true : phasesOpen}
                 onOpenChange={setPhasesOpen}
               >
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
                   {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent forceMount={isCollapsed ? true : undefined}>
                     <SidebarGroupContent className="mt-1">
@@ -362,7 +362,7 @@ export function AppSidebar() {
             ),
             companion: (
               <Collapsible key="companion" open={companionOpen} onOpenChange={setCompanionOpen}>
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
                   {groupHeader("companion", "Companion tools", companionOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
