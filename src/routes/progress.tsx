@@ -208,8 +208,8 @@ function ProgressPage() {
             <StatCard label="Accounts" value={data.accounts.totalCount} />
             <StatCard label="Negative" value={data.accounts.derogatoryCount} accent />
             <StatCard label="Positive" value={data.accounts.totalCount - data.accounts.derogatoryCount} />
-            <StatCard label="Utilization" value={data.latestReport.summary?.utilization_pct != null ? `${data.latestReport.summary.utilization_pct}%` : "—"} />
-            <StatCard label="Inquiries" value={data.latestReport.summary?.inquiries_count ?? "—"} />
+            <StatCard label="Utilization" value={(() => { const s = data.latestReport.summary as Record<string, unknown> | null; const u = s?.utilization_pct; return typeof u === "number" ? `${u}%` : "—"; })()} />
+            <StatCard label="Inquiries" value={(() => { const s = data.latestReport.summary as Record<string, unknown> | null; const i = s?.inquiries_count; return typeof i === "number" ? i : "—"; })()} />
           </div>
         </section>
       ) : (
