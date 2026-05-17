@@ -23,6 +23,13 @@ export const Route = createFileRoute("/progress")({
       { name: "description", content: "Your full credit-repair dashboard: scores, accounts, dispute pipeline, letters, responses, and XP." },
     ],
   }),
+  beforeLoad: async ({ location }) => {
+    if (typeof window === "undefined") return;
+    const { data } = await supabase.auth.getSession();
+    if (!data.session) {
+      throw redirect({ to: "/auth", search: { redirect: location.href } });
+    }
+  },
   component: ProgressPage,
 });
 
