@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FileText, Loader2, Upload, XCircle } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { parseCreditReport, saveCreditReport } from "@/lib/credit-import.functions";
 
@@ -30,29 +31,58 @@ function ImportPage() {
   const [error, setError] = useState<string | null>(null);
   const [parsed, setParsed] = useState<Parsed | null>(null);
   const [filePath, setFilePath] = useState<string | null>(null);
+  /** 0–100 — real for the encoding pass, indeterminate (null) while AI runs. */
+  const [progress, setProgress] = useState<number | null>(null);
+  const [progressLabel, setProgressLabel] = useState<string>("");
 
   async function handleParse() {
     if (!file) return;
     setError(null);
     setBusy("parsing");
+    setProgress(0);
+    setProgressLabel("Reading file…");
+    const toastId = toast.loading(`Uploading ${file.name}…`, { description: "Reading file 0%" });
     try {
       if (file.size > 20 * 1024 * 1024) throw new Error("File too large (max 20 MB).");
       const buf = await file.arrayBuffer();
       const bytes = new Uint8Array(buf);
       let binary = "";
       const chunk = 0x8000;
+      // Encode in chunks so we can report real progress while we prep the upload.
       for (let i = 0; i < bytes.length; i += chunk) {
         binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+        const pct = Math.min(100, Math.round(((i + chunk) / bytes.length) * 100));
+        setProgress(pct);
+        setProgressLabel(`Reading file ${pct}%`);
+        toast.loading(`Uploading ${file.name}…`, { id: toastId, description: `Reading file ${pct}%` });
+        // Yield to the event loop so React can paint the progress bar.
+        if (i % (chunk * 4) === 0) await new Promise((r) => setTimeout(r));
       }
       const b64 = btoa(binary);
+      setProgress(null);
+      setProgressLabel("Analyzing with AI…");
+      toast.loading(`Analyzing ${file.name}…`, { id: toastId, description: "AI is extracting scores & accounts" });
       const mime = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "text/csv";
       const res = await parseCreditReport({ data: { fileBase64: b64, mime, filename: file.name } });
       setParsed(res.parsed);
       setFilePath(res.filePath);
+      toast.success("Report uploaded", {
+        id: toastId,
+        description: `${res.parsed.accounts.length} account${res.parsed.accounts.length === 1 ? "" : "s"} found · review and save below.`,
+        icon: <CheckCircle2 className="size-4" />,
+      });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not parse file.");
+      const msg = e instanceof Error ? e.message : "Could not parse file.";
+      setError(msg);
+      toast.error("Upload failed", {
+        id: toastId,
+        description: msg,
+        icon: <XCircle className="size-4" />,
+      });
     } finally {
       setBusy("idle");
+      setProgress(null);
+      setProgressLabel("");
     }
   }
 
@@ -60,12 +90,20 @@ function ImportPage() {
     if (!parsed) return;
     setError(null);
     setBusy("saving");
+    const toastId = toast.loading("Saving to your tracker…");
     try {
       const source = file?.name.toLowerCase().endsWith(".pdf") ? "smartcredit_pdf" : "smartcredit_csv";
       await saveCreditReport({ data: { source, filePath, parsed } });
+      toast.success("Saved to your tracker", {
+        id: toastId,
+        description: "Redirecting to your dashboard…",
+        icon: <CheckCircle2 className="size-4" />,
+      });
       await router.navigate({ to: "/progress" });
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not save.");
+      const msg = e instanceof Error ? e.message : "Could not save.";
+      setError(msg);
+      toast.error("Save failed", { id: toastId, description: msg, icon: <XCircle className="size-4" /> });
       setBusy("idle");
     }
   }
@@ -111,6 +149,38 @@ function ImportPage() {
               {busy === "parsing" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Upload className="size-4" aria-hidden />}
               {busy === "parsing" ? "Parsing with AI…" : "Parse with AI"}
             </button>
+
+            {busy === "parsing" && (
+              <div className="mt-5" role="status" aria-live="polite">
+                <div className="mb-1.5 flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                  <span>{progressLabel || "Working…"}</span>
+                  <span className="tabular-nums" style={{ color: "var(--brand-magenta-deep)" }}>
+                    {progress != null ? `${progress}%` : "…"}
+                  </span>
+                </div>
+                <div
+                  className="h-1.5 overflow-hidden rounded-full"
+                  style={{ background: "color-mix(in oklab, var(--brand-magenta) 14%, transparent)" }}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={progress ?? undefined}
+                  aria-label={progressLabel || "Upload progress"}
+                >
+                  {progress != null ? (
+                    <div
+                      className="h-full rounded-full transition-[width] duration-200 ease-out"
+                      style={{ width: `${progress}%`, background: "var(--brand-magenta-deep)" }}
+                    />
+                  ) : (
+                    <div
+                      className="h-full w-1/3 animate-[indeterminate_1.4s_ease-in-out_infinite] rounded-full"
+                      style={{ background: "var(--brand-magenta-deep)" }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

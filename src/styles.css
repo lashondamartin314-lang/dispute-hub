@@ -492,3 +492,8 @@
   50% { transform: scale(1.35); opacity: 0.75; }
 }
 @utility animate-toc-dot { animation: toc-dot-pulse 2.4s ease-in-out infinite; }
+
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
