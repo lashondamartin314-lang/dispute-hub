@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackerRouteImport } from './routes/tracker'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlaybookRouteImport } from './routes/playbook'
 import { Route as LettersRouteImport } from './routes/letters'
@@ -33,6 +34,11 @@ const TrackerRoute = TrackerRouteImport.update({
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgressRoute = ProgressRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/progress': typeof ProgressRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/decoder': typeof DecoderRoute
   '/letters': typeof LettersRoute
   '/progress': typeof ProgressRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/letters': typeof LettersRoute
   '/playbook': typeof PlaybookRouteWithChildren
   '/progress': typeof ProgressRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/tracker': typeof TrackerRoute
   '/playbook/foundation': typeof PlaybookFoundationRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/letters'
     | '/playbook'
     | '/progress'
+    | '/reset-password'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/decoder'
     | '/letters'
     | '/progress'
+    | '/reset-password'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/letters'
     | '/playbook'
     | '/progress'
+    | '/reset-password'
     | '/resources'
     | '/tracker'
     | '/playbook/foundation'
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   LettersRoute: typeof LettersRoute
   PlaybookRoute: typeof PlaybookRouteWithChildren
   ProgressRoute: typeof ProgressRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   TrackerRoute: typeof TrackerRoute
 }
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/progress': {
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   LettersRoute: LettersRoute,
   PlaybookRoute: PlaybookRouteWithChildren,
   ProgressRoute: ProgressRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   TrackerRoute: TrackerRoute,
 }
