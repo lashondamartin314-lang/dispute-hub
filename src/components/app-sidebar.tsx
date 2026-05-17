@@ -294,10 +294,17 @@ export function AppSidebar() {
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
             phases: (
-              <Collapsible key="phases" open={phasesOpen} onOpenChange={setPhasesOpen}>
+              <Collapsible
+                key="phases"
+                // When the sidebar is icon-collapsed, force the phases group open so
+                // the P1–P6 rail always shows (its CollapsibleTrigger is hidden in
+                // collapsed mode, otherwise the user couldn't re-open it).
+                open={isCollapsed ? true : phasesOpen}
+                onOpenChange={setPhasesOpen}
+              >
                 <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
                   {groupHeader("phases", "Phases", phasesOpen)}
-                  <CollapsibleContent>
+                  <CollapsibleContent forceMount={isCollapsed ? true : undefined}>
                     <SidebarGroupContent className="mt-1">
                       {/* Home is the only entry to / — the header logo is also Home. No separate "Cover" row. */}
 
