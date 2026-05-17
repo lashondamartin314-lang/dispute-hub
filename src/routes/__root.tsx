@@ -120,7 +120,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LenisProvider />
-        <SidebarProvider>
+        <PersistedSidebarProvider>
           <div className="flex min-h-screen w-full bg-background">
             <AppSidebar />
             <MobileNavDrawer />
