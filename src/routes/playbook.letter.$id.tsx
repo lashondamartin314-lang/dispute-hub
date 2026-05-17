@@ -234,17 +234,21 @@ function LetterDetail() {
                 href={letter.copyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Opens the Google Doc template in a new tab"
+                aria-label={`Use template for ${letter.title} (opens Google Doc in a new tab)`}
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3.5 text-base font-semibold text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-[color:var(--brand-magenta-deep)] hover:shadow-elegant"
               >
-                Use template <ArrowUpRight className="size-5 text-[color:var(--brand-sky)]" />
+                Use template <ArrowUpRight className="size-5 text-[color:var(--brand-sky)]" aria-hidden />
               </a>
               <a
                 href={letter.viewUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Opens a read-only preview in a new tab"
+                aria-label={`Preview ${letter.title} read-only (opens in a new tab)`}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-7 py-3.5 text-base font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)]"
               >
-                <FileText className="size-5" /> Preview only
+                <FileText className="size-5" aria-hidden /> Preview only
               </a>
             </div>
           </section>

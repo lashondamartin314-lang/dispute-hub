@@ -137,12 +137,13 @@ export function DisputeHubContent({ onNavigate }: { onNavigate?: () => void }) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={close}
+              title={`${r.label} — opens in a new tab`}
+              aria-label={`${r.label} (opens in a new tab)`}
               className="flex min-h-[40px] items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-foreground/90 transition-colors hover:bg-[color:var(--brand-gold)]/10"
             >
-              <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" />
+              <Folder className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" aria-hidden />
               <span className="flex-1 truncate">{r.label}</span>
               <ArrowUpRight className="size-3.5 shrink-0 text-foreground/50" aria-hidden />
-              <span className="sr-only"> (opens in a new tab, leaves the Playbook)</span>
             </motion.a>
           ))}
         </div>
