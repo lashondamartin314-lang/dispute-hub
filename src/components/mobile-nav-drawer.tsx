@@ -110,14 +110,12 @@ export function MobileNavDrawer() {
           initial="closed"
           animate="open"
           exit="closed"
-          aria-modal="true"
-          role="dialog"
-          aria-label="Navigation menu"
         >
           {/* Backdrop */}
           <motion.button
             type="button"
             aria-label="Close menu"
+            tabIndex={-1}
             className="absolute inset-0 bg-black/55 backdrop-blur-[2px]"
             onClick={close}
             variants={{ closed: { opacity: 0 }, open: { opacity: 1 } }}
@@ -126,7 +124,11 @@ export function MobileNavDrawer() {
 
           {/* Drawer panel */}
           <motion.aside
-            className="absolute inset-y-0 left-0 flex h-full w-[86%] max-w-[360px] flex-col bg-sidebar text-sidebar-foreground shadow-2xl"
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobile-nav-title"
+            className="absolute inset-y-0 left-0 flex h-full w-[86%] max-w-[360px] flex-col overflow-x-hidden bg-sidebar text-sidebar-foreground shadow-2xl"
             variants={{
               closed: { x: reduce ? 0 : "-100%", opacity: reduce ? 0 : 1 },
               open: { x: 0, opacity: 1 },
@@ -145,27 +147,28 @@ export function MobileNavDrawer() {
             }}
           >
             {/* Drag handle hint */}
-            <div className="absolute right-0 top-1/2 h-16 w-1 -translate-y-1/2 translate-x-1 rounded-full bg-sidebar-border/60" />
+            <div aria-hidden className="absolute right-0 top-1/2 h-16 w-1 -translate-y-1/2 translate-x-1 rounded-full bg-sidebar-border/60" />
 
             <header className="flex items-center justify-between border-b border-sidebar-border/60 px-4 py-3">
               <Link
                 to="/"
                 onClick={close}
                 aria-label="Home"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-sidebar-accent/40"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-sidebar-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)]"
               >
-                <Home className="size-5" />
+                <Home className="size-5" aria-hidden />
               </Link>
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-sidebar-foreground/70">
+              <p id="mobile-nav-title" className="font-mono text-[10px] uppercase tracking-[0.2em] text-sidebar-foreground/70">
                 The Playbook
               </p>
               <button
+                ref={closeBtnRef}
                 type="button"
                 onClick={close}
                 aria-label="Close menu"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-sidebar-accent/40"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-md hover:bg-sidebar-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)]"
               >
-                <X className="size-5" />
+                <X className="size-5" aria-hidden />
               </button>
             </header>
 
