@@ -35,7 +35,7 @@ export function DisputeHub() {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-[color:var(--header-border)] px-3 text-xs font-semibold text-[color:var(--header-fg)] transition-colors hover:bg-[color:var(--header-border)]/40"
+          className="inline-flex h-11 sm:h-9 items-center gap-1.5 rounded-full border border-[color:var(--header-border)] px-3 text-xs font-semibold text-[color:var(--header-fg)] transition-colors hover:bg-[color:var(--header-border)]/40"
           aria-label="Open Dispute Hub"
         >
           <LayoutGrid className="size-3.5" aria-hidden />

@@ -10,7 +10,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       aria-pressed={isDark}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--header-border)] bg-transparent text-[color:var(--header-fg)] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)]"
+      className="inline-flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[color:var(--header-border)] bg-transparent text-[color:var(--header-fg)] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold)]"
     >
       {isDark ? <Sun className="size-4" aria-hidden /> : <Moon className="size-4" aria-hidden />}
     </button>
