@@ -148,9 +148,51 @@ function ResourcesPage() {
       </section>
 
       {/* TOC: solid white card with strong border so it pops against the page background */}
+      {/* Category filter chips */}
+      <section aria-label="Filter resources by category" className="mt-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-gold-deep)]">
+            Filter
+          </span>
+          <button
+            type="button"
+            onClick={() => setActiveCategory(null)}
+            aria-pressed={activeCategory === null}
+            className={
+              "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] transition-colors " +
+              (activeCategory === null
+                ? "border-[color:var(--brand-gold-deep)] bg-[color:var(--brand-gold-deep)] text-[color:var(--brand-cream)]"
+                : "border-border bg-card text-foreground/70 hover:border-[color:var(--brand-gold-deep)] hover:text-foreground")
+            }
+          >
+            All
+          </button>
+          {allSections.map((c) => {
+            const active = activeCategory === c.id;
+            return (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setActiveCategory(active ? null : c.id)}
+                aria-pressed={active}
+                className={
+                  "rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] transition-colors " +
+                  (active
+                    ? "border-[color:var(--brand-gold-deep)] bg-[color:var(--brand-gold-deep)] text-[color:var(--brand-cream)]"
+                    : "border-border bg-card text-foreground/70 hover:border-[color:var(--brand-gold-deep)] hover:text-foreground")
+                }
+              >
+                {FILTER_LABEL[c.id]}
+                <span className="ml-1.5 font-mono text-[10px] opacity-70">{c.items.length}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       <nav
         aria-label="On this page"
-        className="mt-8 rounded-xl border-2 border-border bg-card px-6 py-5 shadow-card"
+        className="mt-6 rounded-xl border-2 border-border bg-card px-6 py-5 shadow-card"
       >
         <p className="eyebrow text-[10px] mb-3">On this page</p>
         <ol className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
