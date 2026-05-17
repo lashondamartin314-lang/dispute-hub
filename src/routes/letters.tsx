@@ -12,8 +12,19 @@ export const Route = createFileRoute("/letters")({
       { name: "description", content: "All 19 dispute letter templates, grouped by phase. Click to open the Google Doc and force-copy into your Drive." },
     ],
   }),
-  component: LettersPage,
+  component: LettersPageGated,
 });
+
+function LettersPageGated() {
+  return (
+    <AuthGate
+      title="Sign in to open the Letter Library."
+      description="Every dispute template — 19 in total — lives behind a free member account so we can save your progress and keep templates current."
+    >
+      <LettersPage />
+    </AuthGate>
+  );
+}
 
 function LettersPage() {
   const phasesWithLetters = PHASES.filter((p) => lettersForPhase(p.id).length > 0);
