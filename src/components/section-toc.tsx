@@ -406,7 +406,7 @@ export function SectionToc({
               onFocus={() => setFocusIdx(i)}
               aria-current={active ? "location" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-lg py-2 pr-2 text-sm outline-none",
+                "group flex min-h-[44px] items-center gap-3 rounded-lg py-2.5 pr-2 text-sm outline-none",
                 !reducedMotion && "transition-all duration-300",
                 "focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
                 active
