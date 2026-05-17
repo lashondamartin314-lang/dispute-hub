@@ -88,6 +88,36 @@ function OnboardingStrip() {
   );
 }
 
+function VisitorCta() {
+  const { user } = useAuth();
+  if (user) return null;
+
+  return (
+    <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+      <span className="text-sm text-[color:var(--brand-ink)]/70">
+        Already a member?
+      </span>
+      <div className="flex items-center gap-2">
+        <Link
+          to="/auth"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brand-ink)]/15 bg-card px-4 py-2 text-sm font-semibold text-[color:var(--brand-ink)] transition-all hover:border-[color:var(--brand-gold)]/60 hover:shadow-sm"
+        >
+          <LogIn className="size-4" aria-hidden="true" />
+          Sign in
+        </Link>
+        <Link
+          to="/auth"
+          search={{ mode: "signup" }}
+                   className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--brand-magenta)]/25 bg-[color:var(--brand-magenta-soft)] px-4 py-2 text-sm font-semibold text-[color:var(--brand-magenta-deep)] transition-all hover:border-[color:var(--brand-magenta)]/50 hover:bg-[color:var(--brand-magenta)]/10"
+        >
+          <UserPlus className="size-4" aria-hidden="true" />
+          Sign up
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Full-bleed parallax hero. Three layers translate at different rates as the
  * page scrolls: the halo drifts slowest, the headline mid-pace, and the
