@@ -73,6 +73,27 @@ export function SectionToc({
     if (typeof window === "undefined") return "toc:last:default";
     return `toc:last:${window.location.pathname}`;
   }, []);
+  const collapseKey = useMemo(() => {
+    if (typeof window === "undefined") return "toc:collapsed:default";
+    return `toc:collapsed:${window.location.pathname}`;
+  }, []);
+
+  // Restore collapsed state per route.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = window.localStorage.getItem(collapseKey);
+      if (saved === "1") setCollapsed(true);
+    } catch { /* ignore */ }
+  }, [collapseKey]);
+
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed((v) => {
+      const next = !v;
+      try { window.localStorage.setItem(collapseKey, next ? "1" : "0"); } catch { /* ignore */ }
+      return next;
+    });
+  }, [collapseKey]);
 
   // Detect prefers-reduced-motion (live).
   useEffect(() => {
