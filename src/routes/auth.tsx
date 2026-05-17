@@ -191,7 +191,9 @@ function AuthPage() {
           type="button"
           onClick={() => {
             setError(null);
-            setMode((m) => (m === "signin" ? "signup" : "signin"));
+            setMode((m) =>
+              m === "forgot" ? "signin" : m === "signin" ? "signup" : "signin",
+            );
           }}
           className="block w-full text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
         >
