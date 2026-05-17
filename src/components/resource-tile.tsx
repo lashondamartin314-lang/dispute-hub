@@ -267,17 +267,28 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
 
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4">
           <div className="flex flex-wrap items-center gap-2">
-            <a
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`Open ${resource.label} (opens in a new tab)`}
-              aria-label={`Open ${resource.label} (opens in a new tab, leaves the Playbook)`}
-              className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--brand-gold-deep)] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[color:var(--brand-cream)] hover:opacity-90"
-            >
-              Open the site
-              <ArrowUpRight className="size-3.5" aria-hidden />
-            </a>
+            {requiresAuth ? (
+              <a
+                href={authHref}
+                title="Sign in required to open this link"
+                className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--brand-magenta-deep)] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[color:var(--brand-cream)] hover:opacity-90"
+              >
+                Sign in to open
+                <ArrowUpRight className="size-3.5" aria-hidden />
+              </a>
+            ) : (
+              <a
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Open ${resource.label} (opens in a new tab)`}
+                aria-label={`Open ${resource.label} (opens in a new tab, leaves the Playbook)`}
+                className="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--brand-gold-deep)] px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-[color:var(--brand-cream)] hover:opacity-90"
+              >
+                Open the site
+                <ArrowUpRight className="size-3.5" aria-hidden />
+              </a>
+            )}
             {hasSteps && (
               <button
                 type="button"
