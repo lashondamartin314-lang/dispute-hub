@@ -133,7 +133,7 @@ function LettersPage() {
                       href={PARENT_DRIVE_FOLDER}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`Open the Google Drive folder containing all ${p.eyebrow} letter templates (opens in a new tab)`}
+                      aria-label="Open the shared Google Drive folder containing all letter templates (opens in a new tab)"
                       className="group inline-flex items-center gap-1.5 rounded-full border bg-card/80 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.16em] backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                       style={{
                         borderColor: `color-mix(in oklab, var(${p.colorVar}) 50%, transparent)`,
