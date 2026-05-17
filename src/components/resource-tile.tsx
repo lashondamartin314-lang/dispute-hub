@@ -13,8 +13,9 @@ import {
   GraduationCap,
   type LucideIcon,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
 import type { DisputeRound, Resource, ResourceCategory } from "@/data/resources";
 
 const CATEGORY_ICON: Record<ResourceCategory, LucideIcon> = {
