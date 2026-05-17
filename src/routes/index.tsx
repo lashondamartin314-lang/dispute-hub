@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch } from "lucide-react";
+import { ArrowRight, ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch, LogIn, UserPlus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { PhaseGrid } from "@/components/phase-grid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useAuth } from "@/hooks/use-auth";
 
 import { PINNED_RESOURCES } from "@/data/resources";
 import { PHASES } from "@/data/phases";
