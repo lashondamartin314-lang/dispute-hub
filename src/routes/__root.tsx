@@ -93,7 +93,10 @@ function RootComponent() {
               <header
                 className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b px-3 sm:px-4 md:px-6 backdrop-blur-md"
                 style={{
-                  backgroundColor: "color-mix(in oklab, var(--header-bg) 92%, transparent)",
+                  // `--header-bg` may be a gradient — use the `background` shorthand
+                  // so gradients render. `color-mix()` on a gradient silently fails
+                  // and would leave the header transparent (icons invisible).
+                  background: "var(--header-bg)",
                   borderColor: "var(--header-border)",
                   color: "var(--header-fg)",
                 }}
