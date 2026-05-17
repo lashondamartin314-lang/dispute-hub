@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   X,
   Home,
-  BookOpen,
   Compass,
   ScrollText,
   Library,
