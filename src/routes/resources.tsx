@@ -76,7 +76,7 @@ function ResourcesPage() {
 
   const setActiveCategory = (next: CategorySpec["id"] | null) => {
     navigate({
-      search: (prev) => ({ ...prev, category: next ?? undefined }),
+      search: (prev: { category?: CategorySpec["id"] }) => ({ ...prev, category: next ?? undefined }),
       replace: true,
     });
   };
