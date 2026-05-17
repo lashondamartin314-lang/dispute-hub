@@ -50,6 +50,8 @@ function MyLettersPage() {
     queryFn: () => fetchMine({}),
   });
 
+  const [previewLetter, setPreviewLetter] = useState<Letter | null>(null);
+
   const letters = data?.letters ?? [];
   const responses = data?.responses ?? [];
   const responseByLetter = new Map(responses.map((r) => [r.letter_id, r] as const));
