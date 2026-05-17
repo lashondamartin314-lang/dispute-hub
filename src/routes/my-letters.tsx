@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Mail, FileDown, ExternalLink, Clock, CheckCircle2, Folder, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Mail, FileDown, Eye, Clock, CheckCircle2, Folder, ArrowRight } from "lucide-react";
 import { AuthGate } from "@/components/auth-gate";
 import { EditorialHeader } from "@/components/editorial-header";
+import { LetterPreviewDialog } from "@/components/letter-preview-dialog";
 import { getMyLetters } from "@/lib/my-letters.functions";
-import { LETTERS, PARENT_DRIVE_FOLDER, type LetterId } from "@/data/letters";
+import { LETTERS, PARENT_DRIVE_FOLDER, type Letter } from "@/data/letters";
 
 export const Route = createFileRoute("/my-letters")({
   head: () => ({
@@ -47,6 +49,8 @@ function MyLettersPage() {
     queryKey: ["my-letters"],
     queryFn: () => fetchMine({}),
   });
+
+  const [previewLetter, setPreviewLetter] = useState<Letter | null>(null);
 
   const letters = data?.letters ?? [];
   const responses = data?.responses ?? [];
@@ -165,14 +169,13 @@ function MyLettersPage() {
                     </dl>
                     {tpl && (
                       <div className="mt-4 flex flex-wrap gap-2">
-                        <a
-                          href={tpl.viewUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          type="button"
+                          onClick={() => setPreviewLetter(tpl)}
                           className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                         >
-                          <ExternalLink className="size-3.5" aria-hidden /> View template
-                        </a>
+                          <Eye className="size-3.5" aria-hidden /> View template
+                        </button>
                         <a
                           href={tpl.copyUrl}
                           target="_blank"
@@ -228,14 +231,13 @@ function MyLettersPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <a
-                    href={l.viewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => setPreviewLetter(l)}
                     className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[11px] font-semibold transition-all hover:-translate-y-0.5"
                   >
-                    <ExternalLink className="size-3" aria-hidden /> View
-                  </a>
+                    <Eye className="size-3" aria-hidden /> View
+                  </button>
                   <a
                     href={l.copyUrl}
                     target="_blank"
@@ -250,6 +252,12 @@ function MyLettersPage() {
           </ul>
         </div>
       </section>
+
+      <LetterPreviewDialog
+        letter={previewLetter}
+        open={previewLetter !== null}
+        onOpenChange={(open) => { if (!open) setPreviewLetter(null); }}
+      />
     </div>
   );
 }
