@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -17,6 +18,40 @@ import { LenisProvider } from "@/components/lenis-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
+
+const SIDEBAR_STORAGE_KEY = "sidebar:open:v1";
+
+function PersistedSidebarProvider({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Hydrate from localStorage after mount to avoid SSR mismatch.
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(SIDEBAR_STORAGE_KEY);
+      if (raw === "true" || raw === "false") setOpen(raw === "true");
+    } catch {
+      /* ignore */
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open));
+    } catch {
+      /* ignore */
+    }
+  }, [hydrated, open]);
+
+  return (
+    <SidebarProvider open={open} onOpenChange={setOpen}>
+      {children}
+    </SidebarProvider>
+  );
+}
+
 
 function NotFoundComponent() {
   return (
