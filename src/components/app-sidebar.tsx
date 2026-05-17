@@ -19,8 +19,15 @@ import {
   MessageCircleQuestion,
   Home,
   Users,
+  LogIn,
+  UserPlus,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "@tanstack/react-router";
 import {
   Sidebar,
   SidebarContent,
