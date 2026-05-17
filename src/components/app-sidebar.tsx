@@ -505,6 +505,8 @@ export function AppSidebar() {
 }
 
 function AuthFooter({ closeMobile, isCollapsed }: { closeMobile: () => void; isCollapsed: boolean }) {
+  const currentHref = useRouterState({ select: (s) => s.location.href });
+  const redirectTarget = currentHref?.startsWith("/auth") ? undefined : currentHref;
   const { user } = useAuth();
   const router = useRouter();
 
