@@ -1,8 +1,37 @@
 import { useState } from "react";
-import { ArrowUpRight, ArrowRight, BookOpen, Info, ListChecks, Printer } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  BookOpen,
+  Info,
+  ListChecks,
+  Printer,
+  FileText,
+  Activity,
+  Scale,
+  FolderOpen,
+  GraduationCap,
+  type LucideIcon,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import type { DisputeRound, Resource } from "@/data/resources";
+import type { DisputeRound, Resource, ResourceCategory } from "@/data/resources";
+
+const CATEGORY_ICON: Record<ResourceCategory, LucideIcon> = {
+  report: FileText,
+  monitoring: Activity,
+  complaint: Scale,
+  kit: FolderOpen,
+  academy: GraduationCap,
+};
+
+const CATEGORY_LABEL: Record<ResourceCategory, string> = {
+  report: "Credit Report",
+  monitoring: "Monitoring",
+  complaint: "Regulatory",
+  kit: "Letter Kit",
+  academy: "Education",
+};
 import { PrintChecklistButton } from "@/components/print-checklist-button";
 import { CfpbWalkthrough } from "@/components/cfpb-walkthrough";
 import {
