@@ -138,8 +138,8 @@ function RootComponent() {
               >
                 <SidebarTrigger className="text-[color:var(--header-fg)] hover:bg-[color:var(--header-border)]" />
                 <div
-                  className="font-editorial text-xs sm:text-sm truncate"
-                  style={{ color: "var(--header-muted-fg)" }}
+                  className="font-display text-sm sm:text-base font-bold tracking-tight truncate"
+                  style={{ color: "var(--brand-gold)" }}
                 >
                   Credit Academy · The Dispute Playbook
                 </div>
