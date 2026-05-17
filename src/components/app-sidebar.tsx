@@ -505,6 +505,8 @@ export function AppSidebar() {
 }
 
 function AuthFooter({ closeMobile, isCollapsed }: { closeMobile: () => void; isCollapsed: boolean }) {
+  const currentHref = useRouterState({ select: (s) => s.location.href });
+  const redirectTarget = currentHref?.startsWith("/auth") ? undefined : currentHref;
   const { user } = useAuth();
   const router = useRouter();
 
@@ -550,6 +552,7 @@ function AuthFooter({ closeMobile, isCollapsed }: { closeMobile: () => void; isC
         <TooltipTrigger asChild>
           <Link
             to="/auth"
+            search={redirectTarget ? { redirect: redirectTarget } : undefined}
             onClick={closeMobile}
             className="inline-flex items-center gap-1.5 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-semibold text-sidebar-foreground/90 transition-colors hover:border-[color:var(--brand-gold)]/60 hover:bg-[color:var(--brand-gold-soft)] hover:text-[color:var(--brand-gold-deep)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
           >
@@ -563,7 +566,7 @@ function AuthFooter({ closeMobile, isCollapsed }: { closeMobile: () => void; isC
         <TooltipTrigger asChild>
           <Link
             to="/auth"
-            search={{ mode: "signup" }}
+            search={redirectTarget ? { mode: "signup", redirect: redirectTarget } : { mode: "signup" }}
             onClick={closeMobile}
             className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--brand-magenta)]/25 bg-[color:var(--brand-magenta-soft)] px-2.5 py-1.5 text-xs font-semibold text-[color:var(--brand-magenta-deep)] transition-colors hover:border-[color:var(--brand-magenta)]/50 hover:bg-[color:var(--brand-magenta)]/10 group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
           >
