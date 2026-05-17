@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Folder } from "lucide-react";
 import { EditorialHeader } from "@/components/editorial-header";
 import { LetterCard } from "@/components/letter-card";
+import { AuthGate } from "@/components/auth-gate";
 import { PHASES } from "@/data/phases";
 import { lettersForPhase, PARENT_DRIVE_FOLDER } from "@/data/letters";
 
