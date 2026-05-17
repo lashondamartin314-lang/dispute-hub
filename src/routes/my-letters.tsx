@@ -252,6 +252,12 @@ function MyLettersPage() {
           </ul>
         </div>
       </section>
+
+      <LetterPreviewDialog
+        letter={previewLetter}
+        open={previewLetter !== null}
+        onOpenChange={(open) => { if (!open) setPreviewLetter(null); }}
+      />
     </div>
   );
 }
