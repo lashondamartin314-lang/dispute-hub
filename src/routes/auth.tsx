@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+    mode: (search.mode === "signup" ? "signup" : "signin") as Mode,
   }),
   head: () => ({
     meta: [
