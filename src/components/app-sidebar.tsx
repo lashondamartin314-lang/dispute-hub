@@ -12,6 +12,7 @@ import {
   ScanSearch,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
   Award,
   MessageCircleQuestion,
   Home,
