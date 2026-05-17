@@ -214,22 +214,64 @@
 .dark {
   --background: #1B0739;
   --foreground: #FAF6EE;
-  --card: #14111A;
+  --card: #221536;
   --card-foreground: #FAF6EE;
+  --popover: #221536;
+  --popover-foreground: #FAF6EE;
   --primary: #F10085;
   --primary-foreground: #FAF6EE;
+  --secondary: #2E1D4A;
+  --secondary-foreground: #FAF6EE;
+  --accent: #F10085;
+  --accent-foreground: #FAF6EE;
   --muted: #2E2A38;
-  --muted-foreground: #948C99;
-  --border: rgba(255, 255, 255, 0.10);
+  --muted-foreground: #B8B1C2;
+  --destructive-foreground: #FAF6EE;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.18);
+  --ring: #F10085;
+
   --sidebar: #14111A;
   --sidebar-foreground: #FAF6EE;
+  --sidebar-primary: #F10085;
+  --sidebar-primary-foreground: #FAF6EE;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #FAF6EE;
   --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #F10085;
+
   /* Header keeps its branded navy in dark too, but a touch deeper */
   --header-bg: var(--brand-navy-deep);
   --header-fg: var(--brand-cream);
   --header-border: color-mix(in oklab, var(--brand-gold) 28%, transparent);
   --header-muted-fg: color-mix(in oklab, var(--brand-cream) 70%, transparent);
+
+  /* Brand token remap: lighten text-oriented tokens so all the
+   * text-[color:var(--brand-ink)] / --brand-navy / --brand-stone usages
+   * sprinkled through the app remain legible on the dark background.
+   * "Cream" and "paper" tokens used as soft surfaces flip to dark surfaces
+   * so their wells don't punch a light hole through dark pages. The
+   * 18 button surfaces that read bg-brand-navy + text-brand-cream invert
+   * cleanly (light bg + dark text) and stay AA-legible. */
+  --brand-ink: #FAF6EE;
+  --brand-stone: #C9C2D2;
+  --brand-cream: #14111A;
+  --brand-paper: #1B1626;
+  --brand-navy: #B8C4FF;
+  --brand-navy-deep: #DDE5FF;
+  --brand-violet: #C8B5FF;
+  --brand-violet-deep: #E4D8FF;
+  --brand-magenta-deep: #FF6CB5;
+  --brand-gold: #E8C97A;
+  --brand-gold-deep: #F0DDA5;
+  --brand-gold-soft: #3A2F12;
+  --brand-pink: #3A0F24;
+  --brand-sky-soft: #0F2A3A;
+  --brand-sage-soft: #1A241A;
+  --brand-peach: #4A2A1A;
 }
+
+.dark strong, .dark b { color: var(--foreground); }
 
 @layer base {
   * { border-color: var(--color-border); }
