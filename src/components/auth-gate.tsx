@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Lock, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
