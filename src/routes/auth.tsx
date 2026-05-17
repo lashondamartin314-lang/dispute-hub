@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Sign in · The Dispute Playbook" },
@@ -12,6 +15,13 @@ export const Route = createFileRoute("/auth")({
   }),
   component: AuthPage,
 });
+
+function safeRedirect(target: string | undefined): string {
+  if (!target) return "/progress";
+  // Only allow same-origin internal paths
+  if (target.startsWith("/") && !target.startsWith("//")) return target;
+  return "/progress";
+}
 
 type Mode = "signin" | "signup";
 
