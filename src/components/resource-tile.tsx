@@ -66,6 +66,13 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
   const isDimmed = activeRound != null && !isInActiveRound;
   const [open, setOpen] = useState(false);
 
+  const { user } = useAuth();
+  const currentHref = useRouterState({ select: (s) => s.location.href });
+  const isDriveUrl = /(?:drive|docs)\.google\.com/i.test(resource.url);
+  const isGated = resource.category === "kit" || isDriveUrl;
+  const requiresAuth = isGated && !user;
+  const authHref = `/auth?redirect=${encodeURIComponent(currentHref ?? "/resources")}`;
+
   const hasSteps = (resource.steps && resource.steps.length > 0) ?? false;
   const isCfpb = resource.id === "cfpb";
 
