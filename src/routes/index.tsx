@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch } from "lucide-react";
+import { ArrowRight, ChevronsDownUp, ChevronsUpDown, ClipboardList, Compass, FileText, Layers, Library, ScanSearch } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { EditorialHeader } from "@/components/editorial-header";
