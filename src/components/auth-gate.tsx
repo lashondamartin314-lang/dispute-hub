@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Lock, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -22,6 +23,19 @@ export function AuthGate({
 }: AuthGateProps) {
   const { user, isLoading } = useAuth();
   const currentHref = useRouterState({ select: (s) => s.location.href });
+
+  // When gated content mounts (auth resolves to a signed-in user), the page
+  // height changes dramatically. Nudge Lenis / any scroll observers to
+  // re-measure so smooth scrolling tracks the new document height.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isLoading || !user) return;
+    // Defer to next frame so the children have laid out first.
+    const id = window.requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [isLoading, user]);
 
   if (isLoading) {
     return (
