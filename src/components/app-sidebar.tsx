@@ -8,6 +8,7 @@ import {
   ScrollText,
   Sparkles,
   ArrowUpRight,
+  Globe,
   ClipboardList,
   ScanSearch,
   ChevronDown,
