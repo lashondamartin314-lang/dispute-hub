@@ -274,6 +274,44 @@
 
 .dark strong, .dark b { color: var(--foreground); }
 
+/* Dark-mode rescue: the sidebar uses many bg-white / border-white pearl pills
+ * that look correct on the light pearl rail but become bright white slabs on
+ * the dark sidebar. Remap them to translucent dark surfaces so the cream
+ * sidebar-foreground text stays legible. */
+.dark [data-sidebar="sidebar"] .bg-white,
+.dark [data-sidebar="sidebar"] .bg-white\/40,
+.dark [data-sidebar="sidebar"] .bg-white\/50,
+.dark [data-sidebar="sidebar"] .bg-white\/60,
+.dark [data-sidebar="sidebar"] .bg-white\/70,
+.dark [data-sidebar="sidebar"] .hover\:bg-white:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+.dark [data-sidebar="sidebar"] .border-white,
+.dark [data-sidebar="sidebar"] .border-white\/60,
+.dark [data-sidebar="sidebar"] .border-white\/70,
+.dark [data-sidebar="sidebar"] .hover\:border-white:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.dark [data-sidebar="sidebar"] [data-active="true"].bg-white,
+.dark [data-sidebar="sidebar"] [data-active="true"] {
+  background-color: rgba(241, 0, 133, 0.18);
+}
+
+/* CFPB walkthrough mimics the federal portal's brand palette (#1E4A73 on
+ * #F0F6FB). In dark mode the cream/light backgrounds inside the walkthrough
+ * card flip to dark surfaces; the federal navy is lightened for contrast. */
+.dark .bg-\[\#F0F6FB\],
+.dark .bg-\[\#F5F9FC\] { background-color: rgba(184, 196, 255, 0.08); }
+.dark .text-\[\#14111A\] { color: var(--foreground); }
+.dark .border-\[\#1E4A73\] { border-color: #B8C4FF; }
+.dark .bg-\[\#1E4A73\] { background-color: #4F73A8; }
+.dark .text-\[\#1E4A73\] { color: #B8C4FF; }
+
+/* Stand-alone link blue in resource tiles → use accent in dark */
+.dark .text-\[\#1a0dab\] { color: #B8C4FF; }
+.dark .decoration-\[\#1a0dab\]\/40 { text-decoration-color: rgba(184, 196, 255, 0.4); }
+.dark .hover\:decoration-\[\#1a0dab\]:hover { text-decoration-color: #B8C4FF; }
+
 @layer base {
   * { border-color: var(--color-border); }
   html, body { height: 100%; }
