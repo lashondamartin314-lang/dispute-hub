@@ -24,7 +24,7 @@ function safeRedirect(target: string | undefined): string {
   return "/progress";
 }
 
-type Mode = "signin" | "signup";
+type Mode = "signin" | "signup" | "forgot";
 
 function AuthPage() {
   const router = useRouter();
@@ -54,15 +54,20 @@ function AuthPage() {
           },
         });
         if (error) throw error;
-        // Email confirm is on by default — surface that.
         setError("Check your email to confirm your account, then sign in.");
+        setMode("signin");
+      } else if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        setError("Check your email for a link to reset your password.");
         setMode("signin");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await router.invalidate();
         await navigate({ to: target as string, replace: true } as Parameters<typeof navigate>[0]);
-        // Hard fallback in case client-side navigation is intercepted
         if (typeof window !== "undefined" && window.location.pathname !== target) {
           window.location.assign(target);
         }
@@ -81,12 +86,18 @@ function AuthPage() {
           Your progress · Your badges
         </p>
         <h1 className="font-display mt-2 text-3xl leading-tight md:text-4xl">
-          {mode === "signin" ? "Welcome back, Cousin." : "Save your progress."}
+          {mode === "signin"
+            ? "Welcome back, Cousin."
+            : mode === "forgot"
+              ? "Reset your password."
+              : "Save your progress."}
         </h1>
         <p className="font-editorial mt-2 text-base text-foreground/75">
           {mode === "signin"
             ? "Sign in to see your milestone badges across devices."
-            : "Create an account so every phase you finish earns a badge that's saved to your profile."}
+            : mode === "forgot"
+              ? "Enter your email and we'll send you a link to set a new password."
+              : "Create an account so every phase you finish earns a badge that's saved to your profile."}
         </p>
       </div>
 
@@ -119,17 +130,29 @@ function AuthPage() {
             className={inputCls}
           />
         </Field>
-        <Field label="Password">
-          <input
-            type="password"
-            required
-            minLength={8}
-            autoComplete={mode === "signin" ? "current-password" : "new-password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={inputCls}
-          />
-        </Field>
+        {mode !== "forgot" && (
+          <Field label="Password">
+            <input
+              type="password"
+              required
+              minLength={8}
+              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inputCls}
+            />
+          </Field>
+        )}
+
+        {mode === "signin" && (
+          <button
+            type="button"
+            onClick={() => { setError(null); setMode("forgot"); }}
+            className="-mt-1 block text-xs font-semibold text-[color:var(--brand-magenta-deep)] hover:underline"
+          >
+            Forgot password?
+          </button>
+        )}
 
         {error && (
           <p
@@ -155,18 +178,30 @@ function AuthPage() {
             color: "var(--brand-cream)",
           }}
         >
-          {loading ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
+          {loading
+            ? "Working…"
+            : mode === "signin"
+              ? "Sign in"
+              : mode === "forgot"
+                ? "Send reset link"
+                : "Create account"}
         </button>
 
         <button
           type="button"
           onClick={() => {
             setError(null);
-            setMode((m) => (m === "signin" ? "signup" : "signin"));
+            setMode((m) =>
+              m === "forgot" ? "signin" : m === "signin" ? "signup" : "signin",
+            );
           }}
           className="block w-full text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
         >
-          {mode === "signin" ? "Need an account? Sign up" : "Already have one? Sign in"}
+          {mode === "signin"
+            ? "Need an account? Sign up"
+            : mode === "forgot"
+              ? "Back to sign in"
+              : "Already have one? Sign in"}
         </button>
       </form>
 
