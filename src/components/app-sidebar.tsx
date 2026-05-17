@@ -279,18 +279,18 @@ export function AppSidebar() {
       style={{ fontFamily: "'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif" }}
       data-lenis-prevent
     >
-      <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+      <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <Link
           to="/"
           onClick={closeMobile}
           aria-label="Home"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)]"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:mx-auto"
         >
           <Home className="size-5" aria-hidden="true" />
         </Link>
       </SidebarHeader>
 
-      <SidebarContent className="gap-0 px-3 py-3">
+      <SidebarContent className="gap-0 px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         {(() => {
           const groups: Record<GroupId, React.ReactNode> = {
             phases: (
@@ -302,7 +302,7 @@ export function AppSidebar() {
                 open={isCollapsed ? true : phasesOpen}
                 onOpenChange={setPhasesOpen}
               >
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
                   {groupHeader("phases", "Phases", phasesOpen)}
                   <CollapsibleContent forceMount={isCollapsed ? true : undefined}>
                     <SidebarGroupContent className="mt-1">
@@ -362,7 +362,7 @@ export function AppSidebar() {
             ),
             companion: (
               <Collapsible key="companion" open={companionOpen} onOpenChange={setCompanionOpen}>
-                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0">
+                <SidebarGroup className="border-t border-sidebar-border/60 px-2 py-3 first:border-t-0 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
                   {groupHeader("companion", "Companion tools", companionOpen)}
                   <CollapsibleContent>
                     <SidebarGroupContent className="mt-1">
@@ -423,9 +423,7 @@ export function AppSidebar() {
         })()}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border px-3 py-3">
-        {/* Quick Access and External Resources removed — duplicates of the
-            Companion tools group above and the Companion Hub menu in the header. */}
+      <SidebarFooter className="border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <a
           href="https://shondamartin.com"
           target="_blank"
@@ -433,10 +431,10 @@ export function AppSidebar() {
           onClick={closeMobile}
           title="Opens shondamartin.com in a new tab"
           aria-label="shondamartin.com (opens in a new tab)"
-          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab]"
+          className="inline-flex items-center gap-1 px-1 text-xs text-[#1a0dab] underline underline-offset-2 decoration-[#1a0dab]/40 hover:decoration-[#1a0dab] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:border group-data-[collapsible=icon]:border-sidebar-border group-data-[collapsible=icon]:bg-white/60 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:no-underline group-data-[collapsible=icon]:mx-auto"
         >
-          shondamartin.com
-          <ArrowUpRight className="size-3" aria-hidden="true" />
+          <span className="group-data-[collapsible=icon]:hidden">shondamartin.com</span>
+          <ArrowUpRight className="size-3 group-data-[collapsible=icon]:size-4" aria-hidden="true" />
         </a>
       </SidebarFooter>
     </Sidebar>
