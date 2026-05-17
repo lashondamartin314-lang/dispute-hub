@@ -158,7 +158,7 @@ function RootComponent() {
           </div>
           <CoverOnlyFab />
           <Toaster />
-        </SidebarProvider>
+        </PersistedSidebarProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
