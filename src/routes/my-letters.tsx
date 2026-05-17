@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Mail, FileDown, ExternalLink, Clock, CheckCircle2, Folder, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { Mail, FileDown, Eye, Clock, CheckCircle2, Folder, ArrowRight } from "lucide-react";
 import { AuthGate } from "@/components/auth-gate";
 import { EditorialHeader } from "@/components/editorial-header";
+import { LetterPreviewDialog } from "@/components/letter-preview-dialog";
 import { getMyLetters } from "@/lib/my-letters.functions";
-import { LETTERS, PARENT_DRIVE_FOLDER, type LetterId } from "@/data/letters";
+import { LETTERS, PARENT_DRIVE_FOLDER, type Letter } from "@/data/letters";
 
 export const Route = createFileRoute("/my-letters")({
   head: () => ({
