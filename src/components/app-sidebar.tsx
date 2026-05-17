@@ -19,8 +19,15 @@ import {
   MessageCircleQuestion,
   Home,
   Users,
+  LogIn,
+  UserPlus,
+  LogOut,
+  User,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
+import { useRouter } from "@tanstack/react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -478,6 +485,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
+        <AuthFooter closeMobile={closeMobile} isCollapsed={isCollapsed} />
         <a
           href="https://shondamartin.com"
           target="_blank"
@@ -485,7 +493,7 @@ export function AppSidebar() {
           onClick={closeMobile}
           title="Opens shondamartin.com in a new tab"
           aria-label="shondamartin.com (opens in a new tab)"
-          className="group/extlink inline-flex items-center gap-2 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-medium text-sidebar-foreground/80 transition-colors hover:border-[color:var(--brand-gold)]/60 hover:bg-[color:var(--brand-gold-soft)] hover:text-[color:var(--brand-gold-deep)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
+          className="group/extlink mt-2 inline-flex items-center gap-2 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-medium text-sidebar-foreground/80 transition-colors hover:border-[color:var(--brand-gold)]/60 hover:bg-[color:var(--brand-gold-soft)] hover:text-[color:var(--brand-gold-deep)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
         >
           <Globe className="size-4 shrink-0 text-[color:var(--brand-gold-deep)]" aria-hidden="true" />
           <span className="flex-1 truncate group-data-[collapsible=icon]:hidden">shondamartin.com</span>
@@ -493,6 +501,79 @@ export function AppSidebar() {
         </a>
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+function AuthFooter({ closeMobile, isCollapsed }: { closeMobile: () => void; isCollapsed: boolean }) {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.invalidate();
+    closeMobile();
+  }
+
+  if (user) {
+    const displayName = user.user_metadata?.display_name || user.email?.split("@")[0] || "Cousin";
+    return (
+      <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="inline-flex items-center gap-2 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-medium text-sidebar-foreground/80 group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto">
+              <User className="size-4 shrink-0 text-[color:var(--brand-magenta)]" aria-hidden="true" />
+              <span className="truncate group-data-[collapsible=icon]:hidden">{displayName}</span>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent side="right">Signed in</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sidebar-border bg-white/60 text-sidebar-foreground/80 transition-colors hover:border-[color:var(--brand-magenta)]/40 hover:text-[color:var(--brand-magenta)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)]"
+              aria-label="Sign out"
+            >
+              <LogOut className="size-4" aria-hidden="true" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="right">Sign out</TooltipContent>
+        </Tooltip>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to="/auth"
+            onClick={closeMobile}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-sidebar-border bg-white/60 px-2.5 py-1.5 text-xs font-semibold text-sidebar-foreground/90 transition-colors hover:border-[color:var(--brand-gold)]/60 hover:bg-[color:var(--brand-gold-soft)] hover:text-[color:var(--brand-gold-deep)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
+          >
+            <LogIn className="size-4 shrink-0" aria-hidden="true" />
+            <span className="group-data-[collapsible=icon]:hidden">Sign in</span>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right">Sign in</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            to="/auth"
+            search={{ mode: "signup" }}
+            onClick={closeMobile}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[color:var(--brand-magenta)]/25 bg-[color:var(--brand-magenta-soft)] px-2.5 py-1.5 text-xs font-semibold text-[color:var(--brand-magenta-deep)] transition-colors hover:border-[color:var(--brand-magenta)]/50 hover:bg-[color:var(--brand-magenta)]/10 group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mx-auto"
+          >
+            <UserPlus className="size-4 shrink-0" aria-hidden="true" />
+            <span className="group-data-[collapsible=icon]:hidden">Sign up</span>
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right">Create account</TooltipContent>
+      </Tooltip>
+    </div>
   );
 }
 

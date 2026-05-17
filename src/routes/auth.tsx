@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/auth")({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+    mode: (search.mode === "signup" ? "signup" : "signin") as Mode,
   }),
   head: () => ({
     meta: [
@@ -30,7 +31,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const target = safeRedirect(search.redirect);
-  const [mode, setMode] = useState<Mode>("signin");
+  const [mode, setMode] = useState<Mode>(search.mode ?? "signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
