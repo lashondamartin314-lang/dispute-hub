@@ -513,32 +513,69 @@ export function SectionToc({
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {activeLabel ? `Current section: ${activeLabel}, ${activeIdx + 1} of ${items.length}` : ""}
       </div>
-      {/* Desktop sticky sidebar */}
+      {/* Desktop sticky sidebar — collapsible */}
       <nav
         aria-label={label}
         className={cn("sticky top-24 hidden xl:block", className)}
       >
-        <div className="mb-3 flex items-center justify-between">
-          <p className="eyebrow" style={{ color: accentColor }}>{label}</p>
+        {collapsed ? (
           <button
             type="button"
-            onClick={() => setShowShortcuts((v) => !v)}
-            aria-expanded={showShortcuts}
-            aria-controls="toc-shortcuts"
-            className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground"
-            title="Keyboard shortcuts (Shift+?)"
+            onClick={toggleCollapsed}
+            aria-expanded={false}
+            aria-label={`Expand ${label}`}
+            title={`Expand ${label}`}
+            className="group flex w-10 flex-col items-center gap-3 rounded-2xl border border-border bg-card/80 py-3 shadow-card backdrop-blur transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+            style={{ color: accentColor }}
           >
-            <Keyboard className="size-3" aria-hidden /> keys
+            <ChevronsRight className="size-4" aria-hidden />
+            <span
+              className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground"
+              style={{ writingMode: "vertical-rl" }}
+            >
+              {label}
+            </span>
+            <span className="font-mono text-[10px] tabular-nums text-muted-foreground/80">
+              {activeIdx + 1}/{items.length}
+            </span>
           </button>
-        </div>
-        {ProgressBar}
-        {SkipBar}
-        {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
-        {renderList(desktopListRef, "desktop")}
-        <p className="mt-3 text-[10px] leading-snug text-muted-foreground/80">
-          Tip: press <Kbd>[</Kbd> / <Kbd>]</Kbd> anywhere on the page to move
-          between sections.
-        </p>
+        ) : (
+          <>
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <p className="eyebrow" style={{ color: accentColor }}>{label}</p>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setShowShortcuts((v) => !v)}
+                  aria-expanded={showShortcuts}
+                  aria-controls="toc-shortcuts"
+                  className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                  title="Keyboard shortcuts (Shift+?)"
+                >
+                  <Keyboard className="size-3" aria-hidden /> keys
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleCollapsed}
+                  aria-expanded={true}
+                  aria-label={`Collapse ${label}`}
+                  title={`Collapse ${label}`}
+                  className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronsLeft className="size-3.5" aria-hidden />
+                </button>
+              </div>
+            </div>
+            {ProgressBar}
+            {SkipBar}
+            {showShortcuts && <ShortcutsPanel id="toc-shortcuts" />}
+            {renderList(desktopListRef, "desktop")}
+            <p className="mt-3 text-[10px] leading-snug text-muted-foreground/80">
+              Tip: press <Kbd>[</Kbd> / <Kbd>]</Kbd> anywhere on the page to move
+              between sections.
+            </p>
+          </>
+        )}
       </nav>
 
       {/* Mobile / tablet drawer trigger */}
