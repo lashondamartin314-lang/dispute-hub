@@ -53,12 +53,24 @@ const CATEGORIES: CategorySpec[] = [
   },
 ];
 
+const FILTER_LABEL: Record<CategorySpec["id"], string> = {
+  report: "Credit",
+  complaint: "Regulatory",
+  kit: "Letter Kit",
+  academy: "Education",
+};
+
 function ResourcesPage() {
   const [activeRound, setActiveRound] = useState<DisputeRound | null>(null);
+  const [activeCategory, setActiveCategory] = useState<CategorySpec["id"] | null>(null);
 
-  const sections = CATEGORIES
+  const allSections = CATEGORIES
     .map((c) => ({ ...c, items: RESOURCES.filter((r) => r.category === c.id) }))
     .filter((c) => c.items.length > 0);
+
+  const sections = activeCategory
+    ? allSections.filter((c) => c.id === activeCategory)
+    : allSections;
 
   const activeMeta = activeRound
     ? DISPUTE_ROUNDS.find((r) => r.round === activeRound)
