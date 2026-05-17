@@ -39,19 +39,59 @@ export function MobileNavDrawer() {
   const { isMobile, openMobile, setOpenMobile } = useSidebar();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const reduce = useReducedMotion();
+  const panelRef = useRef<HTMLElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
 
-  // Close on Escape and lock body scroll while open.
+  // Close on Escape, lock body scroll, trap Tab focus inside the drawer,
+  // restore focus to the trigger on close.
   useEffect(() => {
     if (!isMobile || !openMobile) return;
+    lastFocusedRef.current = document.activeElement as HTMLElement | null;
+
+    const getFocusable = (): HTMLElement[] => {
+      const root = panelRef.current;
+      if (!root) return [];
+      return Array.from(
+        root.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((el) => !el.hasAttribute("aria-hidden") && el.offsetParent !== null);
+    };
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpenMobile(false);
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setOpenMobile(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const items = getFocusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !panelRef.current?.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    // Move focus to the close button on open (after animation frame).
+    const raf = requestAnimationFrame(() => closeBtnRef.current?.focus());
+
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      cancelAnimationFrame(raf);
+      // Restore focus to whatever was focused before the drawer opened.
+      lastFocusedRef.current?.focus?.();
     };
   }, [isMobile, openMobile, setOpenMobile]);
 
