@@ -112,60 +112,89 @@ export function ResourceTile({ resource, className, activeRound }: ResourceTileP
     win.document.close();
   };
 
+  const CategoryIcon = CATEGORY_ICON[resource.category];
+  const categoryLabel = CATEGORY_LABEL[resource.category];
+  const isAcademy = resource.category === "academy";
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <div
         className={cn(
-          "group relative flex flex-col gap-4 rounded-xl border-2 bg-card p-5 shadow-card transition-all",
+          "group relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-card transition-all",
           isInActiveRound
             ? "border-[color:var(--brand-gold-deep)] ring-2 ring-[color:var(--brand-gold)]/30"
-            : "border-border hover:border-[color:var(--brand-gold-deep)] hover:-translate-y-0.5 hover:shadow-elegant",
+            : "border-border/70 hover:-translate-y-0.5 hover:border-[color:var(--brand-gold)]/60 hover:shadow-elegant",
           isDimmed && "opacity-50",
           className,
         )}
       >
         {isInActiveRound && (
-          <span className="absolute -top-2.5 left-4 rounded-full bg-[color:var(--brand-gold-deep)] px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)]">
+          <span className="absolute -top-2.5 left-6 z-10 rounded-full bg-[color:var(--brand-gold-deep)] px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-[color:var(--brand-cream)]">
             Use this round
           </span>
         )}
-        <div className="space-y-2">
-          <div className="flex items-start justify-between gap-3">
-            <DialogTrigger asChild>
-              <button
-                type="button"
-                className="group/eyebrow inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 -mx-1.5 text-left font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--brand-gold-deep)] transition-colors hover:bg-[color:var(--brand-gold)]/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-gold-deep)]"
-                aria-label={`Learn about ${resource.label}: what it is and when to use it`}
+
+        <div className="flex flex-1 flex-col p-7">
+          <div className="mb-5 flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span
+                className={cn(
+                  "inline-flex size-11 shrink-0 items-center justify-center rounded-xl border",
+                  isAcademy
+                    ? "border-[color:var(--brand-magenta)]/25 bg-[color:var(--brand-magenta)]/10 text-[color:var(--brand-magenta-deep)]"
+                    : "border-[color:var(--brand-gold)]/30 bg-[color:var(--brand-gold-soft)] text-[color:var(--brand-gold-deep)]",
+                )}
+                aria-hidden
               >
-                {hasSteps ? <ListChecks className="size-3.5" aria-hidden /> : <Info className="size-3.5" aria-hidden />}
-                <span className="underline decoration-dotted underline-offset-4 decoration-[color:var(--brand-gold-deep)]/60 group-hover/eyebrow:decoration-[color:var(--brand-gold-deep)]">
-                  {resource.actionLabel}
-                </span>
-                <ArrowRight className="size-3 opacity-70 transition-transform group-hover/eyebrow:translate-x-0.5" aria-hidden />
-              </button>
-            </DialogTrigger>
-            {resource.rounds && resource.rounds.length > 0 && (
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground whitespace-nowrap pt-1">
-                Rounds {resource.rounds.join(", ")}
+                <CategoryIcon className="size-5" strokeWidth={1.75} />
+              </span>
+              <p
+                className={cn(
+                  "font-mono text-[10px] font-bold uppercase tracking-[0.2em]",
+                  isAcademy ? "text-[color:var(--brand-magenta-deep)]" : "text-[color:var(--brand-gold-deep)]",
+                )}
+              >
+                {categoryLabel}
               </p>
+            </div>
+            {resource.rounds && resource.rounds.length > 0 && (
+              <span className="whitespace-nowrap rounded-full bg-[color:var(--brand-navy)]/5 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-[color:var(--brand-navy)]">
+                {resource.rounds.length === 5 ? "All Rounds" : `Rounds ${resource.rounds.join(", ")}`}
+              </span>
             )}
           </div>
-          <h3 className="font-display text-xl leading-tight">{resource.label}</h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">{resource.description}</p>
-          {resource.usage && (
-            <div className="mt-3 border-t border-border/60 pt-3">
-              <p className="font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[color:var(--brand-gold-deep)]">
-                What to pull
-              </p>
-              <p className="mt-1.5 text-sm leading-relaxed text-foreground/85">{resource.usage}</p>
-            </div>
-          )}
-        </div>
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
+
           <DialogTrigger asChild>
             <button
               type="button"
-              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--brand-navy)] px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[color:var(--brand-cream)] transition-colors hover:bg-[color:var(--brand-violet-deep)]"
+              className="group/title text-left focus-visible:outline-none"
+              aria-label={`Learn about ${resource.label}: what it is and when to use it`}
+            >
+              <h3 className="font-display text-2xl leading-tight text-foreground transition-colors group-hover/title:text-[color:var(--brand-navy)]">
+                {resource.label}
+              </h3>
+            </button>
+          </DialogTrigger>
+          <p className="mt-2 text-sm italic leading-relaxed text-muted-foreground">{resource.description}</p>
+
+          {resource.usage && (
+            <div className="mt-6 rounded-xl border border-[color:var(--brand-gold)]/20 bg-[color:var(--brand-cream)]/50 p-5">
+              <p className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-foreground">
+                {hasSteps ? <ListChecks className="size-3" aria-hidden /> : <Info className="size-3" aria-hidden />}
+                What to pull
+              </p>
+              <p className="mt-2 line-clamp-4 text-[13px] leading-relaxed text-foreground/80">
+                {resource.usage}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 px-7 pb-7 pt-1">
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[color:var(--brand-navy)] px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[color:var(--brand-cream)] transition-colors hover:bg-[color:var(--brand-navy-deep)]"
             >
               {isCfpb ? "Open walkthrough" : hasSteps ? "How to use this" : "What is this?"}
               <ArrowRight className="size-3.5" aria-hidden />
