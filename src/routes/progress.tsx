@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
 import {
   Award,
   ArrowRight,
