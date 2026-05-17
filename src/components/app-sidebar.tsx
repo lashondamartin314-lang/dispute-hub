@@ -16,6 +16,7 @@ import {
   Award,
   MessageCircleQuestion,
   Home,
+  Users,
 } from "lucide-react";
 import {
   Sidebar,
@@ -282,14 +283,26 @@ export function AppSidebar() {
     >
       <SidebarHeader className="border-b border-sidebar-border/70 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
         <div className="flex items-center justify-between w-full">
-          <Link
-            to="/"
-            onClick={closeMobile}
-            aria-label="Home"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl group-data-[collapsible=icon]:mx-auto"
-          >
-            <Home className="size-5" aria-hidden="true" />
-          </Link>
+          <div className="flex items-center gap-2 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1.5">
+            <Link
+              to="/"
+              onClick={closeMobile}
+              aria-label="Home"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl"
+            >
+              <Home className="size-5" aria-hidden="true" />
+            </Link>
+            <a
+              href="https://creditacademy.circle.so/c/start-here/welcome-to-the-pilot-program"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Community (opens in a new tab)"
+              title="Join the Cohort Community"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-white bg-white/70 text-[color:var(--sidebar-foreground)] shadow-[0_4px_12px_-6px_rgba(12,19,64,0.18)] transition-all hover:-translate-y-px hover:bg-white hover:text-[color:var(--brand-magenta)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--brand-magenta)] group-data-[collapsible=icon]:h-9 group-data-[collapsible=icon]:w-9 group-data-[collapsible=icon]:rounded-xl"
+            >
+              <Users className="size-5" aria-hidden="true" />
+            </a>
+          </div>
           <button
             type="button"
             onClick={() => setOpen(false)}
