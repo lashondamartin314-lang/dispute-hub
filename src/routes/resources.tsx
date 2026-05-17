@@ -1,10 +1,19 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { EditorialHeader } from "@/components/editorial-header";
 import { ResourceTile } from "@/components/resource-tile";
 import { DISPUTE_ROUNDS, RESOURCES, type DisputeRound } from "@/data/resources";
 
+const CATEGORY_IDS = ["report", "kit", "complaint", "academy"] as const;
+
+const resourcesSearchSchema = z.object({
+  category: fallback(z.enum(CATEGORY_IDS).optional(), undefined),
+});
+
 export const Route = createFileRoute("/resources")({
+  validateSearch: zodValidator(resourcesSearchSchema),
   head: () => ({
     meta: [
       { title: "Resources · The Dispute Playbook" },
@@ -61,8 +70,16 @@ const FILTER_LABEL: Record<CategorySpec["id"], string> = {
 };
 
 function ResourcesPage() {
+  const navigate = useNavigate({ from: "/resources" });
+  const { category: activeCategory } = Route.useSearch();
   const [activeRound, setActiveRound] = useState<DisputeRound | null>(null);
-  const [activeCategory, setActiveCategory] = useState<CategorySpec["id"] | null>(null);
+
+  const setActiveCategory = (next: CategorySpec["id"] | null) => {
+    navigate({
+      search: (prev: { category?: CategorySpec["id"] }) => ({ ...prev, category: next ?? undefined }),
+      replace: true,
+    });
+  };
 
   const allSections = CATEGORIES
     .map((c) => ({ ...c, items: RESOURCES.filter((r) => r.category === c.id) }))
