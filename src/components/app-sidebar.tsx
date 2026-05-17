@@ -19,6 +19,7 @@ import {
   MessageCircleQuestion,
   Home,
   Users,
+  Mail,
   LogIn,
   UserPlus,
   LogOut,
@@ -78,6 +79,7 @@ const PHASE_HOVER_CLS = "";
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { setOpenMobile, setOpen, isMobile, openMobile, state } = useSidebar();
+  const { user } = useAuth();
   const isCollapsed = state === "collapsed";
   const wasOpenRef = useRef(false);
 
@@ -160,6 +162,7 @@ export function AppSidebar() {
     pathname.startsWith("/decoder") ||
     pathname.startsWith("/resources") ||
     pathname.startsWith("/progress") ||
+    pathname.startsWith("/my-letters") ||
     pathname.startsWith("/ask");
 
   // Persist expanded/collapsed state across sessions so the user's preferred
@@ -443,6 +446,13 @@ export function AppSidebar() {
                             <Link to="/letters" onClick={closeMobile} data-active-scroll={isActive("/letters") ? "link" : undefined}><Library className="size-4" /> Letter library</Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        {user && (
+                          <SidebarMenuItem>
+                            <SidebarMenuButton asChild isActive={isActive("/my-letters")} tooltip="My letters" className={ACTIVE_CLS}>
+                              <Link to="/my-letters" onClick={closeMobile} data-active-scroll={isActive("/my-letters") ? "link" : undefined}><Mail className="size-4" /> My letters</Link>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        )}
                         <SidebarMenuItem>
                           <SidebarMenuButton asChild isActive={isActive("/tracker")} tooltip="Dispute tracker" className={ACTIVE_CLS}>
                             <Link to="/tracker" onClick={closeMobile} data-active-scroll={isActive("/tracker") ? "link" : undefined}><ClipboardList className="size-4" /> Dispute tracker</Link>
