@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, FileText, Loader2, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FileText, Loader2, Upload, XCircle } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { parseCreditReport, saveCreditReport } from "@/lib/credit-import.functions";
 
