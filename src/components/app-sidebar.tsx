@@ -16,6 +16,7 @@ import {
   Award,
   MessageCircleQuestion,
   Home,
+  Users,
 } from "lucide-react";
 import {
   Sidebar,
