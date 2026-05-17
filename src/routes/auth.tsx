@@ -178,7 +178,13 @@ function AuthPage() {
             color: "var(--brand-cream)",
           }}
         >
-          {loading ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
+          {loading
+            ? "Working…"
+            : mode === "signin"
+              ? "Sign in"
+              : mode === "forgot"
+                ? "Send reset link"
+                : "Create account"}
         </button>
 
         <button
@@ -189,7 +195,11 @@ function AuthPage() {
           }}
           className="block w-full text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
         >
-          {mode === "signin" ? "Need an account? Sign up" : "Already have one? Sign in"}
+          {mode === "signin"
+            ? "Need an account? Sign up"
+            : mode === "forgot"
+              ? "Back to sign in"
+              : "Already have one? Sign in"}
         </button>
       </form>
 
