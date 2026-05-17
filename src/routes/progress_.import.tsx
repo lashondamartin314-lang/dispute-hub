@@ -149,6 +149,38 @@ function ImportPage() {
               {busy === "parsing" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Upload className="size-4" aria-hidden />}
               {busy === "parsing" ? "Parsing with AI…" : "Parse with AI"}
             </button>
+
+            {busy === "parsing" && (
+              <div className="mt-5" role="status" aria-live="polite">
+                <div className="mb-1.5 flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-muted-foreground">
+                  <span>{progressLabel || "Working…"}</span>
+                  <span className="tabular-nums" style={{ color: "var(--brand-magenta-deep)" }}>
+                    {progress != null ? `${progress}%` : "…"}
+                  </span>
+                </div>
+                <div
+                  className="h-1.5 overflow-hidden rounded-full"
+                  style={{ background: "color-mix(in oklab, var(--brand-magenta) 14%, transparent)" }}
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={progress ?? undefined}
+                  aria-label={progressLabel || "Upload progress"}
+                >
+                  {progress != null ? (
+                    <div
+                      className="h-full rounded-full transition-[width] duration-200 ease-out"
+                      style={{ width: `${progress}%`, background: "var(--brand-magenta-deep)" }}
+                    />
+                  ) : (
+                    <div
+                      className="h-full w-1/3 animate-[indeterminate_1.4s_ease-in-out_infinite] rounded-full"
+                      style={{ background: "var(--brand-magenta-deep)" }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
