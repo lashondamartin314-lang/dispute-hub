@@ -59,6 +59,7 @@ export function SectionToc({
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? "");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const fmReduce = useReducedMotion();
   const [reducedMotion, setReducedMotion] = useState(false);
   const [progress, setProgress] = useState(0);
