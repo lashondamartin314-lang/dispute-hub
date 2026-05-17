@@ -231,14 +231,13 @@ function MyLettersPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <a
-                    href={l.viewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => setPreviewLetter(l)}
                     className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[11px] font-semibold transition-all hover:-translate-y-0.5"
                   >
-                    <ExternalLink className="size-3" aria-hidden /> View
-                  </a>
+                    <Eye className="size-3" aria-hidden /> View
+                  </button>
                   <a
                     href={l.copyUrl}
                     target="_blank"
