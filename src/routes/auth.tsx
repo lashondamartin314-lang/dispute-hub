@@ -86,12 +86,18 @@ function AuthPage() {
           Your progress · Your badges
         </p>
         <h1 className="font-display mt-2 text-3xl leading-tight md:text-4xl">
-          {mode === "signin" ? "Welcome back, Cousin." : "Save your progress."}
+          {mode === "signin"
+            ? "Welcome back, Cousin."
+            : mode === "forgot"
+              ? "Reset your password."
+              : "Save your progress."}
         </h1>
         <p className="font-editorial mt-2 text-base text-foreground/75">
           {mode === "signin"
             ? "Sign in to see your milestone badges across devices."
-            : "Create an account so every phase you finish earns a badge that's saved to your profile."}
+            : mode === "forgot"
+              ? "Enter your email and we'll send you a link to set a new password."
+              : "Create an account so every phase you finish earns a badge that's saved to your profile."}
         </p>
       </div>
 
