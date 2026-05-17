@@ -137,6 +137,8 @@ function CoverHero() {
 
         <OnboardingStrip />
 
+        <VisitorCta />
+
       </motion.div>
 
       {/* Layer 3 — PhaseGrid (foreground). Hover paints the hero. */}
